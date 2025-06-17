@@ -1,2 +1,3 @@
+[![CI](https://github.com/FRCTeamPhoenix/Library/actions/workflows/ci.yml/badge.svg)](https://github.com/FRCTeamPhoenix/Library/actions/workflows/ci.yml)
 # Library
-2342's code library 
+Repository with 2342's library code
