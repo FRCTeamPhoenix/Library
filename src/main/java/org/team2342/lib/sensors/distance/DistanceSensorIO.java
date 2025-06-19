@@ -1,3 +1,13 @@
 package org.team2342.lib.sensors.distance;
 
-public interface DistanceSensorIO {}
+import org.littletonrobotics.junction.AutoLog;
+
+public interface DistanceSensorIO {
+    @AutoLog
+    public static class DistanceSensorIOInputs {
+        public boolean connected = false;
+        public double distance = 0.0;
+    }
+
+    public default void updateInputs(DistanceSensorIOInputs inputs) {}
+}
