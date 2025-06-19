@@ -19,6 +19,7 @@ public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
         }
     }
 
+    @Override
     public void updateInputs(DistanceSensorIOInputs inputs) {
         try {
             sensorAlert.set(false);
