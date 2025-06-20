@@ -12,6 +12,11 @@ public class TransitionGraph<E extends Enum<E>> {
   private final Transition<E>[][] adjMap;
   private final Class<E> enumType;
 
+  /**
+   * Creates a new transition graph
+   *
+   * @param enumType The enum to derive states from
+   */
   @SuppressWarnings("unchecked") // lol type "safety"
   public TransitionGraph(Class<E> enumType) {
     int c = enumType.getEnumConstants().length;
@@ -20,11 +25,33 @@ public class TransitionGraph<E extends Enum<E>> {
     adjMap = (Transition<E>[][]) new Transition[c][c];
   }
 
-  public void addEdge(Transition<E> transition) {
+  /**
+   * Add a transition to the graph
+   *
+   * @param transition Transition to add
+   */
+  public void addTransition(Transition<E> transition) {
     adjMap[transition.getStartState().ordinal()][transition.getEndState().ordinal()] = transition;
   }
 
-  public Transition<E> getNextEdge(E start, E target) {
+  /**
+   * Remove a transition from the graph
+   *
+   * @param start The start state of the transition
+   * @param end The end state of the transition
+   */
+  public void removeTransition(E start, E end) {
+    adjMap[start.ordinal()][end.ordinal()] = null;
+  }
+
+  /**
+   * Get next transition on the path from the start state to target state
+   *
+   * @param start The start state
+   * @param target The target state
+   * @return The next transition if it exists
+   */
+  public Transition<E> getNextTransition(E start, E target) {
     if (adjMap[start.ordinal()][target.ordinal()] != null) {
       return adjMap[start.ordinal()][target.ordinal()];
     }
@@ -32,8 +59,8 @@ public class TransitionGraph<E extends Enum<E>> {
     return bfs(start, target);
   }
 
-  // "Based" on 6328's implementation of BFS
-  public Transition<E> bfs(E start, E target) {
+  private Transition<E> bfs(E start, E target) {
+    // "Inspired" by 6328's implementation of BFS
     // Map to track the parent of each visited node
     Map<E, E> parents = new HashMap<>();
     Queue<E> queue = new LinkedList<>();

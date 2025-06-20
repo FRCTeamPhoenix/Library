@@ -30,6 +30,14 @@ public class StateMachine<E extends Enum<E>> {
   @Getter private E targetState;
   @Getter private boolean transitioning;
 
+  /**
+   * Create a new StateMachine
+   *
+   * @param name The name of the state machine (for logging purposes)
+   * @param undeterminedState The undetermined state of the system
+   * @param determiner A supplier to determine a state from the undetermined state
+   * @param enumType The enum to derive states from
+   */
   public StateMachine(String name, E undeterminedState, Supplier<E> determiner, Class<E> enumType) {
     this.name = name;
     this.undeterminedState = undeterminedState;
@@ -45,6 +53,12 @@ public class StateMachine<E extends Enum<E>> {
     enabled = false;
   }
 
+  /**
+   * Enable the state machine. Commands and transitions will only run when the machine is enabled.
+   *
+   * <p>Note that running enable will cause the state machine to use the determiner to find its
+   * state
+   */
   public void enable() {
     if (isEnabled()) return;
 
@@ -53,6 +67,11 @@ public class StateMachine<E extends Enum<E>> {
     enabled = true;
   }
 
+  /**
+   * Disable the state machine. Commands and transitions will only run when the machine is enabled.
+   *
+   * <p>Note that running disable will cause the state to become undetermined
+   */
   public void disable() {
     if (!isEnabled()) return;
 
@@ -70,23 +89,65 @@ public class StateMachine<E extends Enum<E>> {
     enabled = false;
   }
 
+  /**
+   * Add a transition to the machine
+   *
+   * @param start The start state
+   * @param end The end state
+   * @param transitionCommand The command to run during the transition
+   */
   public void addTransition(E start, E end, Command transitionCommand) {
-    transitions.addEdge(new Transition<>(start, end, transitionCommand));
+    transitions.addTransition(new Transition<>(start, end, transitionCommand));
   }
 
+  /**
+   * Add a transition to the machine
+   *
+   * @param start The start state
+   * @param end The end state
+   */
   public void addTransition(E start, E end) {
     addTransition(start, end, Commands.none());
   }
 
-  public void addDualTransition(E start, E end, Command transitionCommand) {
-    transitions.addEdge(new Transition<>(start, end, transitionCommand));
-    transitions.addEdge(new Transition<>(end, start, transitionCommand));
+  /**
+   * Remove a transition from the machine
+   *
+   * @param start The start state
+   * @param end The end state
+   */
+  public void removeTransition(E start, E end) {
+    transitions.removeTransition(start, end);
   }
 
+  /**
+   * Add a transition both ways between two states
+   *
+   * @param start The start state
+   * @param end The end state
+   * @param transitionCommand The command to run during the transition
+   */
+  public void addDualTransition(E start, E end, Command transitionCommand) {
+    transitions.addTransition(new Transition<>(start, end, transitionCommand));
+    transitions.addTransition(new Transition<>(end, start, transitionCommand));
+  }
+
+  /**
+   * Add a transition both ways between two states
+   *
+   * @param start The start state
+   * @param end The end state
+   */
   public void addDualTransition(E start, E end) {
     addDualTransition(start, end, Commands.none());
   }
 
+  /**
+   * Add a transition from every state to the given state
+   *
+   * @param state The state to transition to
+   * @param transitionCommand The command to run during the transition
+   */
   public void addOmniTransition(E state, Command transitionCommand) {
     for (E s : enumType.getEnumConstants()) {
       if (s != state) {
@@ -95,18 +156,40 @@ public class StateMachine<E extends Enum<E>> {
     }
   }
 
+  /**
+   * Add a transition from every state to the given state
+   *
+   * @param state The state to transition to
+   */
   public void addOmniTransition(E state) {
     addOmniTransition(state, Commands.none());
   }
 
+  /**
+   * Register a state command to run when the machine is at the given state
+   *
+   * @param state The state to run the command at
+   * @param stateCommand The command to run
+   */
   public void addStateCommand(E state, Command stateCommand) {
     stateCommands.put(state, stateCommand);
   }
 
+  /**
+   * Request the machine to transition to a target state
+   *
+   * @param state The target state
+   */
   public void requestTransition(E state) {
     targetState = state;
   }
 
+  /**
+   * Request the machine to transition to a target state
+   *
+   * @param state The target state
+   * @return A command to request the transition, that will run until the target is reached
+   */
   public Command requestTransitionCommand(E state) {
     return new FunctionalCommand(
         () -> requestTransition(state),
@@ -115,6 +198,12 @@ public class StateMachine<E extends Enum<E>> {
         () -> getCurrentState() == state);
   }
 
+  /**
+   * Wait for a certain state
+   *
+   * @param state The state to wait for
+   * @return A command that will wait until the state is reached
+   */
   public Command waitForState(E state) {
     return new WaitUntilCommand(() -> getCurrentState() == state);
   }
@@ -143,6 +232,7 @@ public class StateMachine<E extends Enum<E>> {
     setState(state);
   }
 
+  /** Run the machine */
   public void periodic() {
     if (isEnabled()) {
       // Update transitions
@@ -154,7 +244,7 @@ public class StateMachine<E extends Enum<E>> {
 
       // Check to see if we need to transition to a new state
       if (targetState != currentState && !isTransitioning()) {
-        Transition<E> transition = transitions.getNextEdge(currentState, targetState);
+        Transition<E> transition = transitions.getNextTransition(currentState, targetState);
         if (transition != currentTransition) {
           transitioning = true;
           currentTransition = transition;
