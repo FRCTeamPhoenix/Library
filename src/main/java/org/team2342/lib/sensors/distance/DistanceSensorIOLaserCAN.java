@@ -1,34 +1,50 @@
 package org.team2342.lib.sensors.distance;
 
 import au.grapplerobotics.LaserCan;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
+
+/*
+ * Implementing DistanceSensorIO
+ * Handling LaserCAN distance sensor
+ */
 
 public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
-    private final LaserCan laserCan = new LaserCan(0);
-    private final Alert sensorAlert = new Alert("LaserCAN is disconnected", AlertType.kError);
+  private final LaserCan laserCan =
+      new LaserCan(0); // CAN id should ideally be from Constants.java when writing robot code
 
-    public DistanceSensorIOLaserCAN() {
-        try {
-            sensorAlert.set(false);
-            laserCan.setRangingMode(null);
-            laserCan.setTimingBudget(null);
-        } catch (Exception e) {
-            sensorAlert.set(true);
-            System.err.println("LaserCAN configuration failed: " + e.getMessage());
-        }
+  /**
+   * Constructor to configure the LaserCAN
+   *
+   * @param rangingMode The mode for distance measurement, SHORT or LONG range
+   * @param timingBudget The time the sensor spends taking a measurement
+   * @param regionOfInterest The part of the sensor's view to focus on for taking measurements
+   */
+  public DistanceSensorIOLaserCAN(
+      LaserCan.RangingMode rangingMode,
+      LaserCan.TimingBudget timingBudget,
+      LaserCan.RegionOfInterest regionOfInterest) {
+    try {
+      laserCan.setRangingMode(rangingMode);
+      laserCan.setTimingBudget(timingBudget);
+      laserCan.setRegionOfInterest(regionOfInterest);
+    } catch (Exception e) {
+      System.err.println("LaserCAN configuration failed: " + e.getMessage());
     }
+  }
 
-    @Override
-    public void updateInputs(DistanceSensorIOInputs inputs) {
-        try {
-            sensorAlert.set(false);
-            inputs.distance = laserCan.getMeasurement().distance_mm;
-            inputs.connected = true;
-        } catch (Exception e) {
-            sensorAlert.set(true);
-            inputs.connected = false;
-            System.err.println("Failed to read LaserCAN: " + e.getMessage());
-        }
+  /**
+   * Gets called to update sensor reading
+   *
+   * @param inputs The object that stores sensor data
+   */
+  @Override
+  public void updateInputs(DistanceSensorIOInputs inputs) {
+    try {
+      inputs.distanceMeters = laserCan.getMeasurement().distance_mm / 1000.0;
+      inputs.connected = true;
+    } catch (Exception e) {
+      inputs.connected = false;
+      inputs.distanceMeters = -1.0;
+      System.err.println("Failed to read LaserCAN: " + e.getMessage());
     }
+  }
 }
