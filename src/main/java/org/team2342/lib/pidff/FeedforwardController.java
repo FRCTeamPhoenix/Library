@@ -28,7 +28,7 @@ public class FeedforwardController {
    */
   public double calculate(double velocity, double acceleration, double angleRad) {
     return configs.kS * Math.signum(velocity)
-        + configs.kS * velocity
+        + configs.kV * velocity
         + configs.kA * acceleration
         + configs.kG * Math.cos(angleRad);
   }
