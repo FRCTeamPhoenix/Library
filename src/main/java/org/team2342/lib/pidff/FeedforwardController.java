@@ -44,9 +44,9 @@ public class FeedforwardController {
    */
   public double calculate(double velocity, double acceleration) {
     if (configs.gravityType == GravityType.STATIC) {
-      return calculate(velocity, acceleration, Math.PI);
-    } else {
       return calculate(velocity, acceleration, 0);
+    } else {
+      return calculate(velocity, acceleration, Math.PI / 2);
     }
   }
 
