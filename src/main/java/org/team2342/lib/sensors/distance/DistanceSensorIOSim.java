@@ -10,12 +10,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DistanceSensorIOSim implements DistanceSensorIO {
 
   private final String entryKey;
-
-  public DistanceSensorIOSim(String entryKey) {
+  /**
+   * Constructor to configure the sim 
+   * @param entryKey Unique key to identify this entry
+   * @param defaultValue Just like the name suggests 
+   */
+  public DistanceSensorIOSim(String entryKey, double defaultValue) {
     this.entryKey = entryKey;
     // Set default value if it hasn't been set already
     if (!SmartDashboard.containsKey(entryKey)) {
-      SmartDashboard.putNumber(entryKey, 0.5);
+      SmartDashboard.putNumber(entryKey, defaultValue);
     }
   }
 
