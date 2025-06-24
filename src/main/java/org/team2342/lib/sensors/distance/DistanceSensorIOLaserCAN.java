@@ -8,20 +8,21 @@ import au.grapplerobotics.LaserCan;
  */
 
 public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
-  private final LaserCan laserCan =
-      new LaserCan(0); // CAN id should ideally be from Constants.java when writing robot code
+  private final LaserCan laserCan; 
 
   /**
    * Constructor to configure the LaserCAN
-   *
+   * @param canId The CAN id for the sensor
    * @param rangingMode The mode for distance measurement, SHORT or LONG range
    * @param timingBudget The time the sensor spends taking a measurement
    * @param regionOfInterest The part of the sensor's view to focus on for taking measurements
    */
   public DistanceSensorIOLaserCAN(
+      int canId,
       LaserCan.RangingMode rangingMode,
       LaserCan.TimingBudget timingBudget,
       LaserCan.RegionOfInterest regionOfInterest) {
+    this.laserCan = new LaserCan(canId);
     try {
       laserCan.setRangingMode(rangingMode);
       laserCan.setTimingBudget(timingBudget);
@@ -33,7 +34,6 @@ public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
 
   /**
    * Gets called to update sensor reading
-   *
    * @param inputs The object that stores sensor data
    */
   @Override
