@@ -8,10 +8,11 @@ import au.grapplerobotics.LaserCan;
  */
 
 public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
-  private final LaserCan laserCan; 
+  private final LaserCan laserCan;
 
   /**
    * Constructor to configure the LaserCAN
+   *
    * @param canId The CAN id for the sensor
    * @param rangingMode The mode for distance measurement, SHORT or LONG range
    * @param timingBudget The time the sensor spends taking a measurement
@@ -34,6 +35,7 @@ public class DistanceSensorIOLaserCAN implements DistanceSensorIO {
 
   /**
    * Gets called to update sensor reading
+   *
    * @param inputs The object that stores sensor data
    */
   @Override
