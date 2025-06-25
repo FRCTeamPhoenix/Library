@@ -2,6 +2,7 @@ package org.team2342.lib.sensors.distance;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 /*
  * Implementing DistanceSensorIO for sim
  */
@@ -9,14 +10,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DistanceSensorIOSim implements DistanceSensorIO {
 
   private final String entryKey;
+  private final double defaultValue;
   /**
-   * Constructor to configure the sim
-   *
+   * Constructor to configure the sim 
    * @param entryKey Unique key to identify this entry
-   * @param defaultValue Just like the name suggests
+   * @param defaultValue Just like the name suggests 
    */
   public DistanceSensorIOSim(String entryKey, double defaultValue) {
     this.entryKey = entryKey;
+    this.defaultValue = defaultValue;
     // Set default value if it hasn't been set already
     if (!SmartDashboard.containsKey(entryKey)) {
       SmartDashboard.putNumber(entryKey, defaultValue);
@@ -25,13 +27,12 @@ public class DistanceSensorIOSim implements DistanceSensorIO {
 
   /**
    * Gets called to update sensor reading
-   *
    * @param inputs The object that stores sensor data
    */
   @Override
   public void updateInputs(DistanceSensorIOInputs inputs) {
     // Get the current simulated distance from SmartDashboard
-    inputs.distanceMeters = SmartDashboard.getNumber(entryKey, 0.5);
+    inputs.distanceMeters = SmartDashboard.getNumber(entryKey, defaultValue);
     inputs.connected = true;
   }
 }
