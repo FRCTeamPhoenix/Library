@@ -42,12 +42,15 @@ public class SmartMotorIOSim implements SmartMotorIO {
   public void updateInputs(SmartMotorIOInputs inputs) {
     sim.update(0.02);
 
+    inputs.motorsConnected = new boolean[] {true};
     inputs.positionRad = sim.getOutput(0) / config.simRatio;
     inputs.velocityRadPerSec = sim.getOutput(1) / config.simRatio;
-    inputs.appliedVolts = sim.getInput(0);
+    inputs.appliedVolts = new double[] {sim.getInput(0)};
     inputs.currentAmps =
-        motor.getCurrent(
-            inputs.velocityRadPerSec * config.gearRatio / config.simRatio, inputs.appliedVolts);
+        new double[] {
+          motor.getCurrent(
+              inputs.velocityRadPerSec * config.gearRatio / config.simRatio, inputs.appliedVolts[0])
+        };
   }
 
   @Override
