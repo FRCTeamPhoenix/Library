@@ -109,20 +109,9 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
 
-    setupDevelopmentRoutines();
+    if (Constants.TUNING) setupDevelopmentRoutines();
 
     configureBindings();
-
-    SmartDashboard.putData(
-        "Print Encoder Zeros",
-        Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));
-
-    SmartDashboard.putData(
-        "Set Vision Gyro Offset",
-        Commands.runOnce(() -> drive.setVisionGyroOffset()).ignoringDisable(true));
-    SmartDashboard.putData(
-        "Toggle Constrained PhotonVision",
-        Commands.runOnce(() -> vision.toggleHeadingsFree()).ignoringDisable(true));
   }
 
   private void configureNamedCommands() {
@@ -183,6 +172,16 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData(
+        "Print Encoder Zeros",
+        Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));
+    SmartDashboard.putData(
+        "Set Vision Gyro Offset",
+        Commands.runOnce(() -> drive.setVisionGyroOffset()).ignoringDisable(true));
+    SmartDashboard.putData(
+        "Toggle Constrained PhotonVision",
+        Commands.runOnce(() -> vision.toggleHeadingsFree()).ignoringDisable(true));
   }
 
   public void updateAlerts() {
