@@ -9,7 +9,7 @@ public class SmartMotorConfig {
   public boolean motorInverted = false;
   public double supplyLimit = 0;
   public double statorLimit = 0;
-  public ControlType controlType = ControlType.VELOCITY;
+  public ControlType controlType = null;
   public IdleMode idleMode = IdleMode.COAST;
 
   /**
