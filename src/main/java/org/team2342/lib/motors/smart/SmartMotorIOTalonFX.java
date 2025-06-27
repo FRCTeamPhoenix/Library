@@ -157,7 +157,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
       leaderTalon.setControl(positionRequest.withVelocity(positionRot));
     } else {
       throw new IllegalStateException(
-          "Cannot run velocity control: smart motor is configured for "
+          "Cannot run position control: smart motor is configured for "
               + config.controlType.toString()
               + " control");
     }
