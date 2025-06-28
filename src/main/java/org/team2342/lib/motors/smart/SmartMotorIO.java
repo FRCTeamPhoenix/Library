@@ -16,7 +16,7 @@ public interface SmartMotorIO {
 
   public default void updateInputs(SmartMotorIOInputs inputs) {}
 
-  public default void setPosition(double positionRad) {}
+  public default void runPosition(double positionRad) {}
 
   public default void runVelocity(double velocityRadPerSec) {}
 

@@ -5,6 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -39,8 +41,13 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private final StatusSignal<Current>[] followersCurrent;
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
+
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
   private final PositionVoltage positionRequest = new PositionVoltage(0);
+
+  private final MotionMagicVelocityVoltage velocityMotionMagicRequest =
+      new MotionMagicVelocityVoltage(0);
+  private final MotionMagicVoltage positionMotionMagicRequest = new MotionMagicVoltage(0);
 
   private final Debouncer leaderConnectedDebounce = new Debouncer(0.5);
   private final Debouncer[] followersConnectedDebounce;
@@ -69,6 +76,11 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     talonConfig.CurrentLimits.SupplyCurrentLimit = config.supplyLimit;
     talonConfig.CurrentLimits.SupplyCurrentLimitEnable = config.supplyLimit > 0;
 
+    talonConfig.MotionMagic.MotionMagicCruiseVelocity =
+        Units.radiansToRotations(config.profileConstraintsRad.maxVelocity);
+    talonConfig.MotionMagic.MotionMagicAcceleration =
+        Units.radiansToRotations(config.profileConstraintsRad.maxAcceleration);
+
     PhoenixUtils.tryUntilOk(5, () -> leaderTalon.getConfigurator().apply(talonConfig, 0.25));
     PhoenixUtils.tryUntilOk(5, () -> leaderTalon.setPosition(0, 0.25));
 
@@ -88,14 +100,13 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
       followerTalons[i] = new TalonFX(followerConfig.getFirst());
       final int j = i;
       PhoenixUtils.tryUntilOk(
-          5, () -> followerTalons[j].setControl(new Follower(leaderTalon.getDeviceID(), false)));
+          5,
+          () ->
+              followerTalons[j].setControl(
+                  new Follower(leaderTalon.getDeviceID(), followerConfig.getSecond())));
       followersAppliedVolts[i] = followerTalons[i].getMotorVoltage();
       followersCurrent[i] = followerTalons[i].getStatorCurrent();
       followersConnectedDebounce[i] = new Debouncer(0.5);
-    }
-
-    for (TalonFX follower : followerTalons) {
-      follower.setControl(new Follower(leaderTalon.getDeviceID(), false));
     }
 
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -142,6 +153,9 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     if (config.controlType == ControlType.VELOCITY) {
       double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
       leaderTalon.setControl(velocityRequest.withVelocity(velocityRotPerSec));
+    } else if (config.controlType == ControlType.PROFILED_VELOCITY) {
+      double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
+      leaderTalon.setControl(velocityMotionMagicRequest.withVelocity(velocityRotPerSec));
     } else {
       throw new IllegalStateException(
           "Cannot run velocity control: smart motor is configured for "
@@ -151,10 +165,13 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   }
 
   @Override
-  public void setPosition(double positionRad) {
+  public void runPosition(double positionRad) {
     if (config.controlType == ControlType.POSITION) {
       double positionRot = Units.radiansToRotations(positionRad);
-      leaderTalon.setControl(positionRequest.withVelocity(positionRot));
+      leaderTalon.setControl(positionRequest.withPosition(positionRot));
+    } else if (config.controlType == ControlType.PROFILED_POSITION) {
+      double positionRot = Units.radiansToRotations(positionRad);
+      leaderTalon.setControl(positionMotionMagicRequest.withPosition(positionRot));
     } else {
       throw new IllegalStateException(
           "Cannot run position control: smart motor is configured for "

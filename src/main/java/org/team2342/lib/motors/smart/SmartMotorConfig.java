@@ -1,5 +1,6 @@
 package org.team2342.lib.motors.smart;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
 public class SmartMotorConfig {
@@ -11,6 +12,8 @@ public class SmartMotorConfig {
   public double statorLimit = 0;
   public ControlType controlType = null;
   public IdleMode idleMode = IdleMode.COAST;
+
+  public Constraints profileConstraintsRad = new Constraints(0, 0);
 
   /**
    * This is meant for when you use WPILib Sim Classes that don't report directly in radians, such
@@ -55,6 +58,11 @@ public class SmartMotorConfig {
     return this;
   }
 
+  public SmartMotorConfig withProfileConstraintsRad(Constraints constraints) {
+    this.profileConstraintsRad = constraints;
+    return this;
+  }
+
   /**
    * This is meant for when you use WPILib Sim Classes that don't report directly in radians, such
    * as the ElevatorSim. For most use cases, this doesn't need to be changed
@@ -68,7 +76,11 @@ public class SmartMotorConfig {
     /** Velocity closed-loop control */
     VELOCITY,
     /** Position closed-loop control */
-    POSITION
+    POSITION,
+    /** Position control with velocity and acceleration limits */
+    PROFILED_POSITION,
+    /** Velocity control, with acceleration limits */
+    PROFILED_VELOCITY,
   }
 
   public enum IdleMode {
