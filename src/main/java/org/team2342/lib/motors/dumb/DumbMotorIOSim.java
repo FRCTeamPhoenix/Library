@@ -11,28 +11,28 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 
-public class DumbMotorIOSim implements DumbMotorIO{
-    private final LinearSystemSim<N2, N1, N2> sim;
-    private final DCMotor motor; 
+public class DumbMotorIOSim implements DumbMotorIO {
+  private final LinearSystemSim<N2, N1, N2> sim;
+  private final DCMotor motor;
 
-    public DumbMotorIOSim(DCMotor motor, LinearSystemSim<N2, N1, N2> sim) {
-        this.motor = motor;
-        this.sim = sim;
-    }
+  public DumbMotorIOSim(DCMotor motor, LinearSystemSim<N2, N1, N2> sim) {
+    this.motor = motor;
+    this.sim = sim;
+  }
 
-    @Override
-    public void updateInputs(DumbMotorIOInputs inputs) {
-        sim.update(0.02);
-        double inputVoltage = sim.getInput(0);
-        double current = motor.getCurrent(sim.getOutput(0), inputVoltage);
+  @Override
+  public void updateInputs(DumbMotorIOInputs inputs) {
+    sim.update(0.02);
+    double inputVoltage = sim.getInput(0);
+    double current = motor.getCurrent(sim.getOutput(0), inputVoltage);
 
-        inputs.connected = true;
-        inputs.appliedVolts = inputVoltage;
-        inputs.currentAmps = current;
-    }
+    inputs.connected = true;
+    inputs.appliedVolts = inputVoltage;
+    inputs.currentAmps = current;
+  }
 
-    @Override
-    public void runVoltage(double voltage) {
-        sim.setInput(voltage);
-    }
+  @Override
+  public void runVoltage(double voltage) {
+    sim.setInput(voltage);
+  }
 }
