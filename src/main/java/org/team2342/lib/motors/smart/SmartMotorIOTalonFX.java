@@ -23,6 +23,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
+import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.IdleMode;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
@@ -55,8 +56,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private final SmartMotorConfig config;
 
   @SuppressWarnings("unchecked") // lol type "safety"
-  public SmartMotorIOTalonFX(
-      int canID, SmartMotorConfig config, Pair<Integer, Boolean>... followers) {
+  public SmartMotorIOTalonFX(int canID, SmartMotorConfig config, FollowerConfig... followers) {
     this.config = config;
 
     leaderTalon = new TalonFX(canID);

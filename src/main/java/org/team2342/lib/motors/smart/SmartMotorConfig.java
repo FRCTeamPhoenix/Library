@@ -1,5 +1,6 @@
 package org.team2342.lib.motors.smart;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
@@ -88,5 +89,11 @@ public class SmartMotorConfig {
     BRAKE,
     /** Coast when no output is being applied */
     COAST
+  }
+
+  public class FollowerConfig extends Pair<Integer, Boolean> {
+    public FollowerConfig(Integer canID, Boolean inverted) {
+      super(canID, inverted);
+    }
   }
 }
