@@ -6,4 +6,17 @@
 
 package org.team2342.lib.motors.dumb;
 
-public interface DumbMotorIO {}
+import org.littletonrobotics.junction.AutoLog;
+
+public interface DumbMotorIO {
+  @AutoLog
+  public static class DumbMotorIOInputs {
+    public boolean connected = false;
+    public double appliedVolts = 0.0;
+    public double currentAmps = 0.0;
+  }
+
+  public default void updateInputs(DumbMotorIOInputs inputs) {}
+
+  public default void runVoltage(double voltage) {}
+}
