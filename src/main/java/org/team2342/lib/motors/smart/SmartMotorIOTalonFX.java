@@ -20,7 +20,6 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -28,9 +27,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.team2342.frc.util.PhoenixUtils;
+import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
-import org.team2342.lib.motors.smart.SmartMotorConfig.IdleMode;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
 public class SmartMotorIOTalonFX implements SmartMotorIO {
@@ -70,7 +69,9 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     // Configure Drive
     talonConfig = new TalonFXConfiguration();
     talonConfig.MotorOutput.NeutralMode =
-        config.idleMode == IdleMode.BRAKE ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        config.idleMode == MotorConfig.IdleMode.BRAKE
+            ? NeutralModeValue.Brake
+            : NeutralModeValue.Coast;
     talonConfig.Slot0 = Slot0Configs.from(config.pidffConfigs.asPhoenixSlotConfigs());
     talonConfig.Feedback.SensorToMechanismRatio = config.gearRatio;
     talonConfig.MotorOutput.Inverted =
@@ -102,14 +103,14 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     followersConnectedDebounce = new Debouncer[followers.length];
 
     for (int i = 0; i < followers.length; i++) {
-      Pair<Integer, Boolean> followerConfig = followers[i];
-      followerTalons[i] = new TalonFX(followerConfig.getFirst());
+      FollowerConfig followerConfig = followers[i];
+      followerTalons[i] = new TalonFX(followerConfig.canID());
       final int j = i;
       PhoenixUtils.tryUntilOk(
           5,
           () ->
               followerTalons[j].setControl(
-                  new Follower(leaderTalon.getDeviceID(), followerConfig.getSecond())));
+                  new Follower(leaderTalon.getDeviceID(), followerConfig.inverted())));
       followersAppliedVolts[i] = followerTalons[i].getMotorVoltage();
       followersCurrent[i] = followerTalons[i].getStatorCurrent();
       followersConnectedDebounce[i] = new Debouncer(0.5);

@@ -4,33 +4,33 @@
 // This source code is licensed under the MIT License.
 // See the LICENSE file in the root directory of this project.
 
-package org.team2342.lib.motors.dumb;
+package org.team2342.lib.motors;
 
-public class DumbMotorConfig {
+public class MotorConfig {
 
   public boolean motorInverted = false;
   public double supplyLimit = 0;
   public double statorLimit = 0;
   public IdleMode idleMode = IdleMode.COAST;
 
-  public DumbMotorConfig() {}
+  public MotorConfig() {}
 
-  public DumbMotorConfig withMotorInverted(boolean inverted) {
+  public MotorConfig withMotorInverted(boolean inverted) {
     motorInverted = inverted;
     return this;
   }
 
-  public DumbMotorConfig withSupplyCurrentLimit(double limit) {
+  public MotorConfig withSupplyCurrentLimit(double limit) {
     supplyLimit = limit;
     return this;
   }
 
-  public DumbMotorConfig withStatorCurrentLimit(double limit) {
+  public MotorConfig withStatorCurrentLimit(double limit) {
     statorLimit = limit;
     return this;
   }
 
-  public DumbMotorConfig withIdleMode(IdleMode mode) {
+  public MotorConfig withIdleMode(IdleMode mode) {
     idleMode = mode;
     return this;
   }
