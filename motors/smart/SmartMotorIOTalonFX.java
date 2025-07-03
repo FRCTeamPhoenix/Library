@@ -198,4 +198,10 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     talonConfig.Slot0 = Slot0Configs.from(config.pidffConfigs.asPhoenixSlotConfigs());
     PhoenixUtils.tryUntilOk(5, () -> leaderTalon.getConfigurator().apply(talonConfig, 0.25));
   }
+
+  @Override
+  public void setPosition(double positionRad) {
+    PhoenixUtils.tryUntilOk(
+        5, () -> leaderTalon.setPosition(Units.radiansToRotations(positionRad), 0.25));
+  }
 }

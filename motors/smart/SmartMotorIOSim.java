@@ -30,6 +30,7 @@ public class SmartMotorIOSim implements SmartMotorIO {
   private final DCMotor motor;
 
   private final int followers;
+  private double offset = 0;
 
   /**
    * Simulated Smart Motor class
@@ -79,7 +80,7 @@ public class SmartMotorIOSim implements SmartMotorIO {
     inputs.appliedVolts = new double[followers];
     inputs.currentAmps = new double[followers];
 
-    inputs.positionRad = sim.getOutput(0) / config.simRatio;
+    inputs.positionRad = (sim.getOutput(0) / config.simRatio) + offset;
     inputs.velocityRadPerSec = sim.getOutput(1) / config.simRatio;
 
     for (int i = 0; i < followers + 1; i++) {
@@ -143,7 +144,11 @@ public class SmartMotorIOSim implements SmartMotorIO {
   public void reconfigurePIDFF(PIDFFConfigs configs) {
     this.config.pidffConfigs = configs;
     pid.setPID(configs.kP, configs.kI, configs.kD);
-    ;
     ff.setConfigs(configs);
+  }
+
+  @Override
+  public void setPosition(double positionRad) {
+    offset = positionRad - (sim.getOutput(0) / config.simRatio);
   }
 }
