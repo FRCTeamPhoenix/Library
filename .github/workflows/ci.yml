@@ -29,3 +29,28 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
             commit_message: Auto-format code
+  submodule:
+    runs-on: ubuntu-latest
+    needs: [build, spotless]
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract
+        env:
+          SRC_FOLDER_PATH: 'src/main/java/org/team2342/lib'
+          TARGET_BRANCH: 'submodule'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git fetch origin "$TARGET_BRANCH"
+          git checkout "$TARGET_BRANCH"
+
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          git checkout ${GITHUB_REF##*/} -- "$SRC_FOLDER_PATH"
+          mv "$SRC_FOLDER_PATH"/* .
+          rm -rf src/
+
+          git add -A
+          git diff-index --quiet HEAD || git commit -am "Extract library"
+          git push origin "$TARGET_BRANCH"
