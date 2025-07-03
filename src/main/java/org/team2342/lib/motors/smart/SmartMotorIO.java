@@ -29,4 +29,6 @@ public interface SmartMotorIO {
   public default void runVoltage(double voltage) {}
 
   public default void reconfigurePIDFF(PIDFFConfigs configs) {}
+
+  public default void setPosition(double positionRad) {}
 }
