@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.BOT2342 }}
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -28,6 +29,7 @@ jobs:
       - run: ./gradlew :spotlessApply
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+            commit_author: Phoenix2342-Bot <github@team2342.org>
             commit_message: Auto-format code
   submodule:
     runs-on: ubuntu-latest
@@ -35,13 +37,15 @@ jobs:
     if: success()
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT2342 }}
       - name: Extract
         env:
           SRC_FOLDER_PATH: 'src/main/java/org/team2342/lib'
           TARGET_BRANCH: 'submodule'
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'Phoenix2342-Bot'
+          git config user.email 'github@team2342.org'
 
           git fetch origin "$TARGET_BRANCH"
           git checkout "$TARGET_BRANCH"
