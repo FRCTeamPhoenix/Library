@@ -150,6 +150,5 @@ public class SmartMotorIOSim implements SmartMotorIO {
   @Override
   public void setPosition(double positionRad) {
     offset = positionRad - (sim.getOutput(0) / config.simRatio);
-    // testchange
   }
 }
