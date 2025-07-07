@@ -55,6 +55,30 @@ public class SmartMotorConfig extends MotorConfig {
     return this;
   }
 
+  @Override
+  public SmartMotorConfig withMotorInverted(boolean inverted) {
+    motorInverted = inverted;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withSupplyCurrentLimit(double limit) {
+    supplyLimit = limit;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withStatorCurrentLimit(double limit) {
+    statorLimit = limit;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withIdleMode(IdleMode mode) {
+    idleMode = mode;
+    return this;
+  }
+
   public enum ControlType {
     /** Velocity closed-loop control */
     VELOCITY,
