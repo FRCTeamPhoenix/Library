@@ -6,19 +6,15 @@
 
 package org.team2342.lib.motors.smart;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
-public class SmartMotorConfig {
+public class SmartMotorConfig extends MotorConfig {
 
   public PIDFFConfigs pidffConfigs = new PIDFFConfigs();
   public double gearRatio = 1;
-  public boolean motorInverted = false;
-  public double supplyLimit = 0;
-  public double statorLimit = 0;
   public ControlType controlType = null;
-  public IdleMode idleMode = IdleMode.COAST;
 
   public Constraints profileConstraintsRad = new Constraints(0, 0);
 
@@ -40,28 +36,8 @@ public class SmartMotorConfig {
     return this;
   }
 
-  public SmartMotorConfig withMotorInverted(boolean inverted) {
-    motorInverted = inverted;
-    return this;
-  }
-
-  public SmartMotorConfig withSupplyCurrentLimit(double limit) {
-    supplyLimit = limit;
-    return this;
-  }
-
-  public SmartMotorConfig withStatorCurrentLimit(double limit) {
-    statorLimit = limit;
-    return this;
-  }
-
   public SmartMotorConfig withControlType(ControlType type) {
     controlType = type;
-    return this;
-  }
-
-  public SmartMotorConfig withIdleMode(IdleMode mode) {
-    idleMode = mode;
     return this;
   }
 
@@ -79,6 +55,30 @@ public class SmartMotorConfig {
     return this;
   }
 
+  @Override
+  public SmartMotorConfig withMotorInverted(boolean inverted) {
+    motorInverted = inverted;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withSupplyCurrentLimit(double limit) {
+    supplyLimit = limit;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withStatorCurrentLimit(double limit) {
+    statorLimit = limit;
+    return this;
+  }
+
+  @Override
+  public SmartMotorConfig withIdleMode(IdleMode mode) {
+    idleMode = mode;
+    return this;
+  }
+
   public enum ControlType {
     /** Velocity closed-loop control */
     VELOCITY,
@@ -90,16 +90,5 @@ public class SmartMotorConfig {
     PROFILED_VELOCITY,
   }
 
-  public enum IdleMode {
-    /** Go into brake mode when no output is being applied */
-    BRAKE,
-    /** Coast when no output is being applied */
-    COAST
-  }
-
-  public class FollowerConfig extends Pair<Integer, Boolean> {
-    public FollowerConfig(Integer canID, Boolean inverted) {
-      super(canID, inverted);
-    }
-  }
+  public record FollowerConfig(int canID, boolean inverted) {}
 }

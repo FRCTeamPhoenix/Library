@@ -18,6 +18,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.team2342.frc.util.PhoenixUtils;
+import org.team2342.lib.motors.MotorConfig;
 
 /**
  * Implementation of DumbMotorIO for a TalonFX motor controller Handles configuration, input
@@ -38,7 +39,7 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
    * @param canID The CAN ID of the TalonFX motor controller
    * @param config The configuration settings for the motor
    */
-  public DumbMotorIOTalonFX(int canID, DumbMotorConfig config) {
+  public DumbMotorIOTalonFX(int canID, MotorConfig config) {
     talon = new TalonFX(canID);
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
@@ -53,7 +54,7 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
             : InvertedValue.CounterClockwise_Positive;
 
     talonConfig.MotorOutput.NeutralMode =
-        config.idleMode == DumbMotorConfig.IdleMode.BRAKE
+        config.idleMode == MotorConfig.IdleMode.BRAKE
             ? NeutralModeValue.Brake
             : NeutralModeValue.Coast;
 
