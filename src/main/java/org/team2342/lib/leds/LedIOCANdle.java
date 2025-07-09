@@ -43,7 +43,8 @@ public class LedIOCANdle implements LedIO {
 
   /**
    * Called periodically to update the LED input data.
-   * @param inputs The LedIOInputs object to update 
+   *
+   * @param inputs The LedIOInputs object to update
    */
   @Override
   public void updateInputs(LedIOInputs inputs) {
