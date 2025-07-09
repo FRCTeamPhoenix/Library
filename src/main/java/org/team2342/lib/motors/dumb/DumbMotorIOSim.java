@@ -11,15 +11,27 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 
+/** Simulation implementation of DumbMotorIO Uses a LinearSystemSim to simulate */
 public class DumbMotorIOSim implements DumbMotorIO {
   private final LinearSystemSim<N2, N1, N2> sim;
   private final DCMotor motor;
 
+  /**
+   * Constructs a new DumbMotorIOSim instance.
+   *
+   * @param motor The DC motor model to simulate
+   * @param sim The linear system simulation representing the motor's behavior
+   */
   public DumbMotorIOSim(DCMotor motor, LinearSystemSim<N2, N1, N2> sim) {
     this.motor = motor;
     this.sim = sim;
   }
 
+  /**
+   * Updates the inputs for the motor controller
+   *
+   * @param inputs The inputs object to update with current values
+   */
   @Override
   public void updateInputs(DumbMotorIOInputs inputs) {
     sim.update(0.02);
@@ -31,6 +43,11 @@ public class DumbMotorIOSim implements DumbMotorIO {
     inputs.currentAmps = current;
   }
 
+  /**
+   * Sets the motor to run at the specified voltage
+   *
+   * @param voltage The desired voltage to apply to the motor
+   */
   @Override
   public void runVoltage(double voltage) {
     sim.setInput(voltage);

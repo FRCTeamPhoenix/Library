@@ -19,6 +19,10 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.team2342.frc.util.PhoenixUtils;
 
+/**
+ * Implementation of DumbMotorIO for a TalonFX motor controller Handles configuration, input
+ * updates, and voltage control for the motor
+ */
 public class DumbMotorIOTalonFX implements DumbMotorIO {
   private final TalonFX talon;
 
@@ -28,6 +32,12 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
   private final VoltageOut voltageRequest = new VoltageOut(0);
   private final Debouncer connectedDebouncer = new Debouncer(0.5);
 
+  /**
+   * Constructor to configure the TalonFX motor controller
+   *
+   * @param canID The CAN ID of the TalonFX motor controller
+   * @param config The configuration settings for the motor
+   */
   public DumbMotorIOTalonFX(int canID, DumbMotorConfig config) {
     talon = new TalonFX(canID);
 
@@ -57,6 +67,11 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
     PhoenixUtils.tryUntilOk(5, () -> ParentDevice.optimizeBusUtilizationForAll(talon));
   }
 
+  /**
+   * Updates the inputs for the motor controller
+   *
+   * @param inputs The inputs object to update with current values
+   */
   @Override
   public void updateInputs(DumbMotorIOInputs inputs) {
     inputs.connected =
@@ -65,6 +80,11 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
     inputs.currentAmps = current.getValueAsDouble();
   }
 
+  /**
+   * Sets the motor to run at the specified voltage
+   *
+   * @param voltage The desired voltage to apply to the motor
+   */
   @Override
   public void runVoltage(double voltage) {
     talon.setControl(voltageRequest.withOutput(voltage));
