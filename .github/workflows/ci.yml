@@ -29,6 +29,7 @@ jobs:
       - run: ./gradlew :spotlessApply
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+            commit_user_name: Phoenix2342-Bot
             commit_author: Phoenix2342-Bot <github@team2342.org>
             commit_message: Auto-format code
   submodule:
