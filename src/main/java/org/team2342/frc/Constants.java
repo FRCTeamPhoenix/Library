@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import org.team2342.lib.util.AllianceUtils;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.SIM;
@@ -49,8 +50,10 @@ public final class Constants {
             new Rotation3d(0, 0.0, Units.degreesToRadians(35)));
 
     // The layout of the AprilTags on the field
-    public static final AprilTagFieldLayout TAG_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    static {
+      AllianceUtils.setFieldLayout(
+          AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark));
+    }
 
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;

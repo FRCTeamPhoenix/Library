@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.PhotonCamera;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {
@@ -83,7 +83,7 @@ public class VisionIOPhoton implements VisionIO {
         var target = result.targets.get(0);
 
         // Calculate robot pose
-        var tagPose = VisionConstants.TAG_LAYOUT.getTagPose(target.fiducialId);
+        var tagPose = AllianceUtils.getFieldLayout().getTagPose(target.fiducialId);
         if (tagPose.isPresent()) {
           Transform3d fieldToTarget =
               new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());

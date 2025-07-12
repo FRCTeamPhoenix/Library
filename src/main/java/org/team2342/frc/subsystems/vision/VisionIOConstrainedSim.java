@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 
 public class VisionIOConstrainedSim extends VisionIOPhotonConstrained {
   private static VisionSystemSim visionSim;
@@ -44,13 +44,13 @@ public class VisionIOConstrainedSim extends VisionIOPhotonConstrained {
     // Initialize vision sim
     if (visionSim == null) {
       visionSim = new VisionSystemSim("main");
-      visionSim.addAprilTags(VisionConstants.TAG_LAYOUT);
+      visionSim.addAprilTags(AllianceUtils.getFieldLayout());
     }
 
     // Add sim camera
     var cameraProperties = new SimCameraProperties();
     cameraProperties.setCalibration(800, 600, cameraMatrix, distCoeffs);
-    cameraSim = new PhotonCameraSim(camera, cameraProperties, VisionConstants.TAG_LAYOUT);
+    cameraSim = new PhotonCameraSim(camera, cameraProperties, AllianceUtils.getFieldLayout());
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 
