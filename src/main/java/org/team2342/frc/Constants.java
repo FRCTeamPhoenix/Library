@@ -8,15 +8,9 @@ package org.team2342.frc;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -35,11 +29,8 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String LOW_BACK_CAMERA_NAME = "back_arducam";
     public static final String LEFT_CAMERA_NAME = "left_arducam";
     public static final String RIGHT_CAMERA_NAME = "right_arducam";
-
-    public static final String LIMELIGHT_NAME = "limelight";
 
     public static final Transform3d FRONT_LEFT_TRANSFORM =
         new Transform3d(
@@ -57,43 +48,9 @@ public final class Constants {
                 Units.inchesToMeters(12.125)),
             new Rotation3d(0, 0.0, Units.degreesToRadians(35)));
 
-    public static final Transform3d LOW_BACK_TRANSFORM =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(-12.73),
-                Units.inchesToMeters(11.286),
-                Units.inchesToMeters(7.89)),
-            new Rotation3d(0, Units.degreesToRadians(-25), Units.degreesToRadians(180)));
-
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
         AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-
-    public static final Matrix<N3, N3> cameraMatrix =
-        MatBuilder.fill(
-            Nat.N3(),
-            Nat.N3(),
-            680.3518437477294,
-            0.0,
-            393.34429560711095,
-            0.0,
-            681.5148816063638,
-            304.5111454902841,
-            0.0,
-            0.0,
-            1.0);
-    public static final Matrix<N8, N1> distCoeffs =
-        MatBuilder.fill(
-            Nat.N8(),
-            Nat.N1(),
-            0.04913279370181987,
-            -0.08080811604393605,
-            0.0012713783068216294,
-            -9.086414571538155E-4,
-            0.03813939624862079,
-            -0.002083234186226857,
-            0.003667258530403619,
-            -0.0014957440403602612);
 
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;

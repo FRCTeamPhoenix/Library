@@ -68,9 +68,6 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
 
-  private Rotation2d visionGyroOffset = new Rotation2d();
-  private boolean offsetDone = false;
-
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -349,20 +346,6 @@ public class Drive extends SubsystemBase {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
-  }
-
-  public Rotation2d getVisionGyroHeading() {
-    if (offsetDone) {
-      Logger.recordOutput("Vision/Constrained/Heading", rawGyroRotation.minus(visionGyroOffset));
-      return rawGyroRotation.minus(visionGyroOffset);
-    }
-    return null;
-  }
-
-  public void setVisionGyroOffset() {
-    visionGyroOffset = getRotation().minus(rawGyroRotation);
-    offsetDone = true;
-    Logger.recordOutput("Vision/Constrained/Offset", visionGyroOffset);
   }
 
   /** Adds a new timestamped vision measurement. */

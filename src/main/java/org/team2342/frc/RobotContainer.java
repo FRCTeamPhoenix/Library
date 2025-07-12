@@ -37,7 +37,6 @@ import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
-import org.team2342.frc.subsystems.vision.VisionIOConstrainedSim;
 import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 
@@ -83,13 +82,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOConstrainedSim(
+                new VisionIOSim(
                     VisionConstants.RIGHT_CAMERA_NAME,
                     VisionConstants.FRONT_RIGHT_TRANSFORM,
-                    drive::getVisionGyroHeading,
-                    drive::getRawOdometryPose,
-                    VisionConstants.cameraMatrix,
-                    VisionConstants.distCoeffs),
+                    drive::getRawOdometryPose),
                 new VisionIOSim(
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
@@ -182,12 +178,6 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Print Encoder Zeros",
         Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));
-    SmartDashboard.putData(
-        "Set Vision Gyro Offset",
-        Commands.runOnce(() -> drive.setVisionGyroOffset()).ignoringDisable(true));
-    SmartDashboard.putData(
-        "Toggle Constrained PhotonVision",
-        Commands.runOnce(() -> vision.toggleHeadingsFree()).ignoringDisable(true));
   }
 
   public void updateAlerts() {
