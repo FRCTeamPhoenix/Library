@@ -8,6 +8,9 @@ package org.team2342.frc.util;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import java.util.function.Supplier;
 
 public class PhoenixUtils {
@@ -46,5 +49,12 @@ public class PhoenixUtils {
   public static void refreshSignals() {
     // Check to make sure there are signals to refresh
     if (registeredSignals.length > 0) BaseStatusSignal.refreshAll(registeredSignals);
+  }
+
+  public static TalonFXConfiguration remoteCancoder(CANcoder cancoder) {
+    var config = new TalonFXConfiguration();
+    config.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    return config;
   }
 }

@@ -61,13 +61,17 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private final SmartMotorConfig config;
 
   @SuppressWarnings("unchecked") // lol type "safety"
-  public SmartMotorIOTalonFX(int canID, SmartMotorConfig config, FollowerConfig... followers) {
+  public SmartMotorIOTalonFX(
+      int canID,
+      SmartMotorConfig config,
+      TalonFXConfiguration baseTalonConfig,
+      FollowerConfig... followers) {
     this.config = config;
 
     leaderTalon = new TalonFX(canID);
 
     // Configure Drive
-    talonConfig = new TalonFXConfiguration();
+    talonConfig = baseTalonConfig;
     talonConfig.MotorOutput.NeutralMode =
         config.idleMode == MotorConfig.IdleMode.BRAKE
             ? NeutralModeValue.Brake
@@ -129,6 +133,10 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     PhoenixUtils.registerSignals(leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent);
     PhoenixUtils.registerSignals(followersAppliedVolts);
     PhoenixUtils.registerSignals(followersCurrent);
+  }
+
+  public SmartMotorIOTalonFX(int canID, SmartMotorConfig config, FollowerConfig... followers) {
+    this(canID, config, new TalonFXConfiguration(), followers);
   }
 
   @Override
