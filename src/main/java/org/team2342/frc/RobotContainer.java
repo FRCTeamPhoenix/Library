@@ -37,7 +37,6 @@ import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
-import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 
 public class RobotContainer {
@@ -60,13 +59,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[1]),
                 new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[2]),
                 new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[3]));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhoton(
-                    VisionConstants.RIGHT_CAMERA_NAME, VisionConstants.FRONT_RIGHT_TRANSFORM),
-                new VisionIOPhoton(
-                    VisionConstants.LEFT_CAMERA_NAME, VisionConstants.FRONT_LEFT_TRANSFORM));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
