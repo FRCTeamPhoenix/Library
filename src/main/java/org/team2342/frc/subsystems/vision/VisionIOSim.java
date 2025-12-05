@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {
@@ -35,12 +35,12 @@ public class VisionIOSim extends VisionIOPhoton {
     // Initialize vision sim
     if (visionSim == null) {
       visionSim = new VisionSystemSim("main");
-      visionSim.addAprilTags(VisionConstants.TAG_LAYOUT);
+      visionSim.addAprilTags(AllianceUtils.getFieldLayout());
     }
 
     // Add sim camera
     var cameraProperties = new SimCameraProperties();
-    cameraSim = new PhotonCameraSim(camera, cameraProperties, VisionConstants.TAG_LAYOUT);
+    cameraSim = new PhotonCameraSim(camera, cameraProperties, AllianceUtils.getFieldLayout());
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 

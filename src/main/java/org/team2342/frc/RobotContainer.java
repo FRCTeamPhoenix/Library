@@ -38,6 +38,7 @@ import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
+import org.team2342.lib.util.AllianceUtils;
 
 public class RobotContainer {
   @Getter private final Drive drive;
@@ -136,7 +137,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drive,
-                VisionConstants.TAG_LAYOUT
+                AllianceUtils.getFieldLayout()
                     .getTagPose(7)
                     .orElse(new Pose3d())
                     .toPose2d()
