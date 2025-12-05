@@ -7,7 +7,6 @@
 
 package org.team2342.frc.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,9 +43,7 @@ public class DriveCommands {
   private DriveCommands() {}
 
   public static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
-    // Apply deadband
-    double linearMagnitude =
-        MathUtil.applyDeadband(Math.hypot(x, y), DriveConstants.CONTROLLER_DEADBAND);
+    double linearMagnitude = Math.hypot(x, y);
     Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
 
     // Square magnitude for more precise control
@@ -72,10 +69,7 @@ public class DriveCommands {
           Translation2d linearVelocity =
               getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-          // Apply rotation deadband
-          double omega =
-              MathUtil.applyDeadband(
-                  omegaSupplier.getAsDouble(), DriveConstants.CONTROLLER_DEADBAND);
+          double omega = omegaSupplier.getAsDouble();
 
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
