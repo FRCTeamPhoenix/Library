@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.Getter;
 import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
@@ -63,10 +64,17 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
                 new VisionIOPhoton(
-                    VisionConstants.RIGHT_CAMERA_NAME, VisionConstants.FRONT_RIGHT_TRANSFORM),
+                    VisionConstants.RIGHT_CAMERA_NAME,
+                    VisionConstants.PARAMETERS,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    VisionConstants.FRONT_RIGHT_TRANSFORM),
                 new VisionIOPhoton(
-                    VisionConstants.LEFT_CAMERA_NAME, VisionConstants.FRONT_LEFT_TRANSFORM));
+                    VisionConstants.LEFT_CAMERA_NAME,
+                    VisionConstants.PARAMETERS,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    VisionConstants.FRONT_LEFT_TRANSFORM));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -82,12 +90,17 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
                 new VisionIOSim(
                     VisionConstants.RIGHT_CAMERA_NAME,
+                    VisionConstants.PARAMETERS,
+                    PoseStrategy.PNP_DISTANCE_TRIG_SOLVE,
                     VisionConstants.FRONT_RIGHT_TRANSFORM,
                     drive::getRawOdometryPose),
                 new VisionIOSim(
                     VisionConstants.LEFT_CAMERA_NAME,
+                    VisionConstants.PARAMETERS,
+                    PoseStrategy.PNP_DISTANCE_TRIG_SOLVE,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
 
@@ -101,7 +114,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
+                new VisionIO() {},
+                new VisionIO() {});
 
         break;
     }

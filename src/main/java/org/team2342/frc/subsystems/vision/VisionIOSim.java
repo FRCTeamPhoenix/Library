@@ -8,12 +8,15 @@
 package org.team2342.frc.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {
@@ -28,8 +31,13 @@ public class VisionIOSim extends VisionIOPhoton {
    * @param name The name of the camera.
    * @param poseSupplier Supplier for the robot pose to use in simulation.
    */
-  public VisionIOSim(String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
-    super(name, robotToCamera);
+  public VisionIOSim(
+      String name,
+      CameraParameters parameters,
+      PoseStrategy poseStrategy,
+      Transform3d robotToCamera,
+      Supplier<Pose2d> poseSupplier) {
+    super(name, parameters, poseStrategy, robotToCamera);
     this.poseSupplier = poseSupplier;
 
     // Initialize vision sim
@@ -45,8 +53,8 @@ public class VisionIOSim extends VisionIOPhoton {
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs) {
+  public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
     visionSim.update(poseSupplier.get());
-    super.updateInputs(inputs);
+    super.updateInputs(inputs, heading);
   }
 }

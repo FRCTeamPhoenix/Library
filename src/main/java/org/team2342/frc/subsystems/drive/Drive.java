@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -49,6 +50,7 @@ import org.team2342.lib.util.LocalADStarAK;
 import org.team2342.lib.util.SwerveSetpointGenerator;
 import org.team2342.lib.util.SwerveSetpointGenerator.ModuleLimits;
 import org.team2342.lib.util.SwerveSetpointGenerator.SwerveSetpoint;
+import org.team2342.lib.util.Timestamped;
 
 public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
@@ -355,6 +357,10 @@ public class Drive extends SubsystemBase {
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
+  public Timestamped<Rotation2d> getTimestampedHeading() {
+    return new Timestamped<Rotation2d>(getRotation(), Timer.getFPGATimestamp());
   }
 
   /** Returns an array of module translations. */

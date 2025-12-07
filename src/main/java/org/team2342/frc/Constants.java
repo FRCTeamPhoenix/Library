@@ -8,10 +8,19 @@ package org.team2342.frc;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
+import java.util.Optional;
+import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
+import org.team2342.frc.subsystems.vision.VisionIOPhoton.CameraParameters;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.SIM;
@@ -50,8 +59,37 @@ public final class Constants {
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
+    public static final Matrix<N3, N3> cameraMatrix =
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N3(),
+            680.3518437477294,
+            0.0,
+            393.34429560711095,
+            0.0,
+            681.5148816063638,
+            304.5111454902841,
+            0.0,
+            0.0,
+            1.0);
+    public static final Matrix<N8, N1> distCoeffs =
+        MatBuilder.fill(
+            Nat.N8(),
+            Nat.N1(),
+            0.04913279370181987,
+            -0.08080811604393605,
+            0.0012713783068216294,
+            -9.086414571538155E-4,
+            0.03813939624862079,
+            -0.002083234186226857,
+            0.003667258530403619,
+            -0.0014957440403602612);
+    public static final CameraParameters PARAMETERS =
+        new CameraParameters(cameraMatrix, distCoeffs);
+    public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
+        Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;
     public static final double MAX_Z_ERROR = 0.75;
