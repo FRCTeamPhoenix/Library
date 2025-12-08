@@ -22,18 +22,17 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.team2342.frc.Constants;
-import org.team2342.frc.subsystems.vision.Vision.CameraParameters;
+import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {
   protected final PhotonCamera camera;
+  protected final CameraParameters parameters;
   protected final Transform3d robotToCamera;
   private final PhotonPoseEstimator poseEstimator;
 
   private final PoseStrategy primaryStrategy;
-
-  private final CameraParameters parameters;
 
   private boolean hasEnabled = false;
 
@@ -45,12 +44,11 @@ public class VisionIOPhoton implements VisionIO {
    * @param robotToCamera The 3D position of the camera relative to the robot.
    */
   public VisionIOPhoton(
-      String name,
       CameraParameters parameters,
       PoseStrategy primaryStrategy,
       PoseStrategy disabledStrategy,
       Transform3d robotToCamera) {
-    camera = new PhotonCamera(name);
+    camera = new PhotonCamera(parameters.getCameraName());
     this.robotToCamera = robotToCamera;
     this.parameters = parameters;
     poseEstimator =
@@ -85,8 +83,8 @@ public class VisionIOPhoton implements VisionIO {
       Optional<EstimatedRobotPose> optional =
           poseEstimator.update(
               result,
-              Optional.ofNullable(parameters.cameraMatrix()),
-              Optional.ofNullable(parameters.distCoeffs()),
+              Optional.of(parameters.getCameraMatrix()),
+              Optional.of(parameters.getDistCoeffs()),
               Constants.VisionConstants.CONSTRAINED_SOLVEPNP_PARAMETERS);
       if (optional.isEmpty()) {
         continue;

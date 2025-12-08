@@ -15,7 +15,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.frc.Constants.VisionConstants;
-import org.team2342.frc.subsystems.vision.Vision.CameraParameters;
+import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
@@ -32,13 +32,12 @@ public class VisionIOSim extends VisionIOPhoton {
    * @param poseSupplier Supplier for the robot pose to use in simulation.
    */
   public VisionIOSim(
-      String name,
       CameraParameters parameters,
       PoseStrategy primaryStrategy,
       PoseStrategy disabledStrategy,
       Transform3d robotToCamera,
       Supplier<Pose2d> poseSupplier) {
-    super(name, parameters, primaryStrategy, disabledStrategy, robotToCamera);
+    super(parameters, primaryStrategy, disabledStrategy, robotToCamera);
     this.poseSupplier = poseSupplier;
 
     if (visionSim == null) {
@@ -49,12 +48,12 @@ public class VisionIOSim extends VisionIOPhoton {
     // Add sim camera
     SimCameraProperties properties = new SimCameraProperties();
     properties.setCalibration(
-        parameters.resWidth(),
-        parameters.resHeight(),
-        parameters.cameraMatrix(),
-        parameters.distCoeffs());
-    properties.setCalibError(0.02, 0.05);
-    properties.setFPS(60);
+        parameters.getResWidth(),
+        parameters.getResHeight(),
+        parameters.getCameraMatrix(),
+        parameters.getDistCoeffs());
+    properties.setCalibError(parameters.getAvgErrorPx(), parameters.getErrorStdDevPx());
+    properties.setFPS(60.0);
     properties.setAvgLatencyMs(35);
     properties.setLatencyStdDevMs(7);
 

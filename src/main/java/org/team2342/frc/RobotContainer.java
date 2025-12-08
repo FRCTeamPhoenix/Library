@@ -66,14 +66,12 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
                 new VisionIOPhoton(
-                    VisionConstants.RIGHT_CAMERA_NAME,
-                    VisionConstants.PARAMETERS,
+                    VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_RIGHT_TRANSFORM),
                 new VisionIOPhoton(
-                    VisionConstants.LEFT_CAMERA_NAME,
-                    VisionConstants.PARAMETERS,
+                    VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_LEFT_TRANSFORM));
@@ -94,15 +92,13 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
                 new VisionIOSim(
-                    VisionConstants.RIGHT_CAMERA_NAME,
-                    VisionConstants.PARAMETERS,
+                    VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_RIGHT_TRANSFORM,
                     drive::getRawOdometryPose),
                 new VisionIOSim(
-                    VisionConstants.LEFT_CAMERA_NAME,
-                    VisionConstants.PARAMETERS,
+                    VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
