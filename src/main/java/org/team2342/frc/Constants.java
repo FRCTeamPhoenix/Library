@@ -90,7 +90,7 @@ public final class Constants {
         new CameraParameters(800, 600, cameraMatrix, distCoeffs);
     public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
         Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
-        
+
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;
     public static final double MAX_Z_ERROR = 0.75;

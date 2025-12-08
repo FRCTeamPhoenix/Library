@@ -7,10 +7,12 @@
 package org.team2342.lib.util;
 
 import java.util.function.Supplier;
+import lombok.Getter;
 
 public class Timestamped<T> implements Supplier<T> {
   private T object;
-  private double timestamp;
+
+  @Getter private double timestamp;
 
   public Timestamped(T object, double timestamp) {
     this.object = object;
@@ -20,9 +22,5 @@ public class Timestamped<T> implements Supplier<T> {
   @Override
   public T get() {
     return object;
-  }
-
-  public double getTimestamp() {
-    return timestamp;
   }
 }
