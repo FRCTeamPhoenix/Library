@@ -216,11 +216,8 @@ spotless {
             include "**/*.java"
             exclude "**/build/**", "**/build-*/**"
             exclude "src/main/java/org/team2342/frc/commands/DriveCommands.java"
-            exclude "src/main/java/org/team2342/frc/commands/DriveCommands.java"
             exclude "src/main/java/org/team2342/frc/subsystems/vision/Vision.java"
             exclude "src/main/java/org/team2342/frc/subsystems/vision/VisionIO.java"
-            exclude "src/main/java/org/team2342/frc/subsystems/vision/VisionIOSim.java"
-            exclude "src/main/java/org/team2342/frc/subsystems/vision/VisionIOPhoton.java"
         }
 
         licenseHeader("// Copyright (c) $currentYear Team 2342\n// https://github.com/FRCTeamPhoenix\n//\n// This source code is licensed under the MIT License.\n// See the LICENSE file in the root directory of this project.\n\n", "package ") // Your actual license header

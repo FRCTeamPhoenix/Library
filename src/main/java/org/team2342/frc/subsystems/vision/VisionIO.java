@@ -42,6 +42,4 @@ public interface VisionIO {
   }
 
   public default void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {}
-
-  public default void toggleHeadingFree() {}
 }

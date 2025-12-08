@@ -69,11 +69,13 @@ public class RobotContainer {
                     VisionConstants.RIGHT_CAMERA_NAME,
                     VisionConstants.PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_RIGHT_TRANSFORM),
                 new VisionIOPhoton(
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_LEFT_TRANSFORM));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
@@ -94,13 +96,15 @@ public class RobotContainer {
                 new VisionIOSim(
                     VisionConstants.RIGHT_CAMERA_NAME,
                     VisionConstants.PARAMETERS,
-                    PoseStrategy.PNP_DISTANCE_TRIG_SOLVE,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_RIGHT_TRANSFORM,
                     drive::getRawOdometryPose),
                 new VisionIOSim(
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.PARAMETERS,
-                    PoseStrategy.PNP_DISTANCE_TRIG_SOLVE,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
 
@@ -128,6 +132,10 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
+
+    SmartDashboard.putData(
+        "Calculate Vision Heading Offset",
+        Commands.runOnce(() -> drive.calculateVisionHeadingOffset()));
 
     if (Constants.TUNING) setupDevelopmentRoutines();
 

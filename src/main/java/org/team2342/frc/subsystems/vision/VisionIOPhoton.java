@@ -1,32 +1,28 @@
-// Copyright (c) 2021-2025 Littleton Robotics
-// http://github.com/Mechanical-Advantage
+// Copyright (c) 2025 Team 2342
+// https://github.com/FRCTeamPhoenix
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the AdvantageKit-License file
-// at the root directory of this project.
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
 
 package org.team2342.frc.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N8;
+import edu.wpi.first.wpilibj.DriverStation;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.team2342.frc.Constants;
+import org.team2342.frc.subsystems.vision.Vision.CameraParameters;
 import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for real PhotonVision hardware. */
@@ -34,7 +30,12 @@ public class VisionIOPhoton implements VisionIO {
   protected final PhotonCamera camera;
   protected final Transform3d robotToCamera;
   private final PhotonPoseEstimator poseEstimator;
+
+  private final PoseStrategy primaryStrategy;
+
   private final CameraParameters parameters;
+
+  private boolean hasEnabled = false;
 
   // TODO: AllianceUtils
   /**
@@ -46,7 +47,8 @@ public class VisionIOPhoton implements VisionIO {
   public VisionIOPhoton(
       String name,
       CameraParameters parameters,
-      PoseStrategy poseStrategy,
+      PoseStrategy primaryStrategy,
+      PoseStrategy disabledStrategy,
       Transform3d robotToCamera) {
     camera = new PhotonCamera(name);
     this.robotToCamera = robotToCamera;
@@ -54,13 +56,20 @@ public class VisionIOPhoton implements VisionIO {
     poseEstimator =
         new PhotonPoseEstimator(
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
-            poseStrategy,
+            disabledStrategy,
             robotToCamera);
-    poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+    this.primaryStrategy = primaryStrategy;
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
+    if (!hasEnabled) {
+      if (DriverStation.isEnabled()) {
+        poseEstimator.setPrimaryStrategy(primaryStrategy);
+        hasEnabled = true;
+      }
+    }
+
     inputs.connected = camera.isConnected();
 
     poseEstimator.addHeadingData(heading.getTimestamp(), heading.get());
@@ -76,15 +85,14 @@ public class VisionIOPhoton implements VisionIO {
       Optional<EstimatedRobotPose> optional =
           poseEstimator.update(
               result,
-              Optional.ofNullable(parameters.cameraMatrix),
-              Optional.ofNullable(parameters.distCoeffs),
+              Optional.ofNullable(parameters.cameraMatrix()),
+              Optional.ofNullable(parameters.distCoeffs()),
               Constants.VisionConstants.CONSTRAINED_SOLVEPNP_PARAMETERS);
       if (optional.isEmpty()) {
         continue;
       }
 
       EstimatedRobotPose poseEstimate = optional.get();
-      Logger.recordOutput("Vision/Camerui", poseEstimate.strategy);
 
       double distance = 0;
       double ambiguity = 0;
@@ -133,6 +141,4 @@ public class VisionIOPhoton implements VisionIO {
       inputs.tagIds[i++] = id;
     }
   }
-
-  public record CameraParameters(Matrix<N3, N3> cameraMatrix, Matrix<N8, N1> distCoeffs) {}
 }

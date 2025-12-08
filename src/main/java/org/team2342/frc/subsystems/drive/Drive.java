@@ -70,6 +70,9 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
 
+  @AutoLogOutput(key = "Vision/Heading/Offset")
+  private Rotation2d visionHeadingOffset = new Rotation2d();
+
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -360,7 +363,12 @@ public class Drive extends SubsystemBase {
   }
 
   public Timestamped<Rotation2d> getTimestampedHeading() {
-    return new Timestamped<Rotation2d>(getRotation(), Timer.getFPGATimestamp());
+    return new Timestamped<Rotation2d>(
+        rawGyroRotation.minus(visionHeadingOffset), Timer.getFPGATimestamp());
+  }
+
+  public void calculateVisionHeadingOffset() {
+    visionHeadingOffset = rawGyroRotation.minus(getRotation());
   }
 
   /** Returns an array of module translations. */

@@ -20,7 +20,7 @@ import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 import java.util.Optional;
 import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
-import org.team2342.frc.subsystems.vision.VisionIOPhoton.CameraParameters;
+import org.team2342.frc.subsystems.vision.Vision.CameraParameters;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.SIM;
@@ -87,9 +87,10 @@ public final class Constants {
             0.003667258530403619,
             -0.0014957440403602612);
     public static final CameraParameters PARAMETERS =
-        new CameraParameters(cameraMatrix, distCoeffs);
+        new CameraParameters(800, 600, cameraMatrix, distCoeffs);
     public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
         Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
+        
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;
     public static final double MAX_Z_ERROR = 0.75;

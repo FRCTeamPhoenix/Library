@@ -1,9 +1,8 @@
-// Copyright (c) 2021-2025 Littleton Robotics
-// http://github.com/Mechanical-Advantage
+// Copyright (c) 2025 Team 2342
+// https://github.com/FRCTeamPhoenix
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the AdvantageKit-License file
-// at the root directory of this project.
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
 
 package org.team2342.frc.subsystems.vision;
 
@@ -16,6 +15,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.frc.subsystems.vision.Vision.CameraParameters;
 import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
@@ -34,21 +34,31 @@ public class VisionIOSim extends VisionIOPhoton {
   public VisionIOSim(
       String name,
       CameraParameters parameters,
-      PoseStrategy poseStrategy,
+      PoseStrategy primaryStrategy,
+      PoseStrategy disabledStrategy,
       Transform3d robotToCamera,
       Supplier<Pose2d> poseSupplier) {
-    super(name, parameters, poseStrategy, robotToCamera);
+    super(name, parameters, primaryStrategy, disabledStrategy, robotToCamera);
     this.poseSupplier = poseSupplier;
 
-    // Initialize vision sim
     if (visionSim == null) {
       visionSim = new VisionSystemSim("main");
       visionSim.addAprilTags(VisionConstants.TAG_LAYOUT);
     }
 
     // Add sim camera
-    var cameraProperties = new SimCameraProperties();
-    cameraSim = new PhotonCameraSim(camera, cameraProperties, VisionConstants.TAG_LAYOUT);
+    SimCameraProperties properties = new SimCameraProperties();
+    properties.setCalibration(
+        parameters.resWidth(),
+        parameters.resHeight(),
+        parameters.cameraMatrix(),
+        parameters.distCoeffs());
+    properties.setCalibError(0.02, 0.05);
+    properties.setFPS(60);
+    properties.setAvgLatencyMs(35);
+    properties.setLatencyStdDevMs(7);
+
+    cameraSim = new PhotonCameraSim(camera, properties, VisionConstants.TAG_LAYOUT);
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 
