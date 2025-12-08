@@ -104,11 +104,9 @@ public final class Constants {
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
     public static final double MAX_MODULE_VELOCITY_RAD = Units.degreesToRadians(1080.0);
 
-    public static final double[] COMP_ENCODER_OFFSETS = {
+    public static final double[] ENCODER_OFFSETS = {
       0.229 + 0.5, 0.2834 + 0.5, 0.2009 + 0.5, 0.1563 + 0.5
     };
-
-    public static final double[] ENCODER_OFFSETS = COMP_ENCODER_OFFSETS;
 
     // Pitch, Roll, Yaw
     public static final double[] PIGEON_CALIBRATED_MOUNT_POSE = {0, 0, 0};

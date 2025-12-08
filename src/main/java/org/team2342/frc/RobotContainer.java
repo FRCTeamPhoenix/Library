@@ -55,10 +55,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(CANConstants.PIGEON_ID),
-                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[0]),
-                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[1]),
-                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[2]),
-                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[3]));
+                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.ENCODER_OFFSETS[0]),
+                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.ENCODER_OFFSETS[1]),
+                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.ENCODER_OFFSETS[2]),
+                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.ENCODER_OFFSETS[3]));
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
