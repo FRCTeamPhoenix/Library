@@ -6,45 +6,77 @@
 
 package org.team2342.lib.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
 import org.littletonrobotics.junction.Logger;
 
-/** Simulation implementation of LedIO Logs RGB values */
 public class LedIOSim implements LedIO {
-  private Color firstHalfColor = Color.kWhite;
-  private Color secondHalfColor = Color.kWhite;
+  private LedColor firstColor = LedColor.off();
+  private LedColor secondColor = LedColor.off();
+  private LedEffect firstEffect = LedEffect.OFF;
+  private LedEffect secondEffect = LedEffect.OFF;
 
-  /**
-   * Sets the color for the first or second half of the LED strip
-   *
-   * @param color The color to set for the half
-   */
   @Override
-  public void setFirstHalfColor(Color color) {
-    firstHalfColor = color;
+  public void setColor(Half half, LedColor color) {
+    if (color == null) {
+      color = LedColor.off();
+    }
+
+    switch (half) {
+      case FIRST:
+        firstColor = color;
+        firstEffect = LedEffect.SOLID;
+        break;
+      case SECOND:
+        secondColor = color;
+        secondEffect = LedEffect.SOLID;
+        break;
+      case ALL:
+        firstColor = color;
+        secondColor = color;
+        firstEffect = LedEffect.SOLID;
+        secondEffect = LedEffect.SOLID;
+        break;
+    }
   }
 
   @Override
-  public void setSecondHalfColor(Color color) {
-    secondHalfColor = color;
+  public void setEffect(Half half, LedEffect effect, LedColor color){
+    if (color == null) {
+      color = LedColor.off();
+    }
+
+    switch (half) {
+      case FIRST:
+        firstColor = color;
+        firstEffect = effect;
+        break;
+      case SECOND:
+        secondColor = color;
+        secondEffect = effect;
+        break;
+      case ALL:
+        firstColor = color;
+        secondColor = color;
+        firstEffect = effect;
+        secondEffect = effect;
+        break;
+    }
   }
 
-  /**
-   * Called periodically to update the LED input data
-   *
-   * @param inputs The LedIOInputs object to update
-   */
   @Override
-  public void updateInputs(LedIOInputs inputs) {
-    inputs.firstHalfColor = firstHalfColor;
-    inputs.secondHalfColor = secondHalfColor;
+  public void updateInputs(LedIOInputs inputs){
+    inputs.firstHalfColor = firstColor;
+    inputs.secondHalfColor = secondColor;
+    inputs.firstHalfEffect = firstEffect;
+    inputs.secondHalfEffect = secondEffect;
 
-    Logger.recordOutput("LED/FirstHalf/Red", firstHalfColor.red);
-    Logger.recordOutput("LED/FirstHalf/Green", firstHalfColor.green);
-    Logger.recordOutput("LED/FirstHalf/Blue", firstHalfColor.blue);
+    Logger.recordOutput("LED/FirstHalf/Red", firstColor.red);
+    Logger.recordOutput("LED/FirstHalf/Green", firstColor.green);
+    Logger.recordOutput("LED/FirstHalf/Blue", firstColor.blue);
+    Logger.recordOutput("LED/FirstHalf/Effect", firstEffect.toString());
 
-    Logger.recordOutput("LED/SecondHalf/Red", secondHalfColor.red);
-    Logger.recordOutput("LED/SecondHalf/Green", secondHalfColor.green);
-    Logger.recordOutput("LED/SecondHalf/Blue", secondHalfColor.blue);
+    Logger.recordOutput("LED/SecondHalf/Red", secondColor.red);
+    Logger.recordOutput("LED/SecondHalf/Green", secondColor.green);
+    Logger.recordOutput("LED/SecondHalf/Blue", secondColor.blue);
+    Logger.recordOutput("LED/SecondHalf/Effect", secondEffect.toString());
   }
 }

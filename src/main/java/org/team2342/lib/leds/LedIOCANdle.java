@@ -6,92 +6,127 @@
 
 package org.team2342.lib.leds;
 
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdleConfiguration;
-import edu.wpi.first.wpilibj.util.Color;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.signals.RGBWColor;
+import com.ctre.phoenix6.signals.StripTypeValue;
 
-/**
- * Implementation of LedIO using a CANdle device. This class manages the LED strip by controlling
- * the colors and animations.
- */
+
 public class LedIOCANdle implements LedIO {
-  private final CANdle candle;
-  private final int totalLeds;
-  private final int halfLength;
+  private CANdle candle; 
+  private int totalLeds;
+  private int firstHalfLength;
+  private int secondHalfLength; 
+  
+  private LedColor lastFirstColor = LedColor.off();
+  private LedColor lastSecondColor = LedColor.off();
+  private LedEffect lastFirstEffect = LedEffect.OFF;
+  private LedEffect lastSecondEffect = LedEffect.OFF;
 
-  private Color firstHalfColor = Color.kWhite;
-  private Color secondHalfColor = Color.kWhite;
-
-  /**
-   * Constructor for LedIOCANdle. Initializes the CANdle with the specified CAN ID and LED count.
-   *
-   * @param canId The CAN ID of the CANdle device.
-   * @param LedCount The total number of LEDs in the strip.
-   */
-  public LedIOCANdle(int canId, int LedCount) {
-    candle = new CANdle(canId);
-    totalLeds = LedCount;
-    halfLength = LedCount / 2;
+  public LedIOCANdle(int canID, int ledCount){
+    this.candle = new CANdle(canID);
+    this.totalLeds = ledCount;
+    this.firstHalfLength = totalLeds / 2;
+    this.secondHalfLength = totalLeds - firstHalfLength;
 
     CANdleConfiguration config = new CANdleConfiguration();
-    config.stripType = LEDStripType.RGB;
-    config.brightnessScalar = 1.0;
-    candle.configAllSettings(config);
-  }
-
-  /**
-   * Called periodically to update the LED input data.
-   *
-   * @param inputs The LedIOInputs object to update
-   */
-  @Override
-  public void updateInputs(LedIOInputs inputs) {
-    inputs.firstHalfColor = firstHalfColor;
-    inputs.secondHalfColor = secondHalfColor;
-  }
-
-  /**
-   * Sets the color for the first half and second half of the LED strip.
-   *
-   * @param color The color to set for the half
-   */
-  @Override
-  public void setFirstHalfColor(Color color) {
-    firstHalfColor = color;
-    candle.clearAnimation(0);
-    candle.setLEDs(
-        (int) (color.red * 255),
-        (int) (color.green * 255),
-        (int) (color.blue * 255),
-        0,
-        0,
-        halfLength);
+    config.LED.StripType = StripTypeValue.RGB;
+    candle.getConfigurator().apply(config);
   }
 
   @Override
-  public void setSecondHalfColor(Color color) {
-    secondHalfColor = color;
-    candle.clearAnimation(0);
-    candle.setLEDs(
-        (int) (color.red * 255),
-        (int) (color.green * 255),
-        (int) (color.blue * 255),
-        0,
-        halfLength,
-        halfLength);
+  public void updateInputs(LedIOInputs inputs){
+    inputs.firstHalfColor = lastFirstColor;
+    inputs.secondHalfColor = lastSecondColor;
+    inputs.firstHalfEffect = lastFirstEffect;
+    inputs.secondHalfEffect = lastSecondEffect;
+  }
+  
+  @Override
+  public void setColor(Half half, LedColor color) {
+    switch (half) {
+      case FIRST:
+        sendSolidColor(0, firstHalfLength, color);
+        lastFirstColor = color;
+        lastFirstEffect = LedEffect.SOLID;
+        break;
+      case SECOND:
+        sendSolidColor(firstHalfLength, secondHalfLength, color);
+        lastSecondColor = color;
+        lastSecondEffect = LedEffect.SOLID;
+        break;
+      case ALL:
+        sendSolidColor(0, totalLeds, color);
+        lastFirstColor = color;
+        lastSecondColor = color;
+        lastFirstEffect = LedEffect.SOLID;
+        lastSecondEffect = LedEffect.SOLID;
+        break;
+      }
+
   }
 
-  /**
-   * Sets the animation for the LED strip.
-   *
-   * @param animation The animation to apply to the LED strip.
-   */
   @Override
-  public void setAnimation(Animation animation) {
-    candle.clearAnimation(0);
-    animation.setNumLed(totalLeds);
-    candle.animate(animation);
+  public void setEffect(Half half, LedEffect effect, LedColor color) {
+    if (color == null){
+      color = LedColor.off();
+    }
+
+    int start = 0;
+    int length = 0;
+
+    switch (half) {
+      case FIRST:
+        start = 0;
+        length = firstHalfLength;
+        lastFirstColor = color;
+        lastFirstEffect = effect;
+        break;
+      case SECOND:
+        start = firstHalfLength;
+        length = secondHalfLength;
+        lastSecondColor = color;
+        lastSecondEffect = effect;
+        break;
+      case ALL:
+        start = 0;
+        length = totalLeds;
+        lastFirstEffect = effect;
+        lastSecondEffect = effect;
+        lastFirstColor = color;
+        lastSecondColor = color;
+        break;
+    }
+
+    switch (effect) {
+      case SOLID:
+        sendSolidColor(start, length, color);
+        break;
+      case RAINBOW:
+        RainbowAnimation rainbow = new RainbowAnimation(start, length);
+        candle.setControl(rainbow);
+        break;
+      case FLASHING:
+        sendSolidColor(start, length, color);
+        break;
+      case OFF:
+        sendSolidColor(start, length, LedColor.off());
+        break;
+    }
+  }
+
+  private RGBWColor toCTRE(LedColor c) {
+    if (c == null){
+      return new RGBWColor(0,0,0,0);
+    }
+    return new RGBWColor(c.red, c.green, c.blue,0);
+  }
+
+  private void sendSolidColor(int start, int length, LedColor color) {
+    SolidColor request = new SolidColor(start, length);
+    request.withColor(toCTRE(color));
+    candle.setControl(request);
   }
 }
