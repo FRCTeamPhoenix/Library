@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -6,30 +6,29 @@
 
 package org.team2342.lib.leds;
 
-import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
-import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
+import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StripTypeValue;
-
+import edu.wpi.first.wpilibj.util.Color;
 
 public class LedIOCANdle implements LedIO {
-  private CANdle candle; 
-  private int totalLeds;
-  private int firstHalfLength;
-  private int secondHalfLength; 
-  
-  private LedColor lastFirstColor = LedColor.off();
-  private LedColor lastSecondColor = LedColor.off();
-  private LedEffect lastFirstEffect = LedEffect.OFF;
-  private LedEffect lastSecondEffect = LedEffect.OFF;
+  private final CANdle candle;
+  private final int ledCount;
+  private final int halfLength;
 
-  public LedIOCANdle(int canID, int ledCount){
-    this.candle = new CANdle(canID);
-    this.totalLeds = ledCount;
-    this.firstHalfLength = totalLeds / 2;
-    this.secondHalfLength = totalLeds - firstHalfLength;
+  private Color firstColor = Color.kBlack;
+  private Color secondColor = Color.kBlack;
+  private LedEffect firstEffect = LedEffect.OFF;
+  private LedEffect secondEffect = LedEffect.OFF;
+
+  public LedIOCANdle(int canId, int ledCount) {
+    this.candle = new CANdle(canId);
+    this.ledCount = ledCount;
+    this.halfLength = ledCount / 2;
 
     CANdleConfiguration config = new CANdleConfiguration();
     config.LED.StripType = StripTypeValue.RGB;
@@ -37,96 +36,92 @@ public class LedIOCANdle implements LedIO {
   }
 
   @Override
-  public void updateInputs(LedIOInputs inputs){
-    inputs.firstHalfColor = lastFirstColor;
-    inputs.secondHalfColor = lastSecondColor;
-    inputs.firstHalfEffect = lastFirstEffect;
-    inputs.secondHalfEffect = lastSecondEffect;
+  public void updateInputs(LedIOInputs inputs) {
+    inputs.firstHalfColor = firstColor;
+    inputs.secondHalfColor = secondColor;
+    inputs.firstHalfEffect = firstEffect;
+    inputs.secondHalfEffect = secondEffect;
   }
-  
+
   @Override
-  public void setColor(Half half, LedColor color) {
+  public void setColor(Half half, Color color) {
     switch (half) {
-      case FIRST:
-        sendSolidColor(0, firstHalfLength, color);
-        lastFirstColor = color;
-        lastFirstEffect = LedEffect.SOLID;
-        break;
-      case SECOND:
-        sendSolidColor(firstHalfLength, secondHalfLength, color);
-        lastSecondColor = color;
-        lastSecondEffect = LedEffect.SOLID;
-        break;
-      case ALL:
-        sendSolidColor(0, totalLeds, color);
-        lastFirstColor = color;
-        lastSecondColor = color;
-        lastFirstEffect = LedEffect.SOLID;
-        lastSecondEffect = LedEffect.SOLID;
-        break;
+      case FIRST -> {
+        sendSolidColor(0, halfLength, color);
+        firstColor = color;
+        firstEffect = LedEffect.SOLID;
       }
-
+      case SECOND -> {
+        sendSolidColor(halfLength, ledCount, color);
+        secondColor = color;
+        secondEffect = LedEffect.SOLID;
+      }
+      case ALL -> {
+        sendSolidColor(0, ledCount, color);
+        firstColor = color;
+        secondColor = color;
+        firstEffect = LedEffect.SOLID;
+        secondEffect = LedEffect.SOLID;
+      }
+    }
   }
 
   @Override
-  public void setEffect(Half half, LedEffect effect, LedColor color) {
-    if (color == null){
-      color = LedColor.off();
+  public void setEffect(Half half, LedEffect effect, Color color) {
+    if (color == null) {
+      color = Color.kBlack;
     }
-
-    int start = 0;
-    int length = 0;
 
     switch (half) {
       case FIRST:
-        start = 0;
-        length = firstHalfLength;
-        lastFirstColor = color;
-        lastFirstEffect = effect;
+        firstColor = color;
+        firstEffect = effect;
+        applyEffect(0, halfLength, effect, color);
         break;
       case SECOND:
-        start = firstHalfLength;
-        length = secondHalfLength;
-        lastSecondColor = color;
-        lastSecondEffect = effect;
+        secondColor = color;
+        secondEffect = effect;
+        applyEffect(halfLength, ledCount, effect, color);
         break;
       case ALL:
-        start = 0;
-        length = totalLeds;
-        lastFirstEffect = effect;
-        lastSecondEffect = effect;
-        lastFirstColor = color;
-        lastSecondColor = color;
-        break;
-    }
-
-    switch (effect) {
-      case SOLID:
-        sendSolidColor(start, length, color);
-        break;
-      case RAINBOW:
-        RainbowAnimation rainbow = new RainbowAnimation(start, length);
-        candle.setControl(rainbow);
-        break;
-      case FLASHING:
-        sendSolidColor(start, length, color);
-        break;
-      case OFF:
-        sendSolidColor(start, length, LedColor.off());
+        firstColor = color;
+        secondColor = color;
+        firstEffect = effect;
+        secondEffect = effect;
         break;
     }
   }
 
-  private RGBWColor toCTRE(LedColor c) {
-    if (c == null){
-      return new RGBWColor(0,0,0,0);
+  private RGBWColor toCTRE(Color c) {
+    if (c == null) {
+      return new RGBWColor(0, 0, 0, 0);
     }
-    return new RGBWColor(c.red, c.green, c.blue,0);
+    return new RGBWColor((int) (c.red * 255), (int) (c.green * 255), (int) (c.blue * 255), 0);
   }
 
-  private void sendSolidColor(int start, int length, LedColor color) {
-    SolidColor request = new SolidColor(start, length);
+  private void sendSolidColor(int start, int end, Color color) {
+    SolidColor request = new SolidColor(start, end);
     request.withColor(toCTRE(color));
     candle.setControl(request);
+  }
+
+  private void applyEffect(int start, int end, LedEffect effect, Color color) {
+    switch (effect) {
+      case SOLID -> {
+        sendSolidColor(start, end, color);
+      }
+      case FLASHING -> {
+        StrobeAnimation request = new StrobeAnimation(start, end);
+        request.withColor(toCTRE(color));
+        candle.setControl(request);
+      }
+      case RAINBOW -> {
+        RainbowAnimation request = new RainbowAnimation(start, end);
+        candle.setControl(request);
+      }
+      case OFF -> {
+        sendSolidColor(start, end, Color.kBlack);
+      }
+    }
   }
 }
