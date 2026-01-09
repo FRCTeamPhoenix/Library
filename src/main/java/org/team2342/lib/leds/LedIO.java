@@ -7,22 +7,10 @@
 package org.team2342.lib.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface LedIO {
-
-  public enum Half {
-    FIRST,
-    SECOND,
-    ALL
-  }
-
-  public enum LedEffect {
-    SOLID,
-    FLASHING,
-    RAINBOW,
-    OFF
-  }
-
+  @AutoLog
   public static class LedIOInputs {
     public Color firstHalfColor = Color.kBlack;
     public Color secondHalfColor = Color.kBlack;
@@ -42,5 +30,18 @@ public interface LedIO {
 
   public default void setEffect(LedEffect effect, Color color) {
     setEffect(Half.ALL, effect, color);
+  }
+
+  public enum Half {
+    FIRST,
+    SECOND,
+    ALL
+  }
+
+  public enum LedEffect {
+    SOLID,
+    FLASHING,
+    RAINBOW,
+    OFF
   }
 }

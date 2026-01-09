@@ -11,9 +11,9 @@ import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.util.Color;
+import org.team2342.frc.util.PhoenixUtils;
 
 public class LedIOCANdle implements LedIO {
   private final CANdle candle;
@@ -92,16 +92,9 @@ public class LedIOCANdle implements LedIO {
     }
   }
 
-  private RGBWColor toCTRE(Color c) {
-    if (c == null) {
-      return new RGBWColor(0, 0, 0, 0);
-    }
-    return new RGBWColor((int) (c.red * 255), (int) (c.green * 255), (int) (c.blue * 255), 0);
-  }
-
   private void sendSolidColor(int start, int end, Color color) {
     SolidColor request = new SolidColor(start, end);
-    request.withColor(toCTRE(color));
+    request.withColor(PhoenixUtils.toCTREColor(color));
     candle.setControl(request);
   }
 
@@ -112,7 +105,7 @@ public class LedIOCANdle implements LedIO {
       }
       case FLASHING -> {
         StrobeAnimation request = new StrobeAnimation(start, end);
-        request.withColor(toCTRE(color));
+        request.withColor(PhoenixUtils.toCTREColor(color));
         candle.setControl(request);
       }
       case RAINBOW -> {
