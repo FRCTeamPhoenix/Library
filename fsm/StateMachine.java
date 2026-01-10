@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -7,6 +7,7 @@
 package org.team2342.lib.fsm;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -226,7 +227,7 @@ public class StateMachine<E extends Enum<E>> {
   private void setState(E state) {
     currentState = state;
     currentCommand = stateCommands.get(getCurrentState());
-    if (currentCommand != null) currentCommand.schedule();
+    if (currentCommand != null) CommandScheduler.getInstance().schedule(currentCommand);
   }
 
   /**
