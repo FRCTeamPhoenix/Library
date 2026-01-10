@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -19,6 +19,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
@@ -110,7 +111,11 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
           5,
           () ->
               followerTalons[j].setControl(
-                  new Follower(leaderTalon.getDeviceID(), followerConfig.inverted())));
+                  new Follower(
+                      leaderTalon.getDeviceID(),
+                      followerConfig.inverted()
+                          ? MotorAlignmentValue.Opposed
+                          : MotorAlignmentValue.Aligned)));
       followersAppliedVolts[i] = followerTalons[i].getMotorVoltage();
       followersCurrent[i] = followerTalons[i].getStatorCurrent();
       followersConnectedDebounce[i] = new Debouncer(0.5);
