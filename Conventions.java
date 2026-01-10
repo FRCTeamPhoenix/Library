@@ -24,7 +24,7 @@ public class Conventions {
   // Use get and set prefixes when creating methods to access variables
   // Method names are lowerCamelCase, and should describe what the method does
   public int getCurrentYear() {
-    return 2025;
+    return 2026;
   }
 
   public void setSomeField(double someField) {
