@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -44,6 +44,9 @@ import org.team2342.frc.subsystems.vision.VisionIOSim;
 public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
+
+  //   public final LedIOCANdle candle = new LedIOCANdle(22, 37);
+  //   public final LedStrip leds = new LedStrip(candle, "leds");
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -114,7 +117,6 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
-
     if (Constants.TUNING) setupDevelopmentRoutines();
 
     configureBindings();

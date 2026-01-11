@@ -7,10 +7,10 @@
 package org.team2342.lib.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
-import org.littletonrobotics.junction.AutoLog;
+// import org.littletonrobotics.junction.AutoLog;
 
 public interface LedIO {
-  @AutoLog
+  // @AutoLog
   public static class LedIOInputs {
     public Color firstHalfColor = Color.kBlack;
     public Color secondHalfColor = Color.kBlack;

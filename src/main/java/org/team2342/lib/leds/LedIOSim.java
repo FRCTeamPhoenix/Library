@@ -7,7 +7,6 @@
 package org.team2342.lib.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
-import org.littletonrobotics.junction.Logger;
 
 public class LedIOSim implements LedIO {
   private Color firstColor = Color.kBlack;
@@ -48,20 +47,20 @@ public class LedIOSim implements LedIO {
     }
   }
 
-  @Override
-  public void updateInputs(LedIOInputs inputs) {
-    inputs.firstHalfColor = firstColor;
-    inputs.secondHalfColor = secondColor;
-    inputs.firstHalfEffect = firstEffect;
-    inputs.secondHalfEffect = secondEffect;
+  // @Override
+  // public void updateInputs(LedIOInputs inputs) {
+  //   inputs.firstHalfColor = firstColor;
+  //   inputs.secondHalfColor = secondColor;
+  //   inputs.firstHalfEffect = firstEffect;
+  //   inputs.secondHalfEffect = secondEffect;
 
-    Logger.recordOutput(
-        "LED/FirstHalf/Color", new double[] {firstColor.red, firstColor.green, firstColor.blue});
-    Logger.recordOutput("LED/FirstHalf/Effect", firstEffect.name());
+  //   Logger.recordOutput(
+  //       "LED/FirstHalf/Color", new double[] {firstColor.red, firstColor.green, firstColor.blue});
+  //   Logger.recordOutput("LED/FirstHalf/Effect", firstEffect.name());
 
-    Logger.recordOutput(
-        "LED/SecondHalf/Color",
-        new double[] {secondColor.red, secondColor.green, secondColor.blue});
-    Logger.recordOutput("LED/SecondHalf/Effect", secondEffect.name());
-  }
+  //   Logger.recordOutput(
+  //       "LED/SecondHalf/Color",
+  //       new double[] {secondColor.red, secondColor.green, secondColor.blue});
+  //   Logger.recordOutput("LED/SecondHalf/Effect", secondEffect.name());
+  // }
 }

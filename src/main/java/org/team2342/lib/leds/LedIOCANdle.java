@@ -6,11 +6,14 @@
 
 package org.team2342.lib.leds;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.util.Color;
 import org.team2342.frc.util.PhoenixUtils;
@@ -26,12 +29,15 @@ public class LedIOCANdle implements LedIO {
   private LedEffect secondEffect = LedEffect.OFF;
 
   public LedIOCANdle(int canId, int ledCount) {
-    this.candle = new CANdle(canId);
+    this.candle = new CANdle(canId, new CANBus("rio"));
     this.ledCount = ledCount;
     this.halfLength = ledCount / 2;
 
     CANdleConfiguration config = new CANdleConfiguration();
-    config.LED.StripType = StripTypeValue.RGB;
+    config.LED.StripType = StripTypeValue.GRB;
+    config.LED.BrightnessScalar = 0.7;
+    config.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
+    // config.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
     candle.getConfigurator().apply(config);
   }
 
@@ -93,6 +99,7 @@ public class LedIOCANdle implements LedIO {
   }
 
   private void sendSolidColor(int start, int end, Color color) {
+    candle.setControl(new EmptyAnimation(end));
     SolidColor request = new SolidColor(start, end);
     request.withColor(PhoenixUtils.toCTREColor(color));
     candle.setControl(request);
@@ -101,18 +108,22 @@ public class LedIOCANdle implements LedIO {
   private void applyEffect(int start, int end, LedEffect effect, Color color) {
     switch (effect) {
       case SOLID -> {
+        candle.setControl(new EmptyAnimation(end));
         sendSolidColor(start, end, color);
       }
       case FLASHING -> {
+        candle.setControl(new EmptyAnimation(end));
         StrobeAnimation request = new StrobeAnimation(start, end);
         request.withColor(PhoenixUtils.toCTREColor(color));
         candle.setControl(request);
       }
       case RAINBOW -> {
+        candle.setControl(new EmptyAnimation(end));
         RainbowAnimation request = new RainbowAnimation(start, end);
         candle.setControl(request);
       }
       case OFF -> {
+        candle.setControl(new EmptyAnimation(end));
         sendSolidColor(start, end, Color.kBlack);
       }
     }

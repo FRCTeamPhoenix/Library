@@ -8,16 +8,15 @@ package org.team2342.lib.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.leds.LedIO.LedEffect;
-import org.team2342.lib.leds.LedIOInputsAutoLogged; 
+// import org.team2342.lib.leds.LedIOInputsAutoLogged;
 
 public class LedStrip extends SubsystemBase {
-  private final LedIO io;
+  private final LedIOCANdle io;
   private final String name;
-  private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
+  // private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
-  public LedStrip(LedIO io, String name) {
+  public LedStrip(LedIOCANdle io, String name) {
     this.io = io;
     this.name = name;
     setName(name);
@@ -32,12 +31,12 @@ public class LedStrip extends SubsystemBase {
   }
 
   public void setAll(Color color, LedEffect effect) {
-    io.setEffect(effect, color);
+    io.setEffect(LedIO.Half.ALL, effect, color);
   }
 
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs(name, inputs);
-  }
+  // @Override
+  // public void periodic() {
+  //   io.updateInputs(inputs);
+  //   Logger.processInputs(name, inputs);
+  // }
 }
