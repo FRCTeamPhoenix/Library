@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -73,13 +72,11 @@ public class RobotContainer {
                 new VisionIOPhoton(
                     VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    new Transform3d()),
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR),
                 new VisionIOPhoton(
                     VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    new Transform3d()));
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -100,13 +97,11 @@ public class RobotContainer {
                     VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    VisionConstants.FRONT_RIGHT_TRANSFORM,
                     drive::getRawOdometryPose),
                 new VisionIOSim(
                     VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
 
         break;

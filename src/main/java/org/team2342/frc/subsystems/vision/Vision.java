@@ -24,8 +24,8 @@ import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.subsystems.vision.VisionIO.PoseObservationType;
 import org.team2342.lib.logging.ExecutionLogger;
-import org.team2342.lib.util.Timestamped;
 import org.team2342.lib.util.AllianceUtils;
+import org.team2342.lib.util.Timestamped;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;

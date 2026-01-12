@@ -10,8 +10,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import java.util.Optional;
-import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
 import org.team2342.lib.util.CameraParameters;
 
 public final class Constants {
@@ -50,12 +48,11 @@ public final class Constants {
             new Rotation3d(0, 0.0, Units.degreesToRadians(35)));
 
     public static final CameraParameters LEFT_PARAMETERS =
-        CameraParameters.loadFromName(LEFT_CAMERA_NAME, 800, 600);
+        CameraParameters.loadFromName(LEFT_CAMERA_NAME, 800, 600)
+            .withTransform(FRONT_LEFT_TRANSFORM);
     public static final CameraParameters RIGHT_PARAMETERS =
-        CameraParameters.loadFromName(RIGHT_CAMERA_NAME, 800, 600);
-        
-    public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
-        Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
+        CameraParameters.loadFromName(RIGHT_CAMERA_NAME, 800, 600)
+            .withTransform(FRONT_RIGHT_TRANSFORM);
 
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;

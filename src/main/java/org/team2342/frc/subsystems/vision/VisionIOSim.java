@@ -8,16 +8,14 @@ package org.team2342.frc.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
-import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {
@@ -36,9 +34,8 @@ public class VisionIOSim extends VisionIOPhoton {
       CameraParameters parameters,
       PoseStrategy primaryStrategy,
       PoseStrategy disabledStrategy,
-      Transform3d robotToCamera,
       Supplier<Pose2d> poseSupplier) {
-    super(parameters, primaryStrategy, disabledStrategy, robotToCamera);
+    super(parameters, primaryStrategy, disabledStrategy);
     this.poseSupplier = poseSupplier;
 
     if (visionSim == null) {

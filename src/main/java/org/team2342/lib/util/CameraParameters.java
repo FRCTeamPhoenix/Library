@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -13,6 +13,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N8;
@@ -32,6 +33,7 @@ public class CameraParameters {
   @Getter @Setter private Matrix<N8, N1> distCoeffs;
   @Getter @Setter private double avgErrorPx;
   @Getter @Setter private double errorStdDevPx;
+  @Getter @Setter private Transform3d transform;
 
   public CameraParameters(
       String cameraName,
@@ -157,5 +159,10 @@ public class CameraParameters {
           "Error while loading camera " + cameraName + ". Resorting to basic parameters", false);
       return new CameraParameters(cameraName, resWidth, resHeight);
     }
+  }
+
+  public CameraParameters withTransform(Transform3d transform) {
+    this.transform = transform;
+    return this;
   }
 }
