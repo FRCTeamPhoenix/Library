@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -32,8 +32,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +44,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.lib.logging.ExecutionLogger;
+import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.LocalADStarAK;
 import org.team2342.lib.util.SwerveSetpointGenerator;
 import org.team2342.lib.util.SwerveSetpointGenerator.ModuleLimits;
@@ -126,7 +125,7 @@ public class Drive extends SubsystemBase {
         new PPHolonomicDriveController(
             new PIDConstants(6.0, 0.0, 0.0), new PIDConstants(8.0, 0.0, 0.1)),
         pathplannerConfig,
-        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+        () -> AllianceUtils.isRedAlliance(),
         this);
 
     // Logging callbacks for PathPlanner
@@ -409,9 +408,7 @@ public class Drive extends SubsystemBase {
         "Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
     builder.addDoubleProperty(
         "Robot Angle",
-        () ->
-            getRotation().getRadians()
-                + (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? Math.PI : 0),
+        () -> getRotation().getRadians() + (AllianceUtils.isRedAlliance() ? Math.PI : 0),
         null);
   }
 }

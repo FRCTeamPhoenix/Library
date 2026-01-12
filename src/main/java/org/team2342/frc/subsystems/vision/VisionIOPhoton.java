@@ -24,6 +24,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import org.team2342.frc.Constants;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {

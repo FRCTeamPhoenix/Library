@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -25,6 +25,7 @@ import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.subsystems.vision.VisionIO.PoseObservationType;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.team2342.lib.util.Timestamped;
+import org.team2342.lib.util.AllianceUtils;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
@@ -97,7 +98,7 @@ public class Vision extends SubsystemBase {
 
       // Add tag poses
       for (int tagId : inputs[cameraIndex].tagIds) {
-        var tagPose = VisionConstants.TAG_LAYOUT.getTagPose(tagId);
+        var tagPose = AllianceUtils.getFieldLayout().getTagPose(tagId);
         if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
         }
@@ -116,9 +117,9 @@ public class Vision extends SubsystemBase {
 
                 // Must be within the field boundaries
                 || observation.pose().getX() < 0.0
-                || observation.pose().getX() > VisionConstants.TAG_LAYOUT.getFieldLength()
+                || observation.pose().getX() > AllianceUtils.getFieldLayout().getFieldLength()
                 || observation.pose().getY() < 0.0
-                || observation.pose().getY() > VisionConstants.TAG_LAYOUT.getFieldWidth();
+                || observation.pose().getY() > AllianceUtils.getFieldLayout().getFieldWidth();
 
         // Add pose to log
         robotPoses.add(observation.pose());

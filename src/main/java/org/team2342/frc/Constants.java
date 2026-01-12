@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -6,8 +6,6 @@
 
 package org.team2342.frc;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -17,8 +15,8 @@ import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
 import org.team2342.lib.util.CameraParameters;
 
 public final class Constants {
-  public static final Mode CURRENT_MODE = Mode.SIM;
-  public static final boolean TUNING = false;
+  public static final Mode CURRENT_MODE = Mode.REAL;
+  public static final boolean TUNING = true;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -50,10 +48,6 @@ public final class Constants {
                 Units.inchesToMeters(-8.9822),
                 Units.inchesToMeters(12.125)),
             new Rotation3d(0, 0.0, Units.degreesToRadians(35)));
-
-    // The layout of the AprilTags on the field
-    public static final AprilTagFieldLayout TAG_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     public static final CameraParameters LEFT_PARAMETERS =
         CameraParameters.loadFromName(LEFT_CAMERA_NAME, 800, 600);
@@ -115,11 +109,9 @@ public final class Constants {
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
     public static final double MAX_MODULE_VELOCITY_RAD = Units.degreesToRadians(1080.0);
 
-    public static final double[] COMP_ENCODER_OFFSETS = {
-      -0.1467, -0.3962, 0.3662 + 0.5, -0.3867 + 0.5
+    public static final double[] ENCODER_OFFSETS = {
+      0.229 + 0.5, 0.2834 + 0.5, 0.2009 + 0.5, 0.1563 + 0.5
     };
-
-    public static final double[] ENCODER_OFFSETS = COMP_ENCODER_OFFSETS;
 
     // Pitch, Roll, Yaw
     public static final double[] PIGEON_CALIBRATED_MOUNT_POSE = {0, 0, 0};

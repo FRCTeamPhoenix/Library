@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -17,13 +17,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.subsystems.drive.Drive;
+import org.team2342.lib.util.AllianceUtils;
 
 public class DriveToPose extends Command {
   private PIDController xController = new PIDController(4.0, 0.0, 0.02);
@@ -104,9 +103,7 @@ public class DriveToPose extends Command {
 
     ChassisSpeeds speeds = controller.calculate(currentPosition, goal, 0, target.getRotation());
 
-    boolean isFlipped =
-        DriverStation.getAlliance().isPresent()
-            && DriverStation.getAlliance().get() == Alliance.Red;
+    boolean isFlipped = AllianceUtils.isRedAlliance();
 
     Translation2d joystickTranslation =
         DriveCommands.getLinearVelocityFromJoysticks(

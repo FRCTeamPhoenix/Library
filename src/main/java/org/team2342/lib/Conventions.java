@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -24,7 +24,7 @@ public class Conventions {
   // Use get and set prefixes when creating methods to access variables
   // Method names are lowerCamelCase, and should describe what the method does
   public int getCurrentYear() {
-    return 2025;
+    return 2026;
   }
 
   public void setSomeField(double someField) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -12,16 +12,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.Getter;
-import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.team2342.frc.Constants.CANConstants;
@@ -40,6 +40,8 @@ import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
+import org.team2342.lib.util.AllianceUtils;
+import org.team2342.lib.util.EnhancedXboxController;
 
 public class RobotContainer {
   @Getter private final Drive drive;
@@ -47,7 +49,10 @@ public class RobotContainer {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  @Getter private final CommandXboxController driverController = new CommandXboxController(0);
+  @Getter
+  private final EnhancedXboxController driverController =
+      new EnhancedXboxController(0, DriveConstants.CONTROLLER_DEADBAND);
+
   private final Alert driverControllerAlert =
       new Alert("Driver controller is disconnected!", AlertType.kError);
 
@@ -57,10 +62,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(CANConstants.PIGEON_ID),
-                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[0]),
-                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[1]),
-                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[2]),
-                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[3]));
+                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.ENCODER_OFFSETS[0]),
+                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.ENCODER_OFFSETS[1]),
+                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.ENCODER_OFFSETS[2]),
+                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.ENCODER_OFFSETS[3]));
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -69,12 +74,12 @@ public class RobotContainer {
                     VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    VisionConstants.FRONT_RIGHT_TRANSFORM),
+                    new Transform3d()),
                 new VisionIOPhoton(
                     VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    VisionConstants.FRONT_LEFT_TRANSFORM));
+                    new Transform3d()));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -165,7 +170,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drive,
-                VisionConstants.TAG_LAYOUT
+                AllianceUtils.getFieldLayout()
                     .getTagPose(7)
                     .orElse(new Pose3d())
                     .toPose2d()

@@ -17,6 +17,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {
@@ -42,7 +43,7 @@ public class VisionIOSim extends VisionIOPhoton {
 
     if (visionSim == null) {
       visionSim = new VisionSystemSim("main");
-      visionSim.addAprilTags(VisionConstants.TAG_LAYOUT);
+      visionSim.addAprilTags(AllianceUtils.getFieldLayout());
     }
 
     // Add sim camera
@@ -57,7 +58,7 @@ public class VisionIOSim extends VisionIOPhoton {
     properties.setAvgLatencyMs(35);
     properties.setLatencyStdDevMs(7);
 
-    cameraSim = new PhotonCameraSim(camera, properties, VisionConstants.TAG_LAYOUT);
+    cameraSim = new PhotonCameraSim(camera, properties, AllianceUtils.getFieldLayout());
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 
