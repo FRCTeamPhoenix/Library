@@ -22,6 +22,10 @@ public class LedIOCANdle implements LedIO {
   private final CANdle candle;
   private final int ledCount;
   private final int halfLength;
+  private int startFirst = 0;
+  private int endFirst;
+  private int startSecond;
+  private int endSecond;
 
   private Color firstColor = Color.kBlack;
   private Color secondColor = Color.kBlack;
@@ -86,18 +90,24 @@ public class LedIOCANdle implements LedIO {
       case FIRST -> {
         firstColor = color;
         firstEffect = effect;
-        // applyEffect(0, halfLength, effect, color);
+        startFirst = 0;
+        endFirst = halfLength;
       }
       case SECOND -> {
         secondColor = color;
         secondEffect = effect;
-        // applyEffect(halfLength, ledCount, effect, color);
+        startSecond = halfLength;
+        endSecond = ledCount;
       }
       case ALL -> {
         firstColor = color;
         secondColor = color;
         firstEffect = effect;
         secondEffect = effect;
+        startFirst = 0;
+        endFirst = halfLength;
+        startSecond = halfLength;
+        endSecond = ledCount;
       }
     }
   }
@@ -112,29 +122,39 @@ public class LedIOCANdle implements LedIO {
   private void applyEffect(int start, int end, LedEffect effect, Color color) {
     switch (effect) {
       case SOLID -> {
-        candle.setControl(new EmptyAnimation(end));
+        // candle.setControl(new EmptyAnimation(end));
         sendSolidColor(start, end, color);
       }
       case FLASHING -> {
-        candle.setControl(new EmptyAnimation(end));
-        StrobeAnimation request = new StrobeAnimation(start, end);
+        // candle.setControl(new EmptyAnimation(end));
+        StrobeAnimation request = new StrobeAnimation(start, end).withSlot(1);
         request.withColor(PhoenixUtils.toCTREColor(color));
         candle.setControl(request);
       }
       case RAINBOW -> {
-        candle.setControl(new EmptyAnimation(end));
-        RainbowAnimation request = new RainbowAnimation(start, end);
+        // candle.setControl(new EmptyAnimation(end));
+        RainbowAnimation request = new RainbowAnimation(start, end).withSlot(0);
         candle.setControl(request);
       }
       case OFF -> {
-        candle.setControl(new EmptyAnimation(end));
+        // candle.setControl(new EmptyAnimation(end));
         sendSolidColor(start, end, Color.kBlack);
       }
     }
   }
 
+  public void clearAll() {
+    sendSolidColor(0, ledCount, Color.kBlack);
+    for (int i = 0; i < ledCount; ++i) {
+      candle.setControl(new EmptyAnimation(i));
+    }
+  }
+
   public void update() {
-    applyEffect(0, halfLength, firstEffect, firstColor);
-    applyEffect(halfLength, ledCount, secondEffect, secondColor);
+    clearAll();
+    applyEffect(startFirst, endFirst, firstEffect, firstColor);
+    applyEffect(startSecond, endSecond, secondEffect, secondColor);
+    // applyEffect(startSecond, endSecond, secondEffect, secondColor);
+
   }
 }

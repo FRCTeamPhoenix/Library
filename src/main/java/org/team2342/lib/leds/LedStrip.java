@@ -24,20 +24,23 @@ public class LedStrip extends SubsystemBase {
 
   public void setFirst(Color color, LedEffect effect) {
     io.setEffect(LedIO.Half.FIRST, effect, color);
+    io.update();
   }
 
   public void setSecond(Color color, LedEffect effect) {
     io.setEffect(LedIO.Half.SECOND, effect, color);
+    io.update();
   }
 
   public void setAll(Color color, LedEffect effect) {
     io.setEffect(LedIO.Half.ALL, effect, color);
+    io.update();
   }
 
   @Override
   public void periodic() {
-    // io.updateInputs(inputs);
-    io.update();
-    // Logger.processInputs(name, inputs);
+    //io.updateInputs(inputs);
+    //io.update();
+    //Logger.processInputs(name, inputs);
   }
 }
