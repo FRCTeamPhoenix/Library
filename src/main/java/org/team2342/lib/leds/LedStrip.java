@@ -36,8 +36,8 @@ public class LedStrip extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //io.updateInputs(inputs);
+    // io.updateInputs(inputs);
     io.update();
-    //Logger.processInputs(name, inputs);
+    // Logger.processInputs(name, inputs);
   }
 }
