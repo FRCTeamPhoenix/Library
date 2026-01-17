@@ -23,7 +23,7 @@ public class AllianceUtils {
 
   @Getter @Setter
   private static AprilTagFieldLayout fieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
   public static boolean isRedAlliance() {
     var alliance = DriverStation.getAlliance();
