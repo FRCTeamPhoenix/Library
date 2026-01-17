@@ -10,7 +10,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.signals.RGBWColor;
 import edu.wpi.first.wpilibj.util.Color;
-
 import java.util.function.Supplier;
 
 public class PhoenixUtils {
@@ -52,7 +51,8 @@ public class PhoenixUtils {
   }
 
   /**
-   * Used to convert {@link edu.wpi.first.wpilibj.util.Color} to {@link com.ctre.phoenix6.signals.RGBWColor}
+   * Used to convert {@link edu.wpi.first.wpilibj.util.Color} to {@link
+   * com.ctre.phoenix6.signals.RGBWColor}
    *
    * @param c WPILib Color to be converted
    */
