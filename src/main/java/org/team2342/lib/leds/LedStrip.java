@@ -13,13 +13,13 @@ import org.team2342.lib.leds.LedIO.LedEffect;
 
 public class LedStrip extends SubsystemBase {
   private final LedIOCANdle io;
-  private final String name;
+  // private final String name;
   // private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
   public LedStrip(LedIOCANdle io, String name) {
     this.io = io;
-    this.name = name;
-    setName(name);
+    // this.name = name;
+    // setName(name);
   }
 
   public void setFirst(Color color, LedEffect effect) {
@@ -34,9 +34,10 @@ public class LedStrip extends SubsystemBase {
     io.setEffect(LedIO.Half.ALL, effect, color);
   }
 
-  // @Override
-  // public void periodic() {
-  //   io.updateInputs(inputs);
-  //   Logger.processInputs(name, inputs);
-  // }
+  @Override
+  public void periodic() {
+    //io.updateInputs(inputs);
+    io.update();
+    //Logger.processInputs(name, inputs);
+  }
 }

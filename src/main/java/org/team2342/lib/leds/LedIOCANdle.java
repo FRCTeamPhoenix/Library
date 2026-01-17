@@ -51,19 +51,23 @@ public class LedIOCANdle implements LedIO {
 
   @Override
   public void setColor(Half half, Color color) {
+    if (color == null){ 
+      color = Color.kBlack;
+    }
+
     switch (half) {
       case FIRST -> {
-        sendSolidColor(0, halfLength, color);
+        // sendSolidColor(0, halfLength, color);
         firstColor = color;
         firstEffect = LedEffect.SOLID;
       }
       case SECOND -> {
-        sendSolidColor(halfLength, ledCount, color);
+        //sendSolidColor(halfLength, ledCount, color);
         secondColor = color;
         secondEffect = LedEffect.SOLID;
       }
       case ALL -> {
-        sendSolidColor(0, ledCount, color);
+        //sendSolidColor(0, ledCount, color);
         firstColor = color;
         secondColor = color;
         firstEffect = LedEffect.SOLID;
@@ -79,22 +83,22 @@ public class LedIOCANdle implements LedIO {
     }
 
     switch (half) {
-      case FIRST:
+      case FIRST -> {
         firstColor = color;
         firstEffect = effect;
-        applyEffect(0, halfLength, effect, color);
-        break;
-      case SECOND:
+        //applyEffect(0, halfLength, effect, color);
+      }
+      case SECOND -> {
         secondColor = color;
         secondEffect = effect;
-        applyEffect(halfLength, ledCount, effect, color);
-        break;
-      case ALL:
+        //applyEffect(halfLength, ledCount, effect, color);
+      }
+      case ALL -> {
         firstColor = color;
         secondColor = color;
         firstEffect = effect;
         secondEffect = effect;
-        break;
+      }
     }
   }
 
@@ -127,5 +131,10 @@ public class LedIOCANdle implements LedIO {
         sendSolidColor(start, end, Color.kBlack);
       }
     }
+  }
+
+  public void update() {
+    applyEffect(0, halfLength, firstEffect, firstColor);
+    applyEffect(halfLength, ledCount, secondEffect, secondColor);
   }
 }
