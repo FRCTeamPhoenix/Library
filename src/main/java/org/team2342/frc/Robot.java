@@ -169,7 +169,9 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {}
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    robotContainer.getDrive().calculateVisionHeadingOffset();
+  }
 
   @Override
   public void autonomousInit() {

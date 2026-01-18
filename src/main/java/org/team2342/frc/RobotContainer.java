@@ -70,10 +70,6 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
                 new VisionIOPhoton(
-                    VisionConstants.RIGHT_PARAMETERS,
-                    PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR),
-                new VisionIOPhoton(
                     VisionConstants.LEFT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR));
@@ -95,11 +91,6 @@ public class RobotContainer {
                 drive::getTimestampedHeading,
                 new VisionIOSim(
                     VisionConstants.LEFT_PARAMETERS,
-                    PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    drive::getRawOdometryPose),
-                new VisionIOSim(
-                    VisionConstants.RIGHT_PARAMETERS,
                     PoseStrategy.CONSTRAINED_SOLVEPNP,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     drive::getRawOdometryPose));
@@ -129,9 +120,10 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
 
-    SmartDashboard.putData(
-        "Calculate Vision Heading Offset",
-        Commands.runOnce(() -> drive.calculateVisionHeadingOffset()));
+    // SmartDashboard.putData(
+    //     "Calculate Vision Heading Offset",
+    //     Commands.runOnce(() -> drive.calculateVisionHeadingOffset())
+    //         .alongWith(Commands.print("offset calculated")));
 
     if (Constants.TUNING) setupDevelopmentRoutines();
 

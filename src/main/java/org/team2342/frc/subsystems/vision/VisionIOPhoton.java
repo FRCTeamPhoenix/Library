@@ -39,7 +39,6 @@ public class VisionIOPhoton implements VisionIO {
   public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
       Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
 
-  // TODO: AllianceUtils
   /**
    * Creates a new VisionIOPhotonVision.
    *
