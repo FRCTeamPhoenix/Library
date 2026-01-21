@@ -42,7 +42,8 @@ public class CameraParameters {
       double avgErrorPx,
       double errorStdDevPx,
       Matrix<N3, N3> cameraMatrix,
-      Matrix<N8, N1> distCoeffs) {
+      Matrix<N8, N1> distCoeffs,
+      Transform3d transform) {
     this.cameraName = cameraName;
     this.resWidth = resWidth;
     this.resHeight = resHeight;
@@ -50,6 +51,7 @@ public class CameraParameters {
     this.errorStdDevPx = errorStdDevPx;
     this.cameraMatrix = cameraMatrix;
     this.distCoeffs = distCoeffs;
+    this.transform = transform;
   }
 
   public CameraParameters(String cameraName, int resWidth, int resHeight) {

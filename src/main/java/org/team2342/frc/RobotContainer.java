@@ -120,10 +120,11 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
 
-    // SmartDashboard.putData(
-    //     "Calculate Vision Heading Offset",
-    //     Commands.runOnce(() -> drive.calculateVisionHeadingOffset())
-    //         .alongWith(Commands.print("offset calculated")));
+    SmartDashboard.putData(
+        "Calculate Vision Heading Offset",
+        Commands.runOnce(() -> drive.calculateVisionHeadingOffset())
+            .alongWith(Commands.print("Calculated Vision Offset"))
+            .ignoringDisable(true));
 
     if (Constants.TUNING) setupDevelopmentRoutines();
 
