@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.PhotonCamera;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {
@@ -83,7 +83,7 @@ public class VisionIOPhoton implements VisionIO {
         var target = result.targets.get(0);
 
         // Calculate robot pose
-        var tagPose = VisionConstants.TAG_LAYOUT.getTagPose(target.fiducialId);
+        var tagPose = AllianceUtils.getFieldLayout().getTagPose(target.fiducialId);
         if (tagPose.isPresent()) {
           Transform3d fieldToTarget =
               new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());

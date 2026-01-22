@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 // import org.team2342.frc.subsystems.CANdleSystem.CANdleSystem;
 import org.team2342.frc.util.PhoenixUtils;
-import org.team2342.lib.fsm.StateMachine;
 import org.team2342.lib.logging.ExecutionLogger;
 
 public class Robot extends LoggedRobot {
@@ -41,18 +39,6 @@ public class Robot extends LoggedRobot {
   // private final CANdleSystem candle = new CANdleSystem(null);
 
   private final RobotContainer robotContainer;
-
-  public enum testStates {
-    UNDETERMINED,
-    STATE_1,
-    STATE_2,
-    STATE_3,
-    STATE_4
-  }
-
-  private StateMachine<testStates> machine =
-      new StateMachine<Robot.testStates>(
-          "TestMachine", testStates.UNDETERMINED, () -> testStates.STATE_1, testStates.class);
 
   public Robot() {
     // Record metadata
@@ -161,18 +147,6 @@ public class Robot extends LoggedRobot {
         .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
 
     robotContainer = new RobotContainer();
-
-    machine.addTransition(testStates.STATE_1, testStates.STATE_2, new PrintCommand("1 -> 2"));
-    machine.addStateCommand(testStates.STATE_1, new PrintCommand("1"));
-    machine.addStateCommand(testStates.STATE_2, new PrintCommand("2"));
-    machine.addStateCommand(testStates.STATE_3, new PrintCommand("3"));
-    machine.addStateCommand(testStates.STATE_4, new PrintCommand("4"));
-
-    machine.addDualTransition(testStates.STATE_2, testStates.STATE_4, new PrintCommand("2 -> 4"));
-    machine.addTransition(testStates.STATE_4, testStates.STATE_3, new PrintCommand("4 -> 3"));
-    machine.addTransition(testStates.STATE_3, testStates.STATE_1, new PrintCommand("4 -> 3"));
-    machine.enable();
-    System.out.println(machine.dot());
   }
 
   @Override
@@ -187,8 +161,6 @@ public class Robot extends LoggedRobot {
 
     robotContainer.updateAlerts();
 
-    machine.requestTransition(testStates.STATE_3);
-    machine.periodic();
     ExecutionLogger.log("RobotPeriodic");
     // candle.periodic();
   }
@@ -207,7 +179,7 @@ public class Robot extends LoggedRobot {
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
-      autonomousCommand.schedule();
+      CommandScheduler.getInstance().schedule(autonomousCommand);
     }
   }
 

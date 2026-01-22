@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -12,14 +12,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.subsystems.drive.Drive;
+import org.team2342.lib.util.AllianceUtils;
 
 public class RotationLockedDrive extends Command {
 
@@ -85,9 +84,7 @@ public class RotationLockedDrive extends Command {
             xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
     // Convert to field relative speeds & send command
-    boolean isFlipped =
-        DriverStation.getAlliance().isPresent()
-            && DriverStation.getAlliance().get() == Alliance.Red;
+    boolean isFlipped = AllianceUtils.isRedAlliance();
 
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(

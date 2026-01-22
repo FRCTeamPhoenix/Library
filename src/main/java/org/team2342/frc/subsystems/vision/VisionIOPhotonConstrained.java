@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Team 2342
+// Copyright (c) 2026 Team 2342
 // https://github.com/FRCTeamPhoenix
 //
 // This source code is licensed under the MIT License.
@@ -43,7 +43,7 @@ import org.photonvision.jni.ConstrainedSolvepnpJni;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
-import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.lib.util.AllianceUtils;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhotonConstrained implements VisionIO {
@@ -154,7 +154,7 @@ public class VisionIOPhotonConstrained implements VisionIO {
     var target = result.targets.get(0);
 
     // Calculate robot pose
-    var tagPose = VisionConstants.TAG_LAYOUT.getTagPose(target.fiducialId);
+    var tagPose = AllianceUtils.getFieldLayout().getTagPose(target.fiducialId);
     if (tagPose.isPresent()) {
       Transform3d fieldToTarget =
           new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
@@ -212,7 +212,7 @@ public class VisionIOPhotonConstrained implements VisionIO {
       tagDist = totalTagDistance / result.targets.size(); // Average tag distance
     } else {
       var target = result.targets.get(0);
-      var tagPose = VisionConstants.TAG_LAYOUT.getTagPose(target.fiducialId);
+      var tagPose = AllianceUtils.getFieldLayout().getTagPose(target.fiducialId);
       if (tagPose.isPresent()) {
         Transform3d fieldToTarget =
             new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
@@ -249,7 +249,7 @@ public class VisionIOPhotonConstrained implements VisionIO {
             result.getTargets(),
             robotToCamera,
             fieldToRobotSeed,
-            VisionConstants.TAG_LAYOUT,
+            AllianceUtils.getFieldLayout(),
             TargetModel.kAprilTag36h11,
             headingFree,
             headingBuffer.getSample(result.getTimestampSeconds()),

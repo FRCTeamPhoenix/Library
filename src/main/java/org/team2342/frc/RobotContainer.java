@@ -19,10 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.Getter;
-import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
@@ -38,11 +37,11 @@ import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
-import org.team2342.frc.subsystems.vision.VisionIOConstrainedSim;
-import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.leds.*;
 import org.team2342.lib.leds.LedIO.LedEffect;
+import org.team2342.lib.util.AllianceUtils;
+import org.team2342.lib.util.EnhancedXboxController;
 
 public class RobotContainer {
   @Getter private final Drive drive;
@@ -53,7 +52,10 @@ public class RobotContainer {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  @Getter private final CommandXboxController driverController = new CommandXboxController(0);
+  @Getter
+  private final EnhancedXboxController driverController =
+      new EnhancedXboxController(0, DriveConstants.CONTROLLER_DEADBAND);
+
   private final Alert driverControllerAlert =
       new Alert("Driver controller is disconnected!", AlertType.kError);
 
@@ -63,17 +65,11 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(CANConstants.PIGEON_ID),
-                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[0]),
-                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[1]),
-                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.COMP_ENCODER_OFFSETS[2]),
-                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.COMP_ENCODER_OFFSETS[3]));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhoton(
-                    VisionConstants.RIGHT_CAMERA_NAME, VisionConstants.FRONT_RIGHT_TRANSFORM),
-                new VisionIOPhoton(
-                    VisionConstants.LEFT_CAMERA_NAME, VisionConstants.FRONT_LEFT_TRANSFORM));
+                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.ENCODER_OFFSETS[0]),
+                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.ENCODER_OFFSETS[1]),
+                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.ENCODER_OFFSETS[2]),
+                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.ENCODER_OFFSETS[3]));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -89,13 +85,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOConstrainedSim(
+                new VisionIOSim(
                     VisionConstants.RIGHT_CAMERA_NAME,
                     VisionConstants.FRONT_RIGHT_TRANSFORM,
-                    drive::getVisionGyroHeading,
-                    drive::getRawOdometryPose,
-                    VisionConstants.cameraMatrix,
-                    VisionConstants.distCoeffs),
+                    drive::getRawOdometryPose),
                 new VisionIOSim(
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
@@ -152,7 +145,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drive,
-                VisionConstants.TAG_LAYOUT
+                AllianceUtils.getFieldLayout()
                     .getTagPose(7)
                     .orElse(new Pose3d())
                     .toPose2d()
@@ -191,12 +184,6 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Print Encoder Zeros",
         Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));
-    SmartDashboard.putData(
-        "Set Vision Gyro Offset",
-        Commands.runOnce(() -> drive.setVisionGyroOffset()).ignoringDisable(true));
-    SmartDashboard.putData(
-        "Toggle Constrained PhotonVision",
-        Commands.runOnce(() -> vision.toggleHeadingsFree()).ignoringDisable(true));
   }
 
   public void updateAlerts() {

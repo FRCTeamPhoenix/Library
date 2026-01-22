@@ -29,12 +29,13 @@ jobs:
       - run: ./gradlew :spotlessApply
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+            commit_user_name: Phoenix2342-Bot
             commit_author: Phoenix2342-Bot <github@team2342.org>
             commit_message: Auto-format code
   submodule:
     runs-on: ubuntu-latest
     needs: [build, spotless]
-    if: success()
+    if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
       - uses: actions/checkout@v4
         with:
