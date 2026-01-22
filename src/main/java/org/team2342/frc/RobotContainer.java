@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -37,12 +38,17 @@ import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
+import org.team2342.lib.leds.*;
+import org.team2342.lib.leds.LedIO.LedEffect;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
 
 public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
+
+  public final LedIOCANdle candle = new LedIOCANdle(22, 37);
+  public final LedStrip leds = new LedStrip(candle, "leds");
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -107,7 +113,6 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
-
     if (Constants.TUNING) setupDevelopmentRoutines();
 
     configureBindings();
@@ -150,6 +155,10 @@ public class RobotContainer {
                 drive::getPose,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
+
+    leds.setFirst(Color.kRed, LedEffect.FLASHING);
+    leds.setSecond(Color.kBlue, LedEffect.RAINBOW);
+    // leds.setAll(Color.kGreen, LedEffect.RAINBOW);
   }
 
   public Command getAutonomousCommand() {

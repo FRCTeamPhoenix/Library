@@ -8,6 +8,8 @@ package org.team2342.frc.util;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.signals.RGBWColor;
+import edu.wpi.first.wpilibj.util.Color;
 import java.util.function.Supplier;
 
 public class PhoenixUtils {
@@ -46,5 +48,18 @@ public class PhoenixUtils {
   public static void refreshSignals() {
     // Check to make sure there are signals to refresh
     if (registeredSignals.length > 0) BaseStatusSignal.refreshAll(registeredSignals);
+  }
+
+  /**
+   * Used to convert {@link edu.wpi.first.wpilibj.util.Color} to {@link
+   * com.ctre.phoenix6.signals.RGBWColor}
+   *
+   * @param c WPILib Color to be converted
+   */
+  public static RGBWColor toCTREColor(Color c) {
+    if (c == null) {
+      return new RGBWColor(0, 0, 0, 0);
+    }
+    return new RGBWColor((int) (c.red * 255), (int) (c.green * 255), (int) (c.blue * 255), 0);
   }
 }
