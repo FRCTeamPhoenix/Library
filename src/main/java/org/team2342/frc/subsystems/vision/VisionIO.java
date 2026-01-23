@@ -10,6 +10,7 @@ package org.team2342.frc.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
+import org.team2342.lib.util.Timestamped;
 
 public interface VisionIO {
   @AutoLog
@@ -40,7 +41,5 @@ public interface VisionIO {
     PHOTONVISION_CONSTRAINED
   }
 
-  public default void updateInputs(VisionIOInputs inputs) {}
-
-  public default void toggleHeadingFree() {}
+  public default void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {}
 }

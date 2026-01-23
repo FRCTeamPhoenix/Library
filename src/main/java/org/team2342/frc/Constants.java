@@ -10,9 +10,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import org.team2342.lib.util.CameraParameters;
 
 public final class Constants {
-  public static final Mode CURRENT_MODE = Mode.REAL;
+  public static final Mode CURRENT_MODE = Mode.SIM;
   public static final boolean TUNING = true;
 
   public static enum Mode {
@@ -27,24 +28,18 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String LEFT_CAMERA_NAME = "left_arducam";
-    public static final String RIGHT_CAMERA_NAME = "right_arducam";
+    public static final String CAMERA_NAME = "left_arducam";
 
-    public static final Transform3d FRONT_LEFT_TRANSFORM =
+    public static final Transform3d CAMERA_TRANSFORM =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(6.2944),
-                Units.inchesToMeters(8.9822),
-                Units.inchesToMeters(12.125)),
-            new Rotation3d(0, 0.0, Units.degreesToRadians(-35)));
+                Units.inchesToMeters(7.883 + 0.5),
+                Units.inchesToMeters(-10.895 - 0.5),
+                Units.inchesToMeters(8)),
+            new Rotation3d(0, Units.degreesToRadians(-22.0), Units.degreesToRadians(90 - 61.475)));
 
-    public static final Transform3d FRONT_RIGHT_TRANSFORM =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(6.2944),
-                Units.inchesToMeters(-8.9822),
-                Units.inchesToMeters(12.125)),
-            new Rotation3d(0, 0.0, Units.degreesToRadians(35)));
+    public static final CameraParameters LEFT_PARAMETERS =
+        CameraParameters.loadFromName(CAMERA_NAME, 800, 600).withTransform(CAMERA_TRANSFORM);
 
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;

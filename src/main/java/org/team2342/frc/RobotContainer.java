@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.Getter;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
@@ -36,6 +37,7 @@ import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
+import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
@@ -63,7 +65,14 @@ public class RobotContainer {
                 new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.ENCODER_OFFSETS[1]),
                 new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.ENCODER_OFFSETS[2]),
                 new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.ENCODER_OFFSETS[3]));
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
+                new VisionIOPhoton(
+                    VisionConstants.LEFT_PARAMETERS,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -79,13 +88,11 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
                 new VisionIOSim(
-                    VisionConstants.RIGHT_CAMERA_NAME,
-                    VisionConstants.FRONT_RIGHT_TRANSFORM,
-                    drive::getRawOdometryPose),
-                new VisionIOSim(
-                    VisionConstants.LEFT_CAMERA_NAME,
-                    VisionConstants.FRONT_LEFT_TRANSFORM,
+                    VisionConstants.LEFT_PARAMETERS,
+                    PoseStrategy.CONSTRAINED_SOLVEPNP,
+                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     drive::getRawOdometryPose));
 
         break;
@@ -98,7 +105,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                drive::getTimestampedHeading,
+                new VisionIO() {},
+                new VisionIO() {});
 
         break;
     }
@@ -107,6 +119,12 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.get();
+
+    SmartDashboard.putData(
+        "Calculate Vision Heading Offset",
+        Commands.runOnce(() -> drive.calculateVisionHeadingOffset())
+            .alongWith(Commands.print("Calculated Vision Offset"))
+            .ignoringDisable(true));
 
     if (Constants.TUNING) setupDevelopmentRoutines();
 
