@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -60,11 +62,35 @@ public class AllianceUtils {
         : bluePose;
   }
 
+      public static Translation2d flipToAlliance(Translation2d blueTranslation, AprilTagFieldLayout field) {
+    return isRedAlliance()
+        ? new Translation2d(
+            field.getFieldLength() - blueTranslation.getX(),
+            field.getFieldWidth() - blueTranslation.getY())
+        : blueTranslation;
+  }
+    public static Translation3d flipToAlliance(Translation3d blueTranslation, AprilTagFieldLayout field) {
+    return isRedAlliance()
+        ? new Translation3d(
+            field.getFieldLength() - blueTranslation.getX(),
+            field.getFieldWidth() - blueTranslation.getY(),
+            blueTranslation.getZ())
+        : blueTranslation;
+  }
+
   public static Pose2d flipToAlliance(Pose2d bluePose) {
     return flipToAlliance(bluePose, fieldLayout);
   }
 
   public static Pose3d flipToAlliance(Pose3d bluePose) {
     return flipToAlliance(bluePose, fieldLayout);
+  }
+
+    public static Translation2d flipToAlliance(Translation2d blueTranslation) {
+    return flipToAlliance(blueTranslation, fieldLayout);
+  }
+
+  public static Translation3d flipToAlliance(Translation3d blueTranslation) {
+    return flipToAlliance(blueTranslation, fieldLayout);
   }
 }
