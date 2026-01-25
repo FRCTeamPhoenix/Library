@@ -62,14 +62,17 @@ public class AllianceUtils {
         : bluePose;
   }
 
-      public static Translation2d flipToAlliance(Translation2d blueTranslation, AprilTagFieldLayout field) {
+  public static Translation2d flipToAlliance(
+      Translation2d blueTranslation, AprilTagFieldLayout field) {
     return isRedAlliance()
         ? new Translation2d(
             field.getFieldLength() - blueTranslation.getX(),
             field.getFieldWidth() - blueTranslation.getY())
         : blueTranslation;
   }
-    public static Translation3d flipToAlliance(Translation3d blueTranslation, AprilTagFieldLayout field) {
+
+  public static Translation3d flipToAlliance(
+      Translation3d blueTranslation, AprilTagFieldLayout field) {
     return isRedAlliance()
         ? new Translation3d(
             field.getFieldLength() - blueTranslation.getX(),
@@ -86,7 +89,7 @@ public class AllianceUtils {
     return flipToAlliance(bluePose, fieldLayout);
   }
 
-    public static Translation2d flipToAlliance(Translation2d blueTranslation) {
+  public static Translation2d flipToAlliance(Translation2d blueTranslation) {
     return flipToAlliance(blueTranslation, fieldLayout);
   }
 
