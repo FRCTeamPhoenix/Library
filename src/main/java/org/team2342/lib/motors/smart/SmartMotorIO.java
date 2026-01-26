@@ -15,6 +15,7 @@ public interface SmartMotorIO {
   public class SmartMotorIOInputs {
     public boolean[] motorsConnected;
     public double positionRad = 0.0;
+    public double absEncoderPositionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double[] appliedVolts = new double[] {0.0};
     public double[] currentAmps = new double[] {0.0};
@@ -27,6 +28,8 @@ public interface SmartMotorIO {
   public default void runVelocity(double velocityRadPerSec) {}
 
   public default void runVoltage(double voltage) {}
+
+  public default void runTorqueCurrent(double amps) {}
 
   public default void reconfigurePIDFF(PIDFFConfigs configs) {}
 

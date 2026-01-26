@@ -15,6 +15,7 @@ public class SmartMotorConfig extends MotorConfig {
   public PIDFFConfigs pidffConfigs = new PIDFFConfigs();
   public double gearRatio = 1;
   public ControlType controlType = null;
+  public FeedbackConfig feedbackConfig = FeedbackConfig.internal();
 
   public Constraints profileConstraintsRad = new Constraints(0, 0);
 
@@ -38,6 +39,11 @@ public class SmartMotorConfig extends MotorConfig {
 
   public SmartMotorConfig withControlType(ControlType type) {
     controlType = type;
+    return this;
+  }
+
+  public SmartMotorConfig withFeedbackConfig(FeedbackConfig feedbackConfig) {
+    this.feedbackConfig = feedbackConfig;
     return this;
   }
 
@@ -88,6 +94,27 @@ public class SmartMotorConfig extends MotorConfig {
     PROFILED_POSITION,
     /** Velocity control, with acceleration limits */
     PROFILED_VELOCITY,
+  }
+
+  public record FeedbackConfig(
+      FeedbackType type, int encoderID, double offsetRotations, boolean inverted) {
+    public static FeedbackConfig internal() {
+      return new FeedbackConfig(FeedbackType.INTERNAL, -1, 0.0, false);
+    }
+
+    public static FeedbackConfig remote(int encoderID, double offsetRotations, boolean inverted) {
+      return new FeedbackConfig(FeedbackType.REMOTE, encoderID, offsetRotations, inverted);
+    }
+
+    public static FeedbackConfig fused(int encoderID, double offsetRotations, boolean inverted) {
+      return new FeedbackConfig(FeedbackType.FUSED, encoderID, offsetRotations, inverted);
+    }
+
+    public enum FeedbackType {
+      INTERNAL,
+      REMOTE,
+      FUSED
+    }
   }
 
   public record FollowerConfig(int canID, boolean inverted) {}
