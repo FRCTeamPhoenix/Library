@@ -47,7 +47,8 @@ public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
 
-  public final LedIOCANdle candle = new LedIOCANdle(22, 37);
+  public final LedIOCANdle candle =
+      new LedIOCANdle(22, 37); // total 37 anf ignoring onboard for now
   public final LedStrip leds = new LedStrip(candle, "leds");
 
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -155,10 +156,9 @@ public class RobotContainer {
                 drive::getPose,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
-
-    leds.setFirst(Color.kRed, LedEffect.FLASHING);
-    leds.setSecond(Color.kBlue, LedEffect.RAINBOW);
-    // leds.setAll(Color.kGreen, LedEffect.RAINBOW);
+    candle.clearAll();
+    leds.setFirst(LedEffect.FLASHING, Color.kRed);
+    leds.setSecond(LedEffect.TWINKLE, Color.kPurple);
   }
 
   public Command getAutonomousCommand() {

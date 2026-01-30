@@ -20,27 +20,32 @@ public interface LedIO {
 
   public default void updateInputs(LedIOInputs inputs) {}
 
-  public default void setColor(Half half, Color color) {}
+  // public default void setColor(Half half, Color color) {}
 
   public default void setEffect(Half half, LedEffect effect, Color color) {}
 
-  public default void setColor(Color color) {
-    setColor(Half.ALL, color);
-  }
+  // public default void setColor(Color color) {
+  //   setColor(Half.ALL, color);
+  // }
 
-  public default void setEffect(LedEffect effect, Color color) {
-    setEffect(Half.ALL, effect, color);
-  }
+  // public default void setEffect(LedEffect effect, Color color) {
+  //   setEffect(Half.ALL, effect, color);
+  // }
 
   public enum Half {
     FIRST,
     SECOND,
-    ALL
+    // ALL
   }
 
   public enum LedEffect {
     SOLID,
     FLASHING,
+    FIRE,
+    TWINKLE,
+    COLOR_FLOW,
+    LARSON,
+    RGB_FADE,
     RAINBOW,
     OFF
   }

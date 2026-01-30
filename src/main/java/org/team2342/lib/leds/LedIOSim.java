@@ -14,24 +14,24 @@ public class LedIOSim implements LedIO {
   private LedEffect firstEffect = LedEffect.OFF;
   private LedEffect secondEffect = LedEffect.OFF;
 
-  @Override
-  public void setColor(Half half, Color color) {
-    switch (half) {
-      case FIRST:
-        firstColor = color;
-        break;
-      case SECOND:
-        secondColor = color;
-        break;
-      case ALL:
-        firstColor = color;
-        secondColor = color;
-    }
-  }
+  // @Override
+  // public void setColor(Half half, Color color) {
+  //   switch (half) {
+  //     case FIRST:
+  //       firstColor = color;
+  //       break;
+  //     case SECOND:
+  //       secondColor = color;
+  //       break;
+  //     // case ALL:
+  //     //   firstColor = color;
+  //     //   secondColor = color;
+  //   }
+  // }
 
   @Override
   public void setEffect(Half half, LedEffect effect, Color color) {
-    setColor(half, color);
+    // setColor(half, color);
 
     switch (half) {
       case FIRST:
@@ -40,10 +40,10 @@ public class LedIOSim implements LedIO {
       case SECOND:
         secondEffect = effect;
         break;
-      case ALL:
-        firstEffect = effect;
-        secondEffect = effect;
-        break;
+        // case ALL:
+        //   firstEffect = effect;
+        //   secondEffect = effect;
+        //   break;
     }
   }
 

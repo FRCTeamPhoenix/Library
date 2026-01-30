@@ -25,6 +25,14 @@ public class AllianceUtils {
   private static AprilTagFieldLayout fieldLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
+  public static void loadFieldLayout(String resourcePath) {
+    try {
+      fieldLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to load AprilTagFieldLayout from resource", false);
+    }
+  }
+
   public static boolean isRedAlliance() {
     var alliance = DriverStation.getAlliance();
 
