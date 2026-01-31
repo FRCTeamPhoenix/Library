@@ -26,10 +26,6 @@ import org.team2342.frc.util.PhoenixUtils;
 public class LedIOCANdle implements LedIO {
   private final CANdle candle;
   private final int halfLength;
-  // private int startFirst = 0;
-  // private int endFirst;
-  // private int startSecond;
-  // private int endSecond;
 
   private final int slot0StartIdx;
   private final int slot0EndIdx;
@@ -56,7 +52,6 @@ public class LedIOCANdle implements LedIO {
     config.LED.StripType = StripTypeValue.GRB;
     config.LED.BrightnessScalar = 0.7;
     config.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
-    // config.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
     candle.getConfigurator().apply(config);
   }
 
@@ -67,29 +62,6 @@ public class LedIOCANdle implements LedIO {
     inputs.firstHalfEffect = firstEffect;
     inputs.secondHalfEffect = secondEffect;
   }
-
-  // @Override
-  // public void setColor(Half half, Color color) {
-  //   if (color == null) {
-  //     color = Color.kBlack;
-  //   }
-
-  //   switch (half) {
-  //     case FIRST -> {
-  //       candle.setControl(
-  //         new SolidColor(slot0StartIdx, slot0EndIdx).withColor(PhoenixUtils.toCTREColor(color))
-  //       );
-  //     }
-  //     case SECOND -> {
-  //       candle.setControl(
-  //         new SolidColor(slot1StartIdx, slot1EndIdx).withColor(PhoenixUtils.toCTREColor(color))
-  //       );
-  //     }
-  //     // case ALL -> {
-  //     //   sendSolidColor(slot0StartIdx, slot1EndIdx, color);
-  //     // }
-  //   }
-  // }
 
   @Override
   public void setEffect(Half half, LedEffect effect, Color color) {
@@ -201,12 +173,6 @@ public class LedIOCANdle implements LedIO {
           }
         }
       }
-        // case ALL -> {
-        //   firstColor = color;
-        //   secondColor = color;
-        //   firstEffect = effect;
-        //   secondEffect = effect;
-        // }
     }
   }
 
@@ -215,24 +181,4 @@ public class LedIOCANdle implements LedIO {
       candle.setControl(new EmptyAnimation(i));
     }
   }
-  // private void applyEffect(int start, int end, LedEffect effect, Color color) {
-  //   switch (effect) {
-  //     case SOLID -> {
-  //       sendSolidColor(start, end, color);
-  //     }
-  //     case FLASHING -> {
-  //
-  //     }
-  //     case RAINBOW -> {
-  //       // candle.setControl(new EmptyAnimation(end));
-  //       RainbowAnimation request = new RainbowAnimation(start, end).withSlot(0);
-  //       candle.setControl(request);
-  //     }
-  //     case OFF -> {
-  //       // candle.setControl(new EmptyAnimation(end));
-  //       sendSolidColor(start, end, Color.kBlack);
-  //     }
-  //   }
-  // }
-
 }
