@@ -12,10 +12,11 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -38,7 +39,7 @@ import org.team2342.lib.motors.smart.SmartMotorConfig.FeedbackConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
 
-public class SmartMotorIOTalonFX implements SmartMotorIO {
+public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
 
   private final TalonFX leaderTalon;
   private final TalonFX[] followerTalons;
@@ -56,13 +57,15 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private final StatusSignal<Current>[] followersCurrent;
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
+  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
 
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
-  private final PositionVoltage positionRequest = new PositionVoltage(0);
+  private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0);
+  private final PositionTorqueCurrentFOC positionRequest = new PositionTorqueCurrentFOC(0);
 
-  private final MotionMagicVelocityVoltage velocityMotionMagicRequest =
-      new MotionMagicVelocityVoltage(0);
-  private final MotionMagicVoltage positionMotionMagicRequest = new MotionMagicVoltage(0);
+  private final MotionMagicVelocityTorqueCurrentFOC velocityMotionMagicRequest =
+      new MotionMagicVelocityTorqueCurrentFOC(0);
+  private final MotionMagicTorqueCurrentFOC positionMotionMagicRequest =
+      new MotionMagicTorqueCurrentFOC(0);
 
   private final Debouncer leaderConnectedDebounce = new Debouncer(0.5);
   private final Debouncer[] followersConnectedDebounce;
@@ -70,7 +73,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private final SmartMotorConfig config;
 
   @SuppressWarnings("unchecked") // lol type "safety"
-  public SmartMotorIOTalonFX(int canID, SmartMotorConfig config, FollowerConfig... followers) {
+  public SmartMotorIOTalonFXFOC(int canID, SmartMotorConfig config, FollowerConfig... followers) {
     this.config = config;
 
     leaderTalon = new TalonFX(canID);
@@ -92,7 +95,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
     leaderPosition = leaderTalon.getPosition();
     leaderVelocity = leaderTalon.getVelocity();
     leaderAppliedVolts = leaderTalon.getMotorVoltage();
-    leaderCurrent = leaderTalon.getStatorCurrent();
+    leaderCurrent = leaderTalon.getTorqueCurrent();
 
     followerTalons = new TalonFX[followers.length];
     followersAppliedVolts = (StatusSignal<Voltage>[]) new StatusSignal[followers.length];
@@ -123,7 +126,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
                           ? MotorAlignmentValue.Opposed
                           : MotorAlignmentValue.Aligned)));
       followersAppliedVolts[i] = followerTalons[i].getMotorVoltage();
-      followersCurrent[i] = followerTalons[i].getStatorCurrent();
+      followersCurrent[i] = followerTalons[i].getTorqueCurrent();
       followersConnectedDebounce[i] = new Debouncer(0.5);
     }
 
@@ -209,8 +212,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
 
   @Override
   public void runTorqueCurrent(double amps) {
-    throw new IllegalStateException(
-        "Cannot run torque control: Use a SmartMotorIOTalonFXFOC instead!");
+    leaderTalon.setControl(torqueCurrentRequest.withOutput(amps));
   }
 
   @Override
