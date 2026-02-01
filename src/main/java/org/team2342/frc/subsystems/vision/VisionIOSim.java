@@ -1,19 +1,21 @@
-// Copyright (c) 2021-2026 Littleton Robotics
-// http://github.com/Mechanical-Advantage
+// Copyright (c) 2025 Team 2342
+// https://github.com/FRCTeamPhoenix
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the AdvantageKit-License file
-// at the root directory of this project.
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
 
 package org.team2342.frc.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.function.Supplier;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.lib.util.AllianceUtils;
+import org.team2342.lib.util.CameraParameters;
+import org.team2342.lib.util.Timestamped;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {
@@ -28,25 +30,38 @@ public class VisionIOSim extends VisionIOPhoton {
    * @param name The name of the camera.
    * @param poseSupplier Supplier for the robot pose to use in simulation.
    */
-  public VisionIOSim(String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
-    super(name, robotToCamera);
+  public VisionIOSim(
+      CameraParameters parameters,
+      PoseStrategy primaryStrategy,
+      PoseStrategy disabledStrategy,
+      Supplier<Pose2d> poseSupplier) {
+    super(parameters, primaryStrategy, disabledStrategy);
     this.poseSupplier = poseSupplier;
 
-    // Initialize vision sim
     if (visionSim == null) {
       visionSim = new VisionSystemSim("main");
       visionSim.addAprilTags(AllianceUtils.getFieldLayout());
     }
 
     // Add sim camera
-    var cameraProperties = new SimCameraProperties();
-    cameraSim = new PhotonCameraSim(camera, cameraProperties, AllianceUtils.getFieldLayout());
+    SimCameraProperties properties = new SimCameraProperties();
+    properties.setCalibration(
+        parameters.getResWidth(),
+        parameters.getResHeight(),
+        parameters.getCameraMatrix(),
+        parameters.getDistCoeffs());
+    properties.setCalibError(parameters.getAvgErrorPx(), parameters.getErrorStdDevPx());
+    properties.setFPS(60.0);
+    properties.setAvgLatencyMs(35);
+    properties.setLatencyStdDevMs(7);
+
+    cameraSim = new PhotonCameraSim(camera, properties, AllianceUtils.getFieldLayout());
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs) {
+  public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
     visionSim.update(poseSupplier.get());
-    super.updateInputs(inputs);
+    super.updateInputs(inputs, heading);
   }
 }

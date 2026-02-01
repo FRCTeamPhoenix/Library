@@ -19,11 +19,13 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.subsystems.vision.VisionIO.PoseObservationType;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.team2342.lib.util.AllianceUtils;
+import org.team2342.lib.util.Timestamped;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
@@ -31,9 +33,16 @@ public class Vision extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  private final Supplier<Timestamped<Rotation2d>> timestampedHeading;
+
+  public Vision(
+      VisionConsumer consumer,
+      Supplier<Timestamped<Rotation2d>> timestampedHeading,
+      VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
+
+    this.timestampedHeading = timestampedHeading;
 
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
@@ -61,8 +70,12 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Timestamped<Rotation2d> heading = timestampedHeading.get();
+    Logger.recordOutput("Vision/Heading/Rotation", heading.get());
+    Logger.recordOutput("Vision/Heading/Timestamp", heading.getTimestamp());
+
     for (int i = 0; i < io.length; i++) {
-      io[i].updateInputs(inputs[i]);
+      io[i].updateInputs(inputs[i], heading);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
 
@@ -173,12 +186,6 @@ public class Vision extends SubsystemBase {
 
     // Record cycle time
     ExecutionLogger.log("Vision");
-  }
-
-  public void toggleHeadingsFree() {
-    for (VisionIO vis : io) {
-      vis.toggleHeadingFree();
-    }
   }
 
   @FunctionalInterface
