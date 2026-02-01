@@ -81,6 +81,7 @@ public class SmartMotorIOSim implements SmartMotorIO {
     inputs.currentAmps = new double[followers];
 
     inputs.positionRad = (sim.getOutput(0) / config.simRatio) + offset;
+    inputs.absEncoderPositionRad = sim.getOutput(0) + offset;
     inputs.velocityRadPerSec = sim.getOutput(1) / config.simRatio;
 
     for (int i = 0; i < followers + 1; i++) {
@@ -138,6 +139,11 @@ public class SmartMotorIOSim implements SmartMotorIO {
   @Override
   public void runVoltage(double voltage) {
     sim.setInput(voltage);
+  }
+
+  @Override
+  public void runTorqueCurrent(double amps) {
+    runVoltage(motor.getVoltage(motor.getTorque(amps), sim.getOutput(1) / config.simRatio));
   }
 
   @Override
