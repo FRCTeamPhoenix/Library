@@ -97,17 +97,25 @@ public class SmartMotorConfig extends MotorConfig {
   }
 
   public record FeedbackConfig(
-      FeedbackType type, int encoderID, double offsetRotations, boolean inverted) {
+      FeedbackType type,
+      int encoderID,
+      double rotorToSensor,
+      double offsetRotations,
+      boolean inverted) {
     public static FeedbackConfig internal() {
-      return new FeedbackConfig(FeedbackType.INTERNAL, -1, 0.0, false);
+      return new FeedbackConfig(FeedbackType.INTERNAL, -1, 1.0, 0.0, false);
     }
 
-    public static FeedbackConfig remote(int encoderID, double offsetRotations, boolean inverted) {
-      return new FeedbackConfig(FeedbackType.REMOTE, encoderID, offsetRotations, inverted);
+    public static FeedbackConfig remote(
+        int encoderID, double rotorToSensor, double offsetRotations, boolean inverted) {
+      return new FeedbackConfig(
+          FeedbackType.REMOTE, encoderID, rotorToSensor, offsetRotations, inverted);
     }
 
-    public static FeedbackConfig fused(int encoderID, double offsetRotations, boolean inverted) {
-      return new FeedbackConfig(FeedbackType.FUSED, encoderID, offsetRotations, inverted);
+    public static FeedbackConfig fused(
+        int encoderID, double rotorToSensor, double offsetRotations, boolean inverted) {
+      return new FeedbackConfig(
+          FeedbackType.FUSED, encoderID, rotorToSensor, offsetRotations, inverted);
     }
 
     public enum FeedbackType {

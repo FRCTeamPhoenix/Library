@@ -250,6 +250,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
   private void configureFeedback() {
     switch (config.feedbackConfig.type()) {
       case INTERNAL -> {
+        talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         talonConfig.Feedback.SensorToMechanismRatio = config.gearRatio;
       }
 
@@ -266,8 +267,8 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
 
         talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         talonConfig.Feedback.FeedbackRemoteSensorID = config.feedbackConfig.encoderID();
-        talonConfig.Feedback.RotorToSensorRatio = config.gearRatio;
-        talonConfig.Feedback.SensorToMechanismRatio = 1.0;
+        talonConfig.Feedback.RotorToSensorRatio = config.feedbackConfig.rotorToSensor();
+        talonConfig.Feedback.SensorToMechanismRatio = config.gearRatio;
       }
     }
   }
