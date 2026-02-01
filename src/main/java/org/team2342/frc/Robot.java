@@ -29,12 +29,14 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+// import org.team2342.frc.subsystems.CANdleSystem.CANdleSystem;
 import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.logging.ExecutionLogger;
 
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private static final double loopOverrunWarningTimeout = 0.2;
+  // private final CANdleSystem candle = new CANdleSystem(null);
 
   private final RobotContainer robotContainer;
 
@@ -160,6 +162,7 @@ public class Robot extends LoggedRobot {
     robotContainer.updateAlerts();
 
     ExecutionLogger.log("RobotPeriodic");
+    // candle.periodic();
   }
 
   @Override
