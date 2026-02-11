@@ -9,6 +9,7 @@ package org.team2342.lib.motors.dumb;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -22,14 +23,15 @@ import org.team2342.lib.motors.MotorConfig;
 
 /**
  * Implementation of DumbMotorIO for a TalonFX motor controller Handles configuration, input
- * updates, and voltage control for the motor
+ * updates, and torque control for the motor
  */
-public class DumbMotorIOTalonFX implements DumbMotorIO {
+public class DumbMotorIOTalonFXFOC implements DumbMotorIO {
   private final TalonFX talon;
 
   private final StatusSignal<Voltage> appliedVolts;
   private final StatusSignal<Current> current;
 
+  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final VoltageOut voltageRequest = new VoltageOut(0);
   private final Debouncer connectedDebouncer = new Debouncer(0.5);
 
@@ -39,7 +41,7 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
    * @param canID The CAN ID of the TalonFX motor controller
    * @param config The configuration settings for the motor
    */
-  public DumbMotorIOTalonFX(int canID, MotorConfig config) {
+  public DumbMotorIOTalonFXFOC(int canID, MotorConfig config) {
     talon = new TalonFX(canID);
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
@@ -89,5 +91,10 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
   @Override
   public void runVoltage(double voltage) {
     talon.setControl(voltageRequest.withOutput(voltage));
+  }
+
+  @Override
+  public void runTorqueCurrent(double amps) {
+    talon.setControl(torqueCurrentRequest.withOutput(amps));
   }
 }
