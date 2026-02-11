@@ -39,4 +39,6 @@ public interface DumbMotorIO {
    * @param voltage The voltage to apply to the motor.
    */
   public default void runVoltage(double voltage) {}
+
+  public default void runTorqueCurrent(double amps) {}
 }

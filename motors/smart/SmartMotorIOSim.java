@@ -76,9 +76,9 @@ public class SmartMotorIOSim implements SmartMotorIO {
   public void updateInputs(SmartMotorIOInputs inputs) {
     sim.update(0.02);
 
-    inputs.motorsConnected = new boolean[followers];
-    inputs.appliedVolts = new double[followers];
-    inputs.currentAmps = new double[followers];
+    inputs.motorsConnected = new boolean[followers + 1];
+    inputs.appliedVolts = new double[followers + 1];
+    inputs.currentAmps = new double[followers + 1];
 
     inputs.positionRad = (sim.getOutput(0) / config.simRatio) + offset;
     inputs.absEncoderPositionRad = sim.getOutput(0) + offset;
