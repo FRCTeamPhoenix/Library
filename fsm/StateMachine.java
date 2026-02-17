@@ -259,14 +259,15 @@ public class StateMachine<E extends Enum<E>> {
           currentTransition.execute();
         }
       }
+
+      Logger.recordOutput(name + "/FSM/TargetState", targetState.name());
+      Logger.recordOutput(
+          name + "/FSM/DesiredState",
+          isTransitioning() ? getCurrentTransition().getEndState().name() : targetState.name());
     }
 
     // Logging statements
     Logger.recordOutput(name + "/FSM/Enabled", isEnabled());
-    Logger.recordOutput(name + "/FSM/TargetState", targetState.name());
-    Logger.recordOutput(
-        name + "/FSM/DesiredState",
-        isTransitioning() ? getCurrentTransition().getEndState().name() : targetState.name());
     Logger.recordOutput(name + "/FSM/CurrentState", getCurrentState().toString());
     Logger.recordOutput(name + "/FSM/Transitioning", isTransitioning());
   }
