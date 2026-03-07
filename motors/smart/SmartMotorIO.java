@@ -13,7 +13,7 @@ public interface SmartMotorIO {
 
   @AutoLog
   public class SmartMotorIOInputs {
-    public boolean[] motorsConnected;
+    public boolean[] motorsConnected = new boolean[] {false};
     public double positionRad = 0.0;
     public double absEncoderPositionRad = 0.0;
     public double velocityRadPerSec = 0.0;
