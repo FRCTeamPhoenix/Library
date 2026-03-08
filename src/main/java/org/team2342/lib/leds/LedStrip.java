@@ -6,8 +6,12 @@
 
 package org.team2342.lib.leds;
 
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
+import org.team2342.lib.leds.LedIO.LEDAnimation;
 import org.team2342.lib.leds.LedIO.LEDEffect;
 import org.team2342.lib.logging.ExecutionLogger;
 
@@ -30,16 +34,20 @@ public class LedStrip extends SubsystemBase {
     ExecutionLogger.log(name);
   }
 
-  public void setFirst(LEDEffect effect) {
-    io.setEffect(LedIO.Half.FIRST, effect);
+  public void setFirst(LEDAnimation animation, Color color) {
+    io.setEffect(LedIO.Half.FIRST, new LEDEffect(animation, color));
   }
 
-  public void setSecond(LEDEffect effect) {
-    io.setEffect(LedIO.Half.SECOND, effect);
+  public void setSecond(LEDAnimation animation, Color color) {
+    io.setEffect(LedIO.Half.SECOND, new LEDEffect(animation, color));
   }
 
-  public void setAll(LEDEffect effect) {
-    setFirst(effect);
-    setSecond(effect);
+  public void setAll(LEDAnimation animation, Color color) {
+    setFirst(animation, color);
+    setSecond(animation, color);
+  }
+
+  public Command setAllCommand(LEDAnimation animation, Color color) {
+    return Commands.runOnce(() -> setAll(animation, color), this);
   }
 }
