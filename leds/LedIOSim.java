@@ -12,19 +12,19 @@ import org.littletonrobotics.junction.Logger;
 public class LedIOSim implements LedIO {
   private Color firstColor = Color.kBlack;
   private Color secondColor = Color.kBlack;
-  private LedEffect firstEffect = LedEffect.OFF;
-  private LedEffect secondEffect = LedEffect.OFF;
+  private LEDAnimation firstAnimation = LEDAnimation.OFF;
+  private LEDAnimation secondAnimation = LEDAnimation.OFF;
 
   @Override
-  public void setEffect(Half half, LedEffect effect, Color color) {
-    // setColor(half, color);
-
+  public void setEffect(Half half, LEDEffect effect) {
     switch (half) {
       case FIRST:
-        firstEffect = effect;
+        firstColor = effect.color();
+        firstAnimation = effect.animation();
         break;
       case SECOND:
-        secondEffect = effect;
+        secondColor = effect.color();
+        secondAnimation = effect.animation();
         break;
     }
   }
@@ -33,16 +33,16 @@ public class LedIOSim implements LedIO {
   public void updateInputs(LedIOInputs inputs) {
     inputs.firstHalfColor = firstColor;
     inputs.secondHalfColor = secondColor;
-    inputs.firstHalfEffect = firstEffect;
-    inputs.secondHalfEffect = secondEffect;
+    inputs.firstHalfEffect = firstAnimation;
+    inputs.secondHalfEffect = secondAnimation;
 
     Logger.recordOutput(
         "LED/FirstHalf/Color", new double[] {firstColor.red, firstColor.green, firstColor.blue});
-    Logger.recordOutput("LED/FirstHalf/Effect", firstEffect.name());
+    Logger.recordOutput("LED/FirstHalf/Effect", firstAnimation.name());
 
     Logger.recordOutput(
         "LED/SecondHalf/Color",
         new double[] {secondColor.red, secondColor.green, secondColor.blue});
-    Logger.recordOutput("LED/SecondHalf/Effect", secondEffect.name());
+    Logger.recordOutput("LED/SecondHalf/Effect", secondAnimation.name());
   }
 }
