@@ -6,27 +6,40 @@
 
 package org.team2342.lib.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.team2342.lib.leds.LedIO.LedEffect;
+import org.littletonrobotics.junction.Logger;
+import org.team2342.lib.leds.LedIO.LEDEffect;
+import org.team2342.lib.logging.ExecutionLogger;
 
 public class LedStrip extends SubsystemBase {
-  private final LedIOCANdle io;
+  private final LedIO io;
+  private final String name;
+  private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
-  public LedStrip(LedIOCANdle io, String name) {
+  public LedStrip(LedIO io, String name) {
     this.io = io;
+    this.name = name;
+    setName(name);
   }
 
-  public void setFirst(LedEffect effect, Color color) {
-    io.setEffect(LedIO.Half.FIRST, effect, color);
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs(name, inputs);
+
+    ExecutionLogger.log(name);
   }
 
-  public void setSecond(LedEffect effect, Color color) {
-    io.setEffect(LedIO.Half.SECOND, effect, color);
+  public void setFirst(LEDEffect effect) {
+    io.setEffect(LedIO.Half.FIRST, effect);
   }
 
-  public void setAll(LedEffect effect, Color color) {
-    setFirst(effect, color);
-    setSecond(effect, color);
+  public void setSecond(LEDEffect effect) {
+    io.setEffect(LedIO.Half.SECOND, effect);
+  }
+
+  public void setAll(LEDEffect effect) {
+    setFirst(effect);
+    setSecond(effect);
   }
 }

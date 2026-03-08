@@ -14,21 +14,20 @@ public interface LedIO {
   public static class LedIOInputs {
     public Color firstHalfColor = Color.kBlack;
     public Color secondHalfColor = Color.kBlack;
-    public LedEffect firstHalfEffect = LedEffect.OFF;
-    public LedEffect secondHalfEffect = LedEffect.OFF;
+    public LEDAnimation firstHalfEffect = LEDAnimation.OFF;
+    public LEDAnimation secondHalfEffect = LEDAnimation.OFF;
   }
 
   public default void updateInputs(LedIOInputs inputs) {}
 
-  public default void setEffect(Half half, LedEffect effect, Color color) {}
+  public default void setEffect(Half half, LEDEffect effect) {}
 
   public enum Half {
     FIRST,
     SECOND,
-    // ALL
   }
 
-  public enum LedEffect {
+  public enum LEDAnimation {
     SOLID,
     FLASHING,
     FIRE,
@@ -39,4 +38,6 @@ public interface LedIO {
     RAINBOW,
     OFF
   }
+
+  public record LEDEffect(LEDAnimation animation, Color color) {}
 }
