@@ -282,6 +282,7 @@ public class SmartMotorIOTalonFX implements SmartMotorIO {
             ? SensorDirectionValue.Clockwise_Positive
             : SensorDirectionValue.CounterClockwise_Positive;
     cfg.MagnetSensor.MagnetOffset = feedback.offsetRotations();
+    cfg.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
 
     PhoenixUtils.tryUntilOk(5, () -> cancoder.getConfigurator().apply(cfg, 0.25));
   }
