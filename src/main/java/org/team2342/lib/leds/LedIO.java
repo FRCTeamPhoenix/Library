@@ -25,6 +25,7 @@ public interface LedIO {
   public enum Half {
     FIRST,
     SECOND,
+    ALL
   }
 
   public enum LEDAnimation {

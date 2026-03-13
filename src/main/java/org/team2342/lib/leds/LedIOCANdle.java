@@ -49,10 +49,11 @@ public class LedIOCANdle implements LedIO {
     slot1EndIdx = ledCount;
 
     CANdleConfiguration config = new CANdleConfiguration();
-    config.LED.StripType = StripTypeValue.GRB;
-    config.LED.BrightnessScalar = 0.7;
+    config.LED.StripType = StripTypeValue.RGB;
+    config.LED.BrightnessScalar = 1.0;
     config.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
     candle.getConfigurator().apply(config);
+    clearAll();
   }
 
   @Override
@@ -73,9 +74,6 @@ public class LedIOCANdle implements LedIO {
       case FIRST -> {
         firstColor = realColor;
         firstAnimation = effect.animation();
-        candle.setControl(
-            new SolidColor(candleFirstStart, canddleFirstEnd)
-                .withColor(PhoenixUtils.toCTREColor(realColor)));
         switch (effect.animation()) {
           case SOLID -> {
             candle.setControl(
@@ -125,9 +123,6 @@ public class LedIOCANdle implements LedIO {
       case SECOND -> {
         secondColor = realColor;
         secondEffect = effect.animation();
-        candle.setControl(
-            new SolidColor(candleSecondStart, candleSecondEnd)
-                .withColor(PhoenixUtils.toCTREColor(realColor)));
         switch (effect.animation()) {
           case SOLID -> {
             candle.setControl(
@@ -141,7 +136,7 @@ public class LedIOCANdle implements LedIO {
                     .withColor(PhoenixUtils.toCTREColor(realColor)));
           }
           case FIRE -> {
-            candle.setControl(new FireAnimation(slot1StartIdx, slot1EndIdx).withSlot(1));
+            candle.setControl(new FireAnimation(slot1StartIdx, slot1EndIdx).withSlot(0));
           }
           case TWINKLE -> {
             candle.setControl(
@@ -170,6 +165,58 @@ public class LedIOCANdle implements LedIO {
           case OFF -> {
             candle.setControl(
                 new SolidColor(slot1StartIdx, slot1EndIdx)
+                    .withColor(PhoenixUtils.toCTREColor(Color.kBlack)));
+          }
+        }
+      }
+      case ALL -> {
+        firstColor = realColor;
+        firstAnimation = effect.animation();
+        secondColor = realColor;
+        secondEffect = effect.animation();
+        switch (effect.animation()) {
+          case SOLID -> {
+            clearAll();
+            candle.setControl(
+                new SolidColor(slot0StartIdx, slot1EndIdx)
+                    .withColor(PhoenixUtils.toCTREColor(realColor)));
+          }
+          case FLASHING -> {
+            candle.setControl(
+                new StrobeAnimation(slot0StartIdx, slot1EndIdx)
+                    .withSlot(1)
+                    .withColor(PhoenixUtils.toCTREColor(realColor)));
+          }
+          case FIRE -> {
+            candle.setControl(new FireAnimation(slot0StartIdx, slot1EndIdx).withSlot(1));
+          }
+          case TWINKLE -> {
+            candle.setControl(
+                new TwinkleAnimation(slot0StartIdx, slot1EndIdx)
+                    .withSlot(1)
+                    .withColor(PhoenixUtils.toCTREColor(realColor)));
+          }
+          case COLOR_FLOW -> {
+            candle.setControl(
+                new ColorFlowAnimation(slot0StartIdx, slot1EndIdx)
+                    .withSlot(1)
+                    .withColor(PhoenixUtils.toCTREColor(realColor)));
+          }
+          case LARSON -> {
+            candle.setControl(
+                new LarsonAnimation(slot0StartIdx, slot1EndIdx)
+                    .withSlot(1)
+                    .withColor(PhoenixUtils.toCTREColor(realColor)));
+          }
+          case RGB_FADE -> {
+            candle.setControl(new RgbFadeAnimation(slot0StartIdx, slot1EndIdx).withSlot(1));
+          }
+          case RAINBOW -> {
+            candle.setControl(new RainbowAnimation(slot0StartIdx, slot1EndIdx).withSlot(1));
+          }
+          case OFF -> {
+            candle.setControl(
+                new SolidColor(slot0StartIdx, slot1EndIdx)
                     .withColor(PhoenixUtils.toCTREColor(Color.kBlack)));
           }
         }
