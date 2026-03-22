@@ -6,9 +6,12 @@
 
 package org.team2342.lib.motors.dumb;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.filter.Debouncer;
 import org.team2342.lib.motors.MotorConfig;
@@ -26,19 +29,16 @@ public class DumbMotorIOSparkFlex implements DumbMotorIO {
    * @param config The configuration settings for the motor
    * @param type The type of motor being controlled
    */
-  @SuppressWarnings("removal")
-public DumbMotorIOSparkFlex(int canID, MotorConfig config, MotorType type) {
+  public DumbMotorIOSparkFlex(int canID, MotorConfig config, MotorType type) {
     motor = new SparkFlex(canID, type);
     motorConfig.inverted(config.motorInverted);
-    motorConfig.idleMode(config.idleMode == MotorConfig.IdleMode.BRAKE
-        ? SparkBaseConfig.IdleMode.kBrake
-        : SparkBaseConfig.IdleMode.kCoast);
+    motorConfig.idleMode(
+        config.idleMode == MotorConfig.IdleMode.BRAKE
+            ? SparkBaseConfig.IdleMode.kBrake
+            : SparkBaseConfig.IdleMode.kCoast);
     motorConfig.smartCurrentLimit((int) config.supplyLimit);
 
-    motor.configure(
-        motorConfig,
-        SparkFlex.ResetMode.kNoResetSafeParameters,
-        SparkFlex.PersistMode.kNoPersistParameters);
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
@@ -48,7 +48,7 @@ public DumbMotorIOSparkFlex(int canID, MotorConfig config, MotorType type) {
    */
   @Override
   public void updateInputs(DumbMotorIOInputs inputs) {
-    inputs.connected = connectedDebouncer.calculate(true);
+    inputs.connected = connectedDebouncer.calculate(motor.getLastError() == REVLibError.kOk);
     inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
     inputs.currentAmps = motor.getOutputCurrent();
   }
