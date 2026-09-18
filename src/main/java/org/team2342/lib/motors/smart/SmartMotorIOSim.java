@@ -6,14 +6,14 @@
 
 package org.team2342.lib.motors.smart;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N2;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
+import org.wpilib.math.util.Units;
+import org.wpilib.simulation.LinearSystemSim;
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
 import org.team2342.lib.pidff.FeedforwardController;
 import org.team2342.lib.pidff.PIDFFConfigs;

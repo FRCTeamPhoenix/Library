@@ -6,10 +6,10 @@
 
 package org.team2342.lib.motors.dumb;
 
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N2;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.simulation.LinearSystemSim;
 
 /** Simulation implementation of DumbMotorIO Uses a LinearSystemSim to simulate */
 public class DumbMotorIOSim implements DumbMotorIO {

@@ -6,14 +6,14 @@
 
 package org.team2342.lib.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
+import org.wpilib.util.Color;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface LedIO {
   @AutoLog
   public static class LedIOInputs {
-    public Color firstHalfColor = Color.kBlack;
-    public Color secondHalfColor = Color.kBlack;
+    public Color firstHalfColor = Color.BLACK;
+    public Color secondHalfColor = Color.BLACK;
     public LEDAnimation firstHalfEffect = LEDAnimation.OFF;
     public LEDAnimation secondHalfEffect = LEDAnimation.OFF;
   }

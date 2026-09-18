@@ -6,18 +6,18 @@
 
 package org.team2342.frc.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.controller.HolonomicDriveController;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.math.util.Units;
+import org.wpilib.command2.Command;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -91,8 +91,8 @@ public class DriveToPose extends Command {
     var offset = currentPosition.relativeTo(target);
     double yDistance = Math.abs(offset.getY());
     double xDistance = Math.abs(offset.getX());
-    double shiftX = MathUtil.clamp((yDistance / 1.75 + ((xDistance - 0.25) / 2.75)), 0.0, 1.0);
-    double shiftY = MathUtil.clamp(offset.getX() / 0.9, 0.0, 1.0);
+    double shiftX = Math.clamp((yDistance / 1.75 + ((xDistance - 0.25) / 2.75)), 0.0, 1.0);
+    double shiftY = Math.clamp(offset.getX() / 0.9, 0.0, 1.0);
     Pose2d goal =
         target.plus(
             new Transform2d(
@@ -101,16 +101,16 @@ public class DriveToPose extends Command {
                 new Rotation2d()));
     Logger.recordOutput("PoseAlignment/ShiftedTarget", goal);
 
-    ChassisSpeeds speeds = controller.calculate(currentPosition, goal, 0, target.getRotation());
+    ChassisVelocities speeds = controller.calculate(currentPosition, goal, 0, target.getRotation());
 
     boolean isFlipped = AllianceUtils.isRedAlliance();
 
     Translation2d joystickTranslation =
         DriveCommands.getLinearVelocityFromJoysticks(
             xSupplier.getAsDouble(), ySupplier.getAsDouble());
-    double controllerBias = MathUtil.clamp(joystickTranslation.getNorm(), 0.0, 1.0);
-    ChassisSpeeds controlled =
-        ChassisSpeeds.fromFieldRelativeSpeeds(
+    double controllerBias = Math.clamp(joystickTranslation.getNorm(), 0.0, 1.0);
+    ChassisVelocities controlled =
+        ChassisVelocities.fromFieldRelativeSpeeds(
             joystickTranslation.getX() * drive.getMaxLinearSpeedMetersPerSec(),
             joystickTranslation.getY() * drive.getMaxLinearSpeedMetersPerSec(),
             0.0,
@@ -118,12 +118,12 @@ public class DriveToPose extends Command {
                 ? currentPosition.getRotation().plus(new Rotation2d(Math.PI))
                 : currentPosition.getRotation());
 
-    speeds.vxMetersPerSecond =
+    speeds.vx =
         MathUtil.interpolate(
-            speeds.vxMetersPerSecond, controlled.vxMetersPerSecond, controllerBias);
-    speeds.vyMetersPerSecond =
+            speeds.vx, controlled.vx, controllerBias);
+    speeds.vy =
         MathUtil.interpolate(
-            speeds.vyMetersPerSecond, controlled.vyMetersPerSecond, controllerBias);
+            speeds.vy, controlled.vy, controllerBias);
 
     drive.runVelocity(speeds);
     isDone = controller.atReference();
@@ -137,7 +137,7 @@ public class DriveToPose extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    drive.runVelocity(new ChassisSpeeds());
+    drive.runVelocity(new ChassisVelocities());
   }
 
   public void setNewTarget(Pose2d target) {

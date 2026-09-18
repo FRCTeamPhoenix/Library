@@ -6,17 +6,15 @@
 
 package org.team2342.frc.commands;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.Trajectory;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.math.util.Units;
+import org.wpilib.system.Timer;
+import org.wpilib.command2.Command;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.subsystems.drive.Drive;
@@ -80,7 +78,7 @@ public class FollowTrajectory extends Command {
 
     State nextState = trajectory.sample(timer.get());
 
-    ChassisSpeeds speeds =
+    ChassisVelocities speeds =
         controller.calculate(currentPosition, nextState, nextState.poseMeters.getRotation());
 
     drive.runVelocity(speeds);
@@ -95,6 +93,6 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    drive.runVelocity(new ChassisSpeeds());
+    drive.runVelocity(new ChassisVelocities());
   }
 }

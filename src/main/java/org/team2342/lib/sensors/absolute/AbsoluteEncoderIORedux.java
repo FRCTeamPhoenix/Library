@@ -8,7 +8,7 @@ package org.team2342.lib.sensors.absolute;
 
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation2d;
 
 public class AbsoluteEncoderIORedux implements AbsoluteEncoderIO {
 

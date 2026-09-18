@@ -7,7 +7,7 @@
 package org.team2342.frc.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import edu.wpi.first.wpilibj.RobotController;
+import org.wpilib.system.RobotController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;

@@ -6,17 +6,21 @@
 
 package org.team2342.lib.util;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.vision.apriltag.AprilTagFieldLayout;
+import org.wpilib.vision.apriltag.AprilTagFields;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.command2.button.Trigger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,16 +35,16 @@ public class AllianceUtils {
     try {
       fieldLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
     } catch (Exception e) {
-      DriverStation.reportError("Failed to load AprilTagFieldLayout from resource", false);
+      DriverStationErrors.reportError("Failed to load AprilTagFieldLayout from resource", false);
     }
   }
 
   public static boolean isRedAlliance() {
-    var alliance = DriverStation.getAlliance();
+    var alliance = MatchState.getAlliance();
 
     if (alliance.isEmpty())
-      DriverStation.reportError("Alliance variable is empty, defaulting to red!", false);
-    return alliance.orElse(Alliance.Red) == Alliance.Red;
+      DriverStationErrors.reportError("Alliance variable is empty, defaulting to red!", false);
+    return alliance.orElse(Alliance.RED) == Alliance.RED;
   }
 
   public static boolean isBlueAlliance() {

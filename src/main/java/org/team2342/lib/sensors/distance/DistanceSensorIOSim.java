@@ -6,7 +6,7 @@
 
 package org.team2342.lib.sensors.distance;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.smartdashboard.SmartDashboard;
 
 /*
  * Implementing DistanceSensorIO for sim

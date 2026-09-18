@@ -6,7 +6,7 @@
 
 package org.team2342.lib.logging;
 
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.system.Timer;
 import org.littletonrobotics.junction.Logger;
 
 /** Class to log code execution times */
@@ -16,12 +16,12 @@ public class ExecutionLogger {
 
   /** Reset time. */
   public static void reset() {
-    lastMS = Timer.getFPGATimestamp() * 1000.0;
+    lastMS = Timer.getTimestamp() * 1000.0;
   }
 
   /** Log execution time under the given name. */
   public static void log(String name) {
-    double currentMS = Timer.getFPGATimestamp() * 1000.0;
+    double currentMS = Timer.getTimestamp() * 1000.0;
     Logger.recordOutput(String.format("ExecutionLogger/%sMS", name), currentMS - lastMS);
     lastMS = currentMS;
   }

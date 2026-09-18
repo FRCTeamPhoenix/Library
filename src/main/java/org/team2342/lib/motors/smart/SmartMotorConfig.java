@@ -6,7 +6,7 @@
 
 package org.team2342.lib.motors.smart;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
 

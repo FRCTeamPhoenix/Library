@@ -6,11 +6,11 @@
 
 package org.team2342.lib.util;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.CommandXboxController;
 import lombok.Getter;
 import lombok.Setter;
 

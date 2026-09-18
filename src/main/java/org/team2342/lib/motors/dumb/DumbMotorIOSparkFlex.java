@@ -13,7 +13,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.filter.Debouncer;
+import org.wpilib.math.filter.Debouncer;
 import org.team2342.lib.motors.MotorConfig;
 
 public class DumbMotorIOSparkFlex implements DumbMotorIO {

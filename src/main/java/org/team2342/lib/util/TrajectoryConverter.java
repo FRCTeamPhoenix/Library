@@ -9,17 +9,17 @@ package org.team2342.lib.util;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.Trajectory.State;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.Trajectory;
+import org.wpilib.math.trajectory.Trajectory.State;
 import java.util.List;
 import java.util.Optional;
 
 public class TrajectoryConverter {
 
   public static Optional<Trajectory> fromPathplanner(
-      String name, ChassisSpeeds startSpeeds, Rotation2d startRotation, RobotConfig config) {
+      String name, ChassisVelocities startSpeeds, Rotation2d startRotation, RobotConfig config) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(name);
       PathPlannerTrajectory traj =

@@ -20,7 +20,7 @@ import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
-import edu.wpi.first.wpilibj.util.Color;
+import org.wpilib.util.Color;
 import org.team2342.frc.util.PhoenixUtils;
 
 public class LedIOCANdle implements LedIO {
@@ -35,8 +35,8 @@ public class LedIOCANdle implements LedIO {
   private final int canddleFirstEnd = 3;
   private final int candleSecondStart = 4;
   private final int candleSecondEnd = 7;
-  private Color firstColor = Color.kBlack;
-  private Color secondColor = Color.kBlack;
+  private Color firstColor = Color.BLACK;
+  private Color secondColor = Color.BLACK;
   private LEDAnimation firstAnimation = LEDAnimation.OFF;
   private LEDAnimation secondEffect = LEDAnimation.OFF;
 
@@ -68,7 +68,7 @@ public class LedIOCANdle implements LedIO {
   public void setEffect(Half half, LEDEffect effect) {
     Color realColor = effect.color();
     if (effect.color() == null) {
-      realColor = Color.kBlack;
+      realColor = Color.BLACK;
     }
     switch (half) {
       case FIRST -> {
@@ -116,7 +116,7 @@ public class LedIOCANdle implements LedIO {
           case OFF -> {
             candle.setControl(
                 new SolidColor(slot0StartIdx, slot0EndIdx)
-                    .withColor(PhoenixUtils.toCTREColor(Color.kBlack)));
+                    .withColor(PhoenixUtils.toCTREColor(Color.BLACK)));
           }
         }
       }
@@ -165,7 +165,7 @@ public class LedIOCANdle implements LedIO {
           case OFF -> {
             candle.setControl(
                 new SolidColor(slot1StartIdx, slot1EndIdx)
-                    .withColor(PhoenixUtils.toCTREColor(Color.kBlack)));
+                    .withColor(PhoenixUtils.toCTREColor(Color.BLACK)));
           }
         }
       }
@@ -217,7 +217,7 @@ public class LedIOCANdle implements LedIO {
           case OFF -> {
             candle.setControl(
                 new SolidColor(slot0StartIdx, slot1EndIdx)
-                    .withColor(PhoenixUtils.toCTREColor(Color.kBlack)));
+                    .withColor(PhoenixUtils.toCTREColor(Color.BLACK)));
           }
         }
       }

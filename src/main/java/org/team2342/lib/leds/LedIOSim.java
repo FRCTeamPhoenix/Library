@@ -6,12 +6,12 @@
 
 package org.team2342.lib.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
+import org.wpilib.util.Color;
 import org.littletonrobotics.junction.Logger;
 
 public class LedIOSim implements LedIO {
-  private Color firstColor = Color.kBlack;
-  private Color secondColor = Color.kBlack;
+  private Color firstColor = Color.BLACK;
+  private Color secondColor = Color.BLACK;
   private LEDAnimation firstAnimation = LEDAnimation.OFF;
   private LEDAnimation secondAnimation = LEDAnimation.OFF;
 

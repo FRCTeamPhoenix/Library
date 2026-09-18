@@ -6,12 +6,12 @@
 
 package org.team2342.frc.subsystems.drive;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.SwerveModulePosition;
+import org.wpilib.math.kinematics.SwerveModuleState;
+import org.wpilib.math.util.Units;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.Level;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
@@ -37,12 +37,12 @@ public class Module {
     // Create alerts for disconnected electronics
     driveAlert =
         new Alert(
-            "Module " + Integer.toString(index) + " drive motor disconnected!", AlertType.kError);
+            "Module " + Integer.toString(index) + " drive motor disconnected!", Level.HIGH);
     turnAlert =
         new Alert(
-            "Module " + Integer.toString(index) + " turn motor disconnected!", AlertType.kError);
+            "Module " + Integer.toString(index) + " turn motor disconnected!", Level.HIGH);
     encoderAlert =
-        new Alert("Module " + Integer.toString(index) + " encoder disconnected!", AlertType.kError);
+        new Alert("Module " + Integer.toString(index) + " encoder disconnected!", Level.HIGH);
   }
 
   /** Periodic function for modules. */
@@ -74,7 +74,7 @@ public class Module {
     state.cosineScale(getAngle());
 
     // Run the optimized setpoint
-    io.runDriveVelocity(state.speedMetersPerSecond / DriveConstants.WHEEL_RADIUS);
+    io.runDriveVelocity(state.velocity / DriveConstants.WHEEL_RADIUS);
     io.setTurnPosition(state.angle);
   }
 

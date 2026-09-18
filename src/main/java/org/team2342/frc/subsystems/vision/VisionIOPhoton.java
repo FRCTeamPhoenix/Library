@@ -6,11 +6,15 @@
 
 package org.team2342.frc.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.DriverStation;
+import org.wpilib.vision.apriltag.AprilTagFieldLayout;
+import org.wpilib.vision.apriltag.AprilTagFields;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +65,7 @@ public class VisionIOPhoton implements VisionIO {
   @Override
   public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
     if (!hasEnabled) {
-      if (DriverStation.isEnabled()) {
+      if (RobotState.isEnabled()) {
         poseEstimator.setPrimaryStrategy(primaryStrategy);
         hasEnabled = true;
       }

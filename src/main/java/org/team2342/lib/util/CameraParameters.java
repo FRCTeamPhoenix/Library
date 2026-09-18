@@ -7,18 +7,22 @@
 package org.team2342.lib.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N8;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
+import org.wpilib.math.linalg.MatBuilder;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.util.Nat;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.numbers.N8;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.system.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -72,8 +76,8 @@ public class CameraParameters {
     this.errorStdDevPx = errorStdDevPx;
 
     if (fovDiag.getDegrees() < 1 || fovDiag.getDegrees() > 179) {
-      fovDiag = Rotation2d.fromDegrees(MathUtil.clamp(fovDiag.getDegrees(), 1, 179));
-      DriverStation.reportError(
+      fovDiag = Rotation2d.fromDegrees(Math.clamp(fovDiag.getDegrees(), 1, 179));
+      DriverStationErrors.reportError(
           "Requested invalid FOV! Clamping between (1, 179) degrees...", false);
     }
     double resDiag = Math.hypot(resWidth, resHeight);
@@ -157,7 +161,7 @@ public class CameraParameters {
               .resolve("calibrations/" + cameraName + "_" + resWidth + ".json"));
     } catch (Exception e) {
       System.out.println(e);
-      DriverStation.reportError(
+      DriverStationErrors.reportError(
           "Error while loading camera " + cameraName + ". Resorting to basic parameters", false);
       return new CameraParameters(cameraName, resWidth, resHeight);
     }

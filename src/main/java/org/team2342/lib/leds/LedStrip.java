@@ -6,10 +6,10 @@
 
 package org.team2342.lib.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.util.Color;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.leds.LedIO.LEDAnimation;
 import org.team2342.lib.leds.LedIO.LEDEffect;

@@ -6,11 +6,11 @@
 
 package org.team2342.lib.fsm;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.FunctionalCommand;
+import org.wpilib.command2.WaitUntilCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import lombok.Getter;

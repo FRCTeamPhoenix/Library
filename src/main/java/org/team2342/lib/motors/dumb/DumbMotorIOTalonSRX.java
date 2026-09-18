@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.math.MathUtil;
+import org.wpilib.math.util.MathUtil;
 import org.team2342.lib.motors.MotorConfig;
 
 public class DumbMotorIOTalonSRX implements DumbMotorIO {
@@ -37,7 +37,7 @@ public class DumbMotorIOTalonSRX implements DumbMotorIO {
 
   @Override
   public void runVoltage(double voltage) {
-    talon.set(ControlMode.PercentOutput, MathUtil.clamp(voltage / 12, -1, 1));
+    talon.set(ControlMode.PercentOutput, Math.clamp(voltage / 12, -1, 1));
     ;
   }
 }

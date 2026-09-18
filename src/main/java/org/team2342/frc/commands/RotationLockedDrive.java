@@ -6,14 +6,14 @@
 
 package org.team2342.frc.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.system.Timer;
+import org.wpilib.command2.Command;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
@@ -87,7 +87,7 @@ public class RotationLockedDrive extends Command {
     boolean isFlipped = AllianceUtils.isRedAlliance();
 
     drive.runVelocity(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisVelocities.fromFieldRelativeSpeeds(
             linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
             linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
             omega,

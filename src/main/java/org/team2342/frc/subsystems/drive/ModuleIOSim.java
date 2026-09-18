@@ -6,14 +6,14 @@
 
 package org.team2342.frc.subsystems.drive;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.controller.SimpleMotorFeedforward;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.system.LinearSystemId;
+import org.wpilib.math.util.Units;
+import org.wpilib.system.Timer;
+import org.wpilib.simulation.DCMotorSim;
 import org.team2342.frc.Constants.DriveConstants;
 
 /* ModuleIO implementation using WPILib simulation classes. */
@@ -69,7 +69,7 @@ public class ModuleIOSim implements ModuleIO {
     inputs.turnAppliedVolts = turnAppliedVolts;
     inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
 
-    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+    inputs.odometryTimestamps = new double[] {Timer.getTimestamp()};
     inputs.odometryDrivePositionsRad = new double[] {inputs.drivePositionRad};
     inputs.odometryTurnPositions = new Rotation2d[] {inputs.turnPosition};
   }

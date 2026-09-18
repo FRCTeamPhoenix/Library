@@ -7,18 +7,23 @@
 package org.team2342.frc;
 
 import com.ctre.phoenix6.SignalLogger;
-import edu.wpi.first.hal.FRCNetComm.tInstances;
-import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.MathShared;
-import edu.wpi.first.math.MathSharedStore;
-import edu.wpi.first.math.MathUsageId;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.IterativeRobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Watchdog;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.wpilib.hardware.hal.FRCNetComm.tInstances;
+import org.wpilib.hardware.hal.FRCNetComm.tResourceType;
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.math.util.MathShared;
+import org.wpilib.math.util.MathSharedStore;
+import org.wpilib.math.MathUsageId;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.framework.IterativeRobotBase;
+import org.wpilib.system.RobotController;
+import org.wpilib.system.Watchdog;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,12 +96,9 @@ public class Robot extends LoggedRobot {
       Watchdog watchdog = (Watchdog) watchdogField.get(this);
       watchdog.setTimeout(loopOverrunWarningTimeout);
     } catch (Exception e) {
-      DriverStation.reportWarning("Failed to disable loop overrun warnings.", false);
+      DriverStationErrors.reportWarning("Failed to disable loop overrun warnings.", false);
     }
     CommandScheduler.getInstance().setPeriod(loopOverrunWarningTimeout);
-
-    // Silence controller disconnected warnings
-    DriverStation.silenceJoystickConnectionWarning(true);
 
     // Silence Rotation2d warnings
     var mathShared = MathSharedStore.getMathShared();
@@ -108,11 +110,6 @@ public class Robot extends LoggedRobot {
               return;
             }
             mathShared.reportError(error, stackTrace);
-          }
-
-          @Override
-          public void reportUsage(MathUsageId id, int count) {
-            mathShared.reportUsage(id, count);
           }
 
           @Override
@@ -133,11 +130,8 @@ public class Robot extends LoggedRobot {
           Logger.recordOutput("CommandsAll/" + name, count > 0);
         };
 
-    RobotController.setBrownoutVoltage(6.0);
+    RobotController.setBrownoutVoltages(6.0, 7.0);
     SignalLogger.enableAutoLogging(false);
-
-    // We use Rust now
-    HAL.report(tResourceType.kResourceType_Language, tInstances.kLanguage_Rust);
 
     CommandScheduler.getInstance()
         .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
@@ -203,15 +197,15 @@ public class Robot extends LoggedRobot {
   public void teleopExit() {}
 
   @Override
-  public void testInit() {
+  public void utilityInit() {
     CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
-  public void testPeriodic() {}
+  public void utilityPeriodic() {}
 
   @Override
-  public void testExit() {}
+  public void utilityExit() {}
 
   @Override
   public void simulationInit() {}
