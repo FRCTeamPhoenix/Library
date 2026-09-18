@@ -7,6 +7,11 @@
 package org.team2342.lib.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.avaje.json.JsonIoException;
+import io.avaje.jsonb.Jsonb;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -97,52 +102,28 @@ public class CameraParameters {
 
   public CameraParameters(String cameraName, int resWidth, int resHeight, Path path)
       throws IOException {
-    this.cameraName = cameraName;
-    var mapper = new ObjectMapper();
-    var json = mapper.readTree(path.toFile());
-    // json = json.get("calibrations");
-    boolean success = false;
-    try {
-      for (int i = 0; i < json.size() && !success; i++) {
-        // check if this calibration entry is our desired resolution
-        int jsonWidth = json.get("resolution").get("width").asInt();
-        int jsonHeight = json.get("resolution").get("height").asInt();
-        if (jsonWidth != resWidth || jsonHeight != resHeight) continue;
-        // get the relevant calibration values
-        var jsonIntrinsicsNode = json.get("cameraIntrinsics").get("data");
-        double[] jsonIntrinsics = new double[jsonIntrinsicsNode.size()];
-        for (int j = 0; j < jsonIntrinsicsNode.size(); j++) {
-          jsonIntrinsics[j] = jsonIntrinsicsNode.get(j).asDouble();
+        SimCameraData data;
+        this.cameraName = cameraName;
+        try (var stream = new FileInputStream(path.toFile())) {
+            data = Jsonb.instance().type(SimCameraData.class).fromJson(stream);
+        } catch (JsonIoException e) {
+            throw new IOException("Invalid calibration JSON", e);
         }
-        var jsonDistortNode = json.get("distCoeffs").get("data");
-        double[] jsonDistortion = new double[8];
-        Arrays.fill(jsonDistortion, 0);
-        for (int j = 0; j < jsonDistortNode.size(); j++) {
-          jsonDistortion[j] = jsonDistortNode.get(j).asDouble();
+        boolean success = false;
+        for (var calib : data.calibrations) {
+            // check if this calibration entry is our desired resolution
+            if (calib.resolution.width != width || calib.resolution.height != height) continue;
+            // get the relevant calibration values
+            double avgViewError = Arrays.stream(calib.perViewErrors).average().orElse(0);
+            // assign the read JSON values to this CameraProperties
+            resWidth = calib.resolution.width;
+            resHeight = calib.resolution.height;
+            cameraMatrix = MatBuilder.fill(Nat.N3(), Nat.N3(), calib.cameraIntrinsics.data);
+            distCoeffs = MatBuilder.fill(Nat.N8(), Nat.N1(), calib.distCoeffs.data);
+            avgErrorPx = avgViewError;
+            errorStdDevPx = calib.standardDeviation;
         }
-
-        // not working
-        // var jsonViewErrors = json.get("perViewErrors");
-        // double jsonAvgError = 0;
-        // for (int j = 0; j < jsonViewErrors.size(); j++) {
-        //   jsonAvgError += jsonViewErrors.get(j).asDouble();
-        // }
-        // jsonAvgError /= jsonViewErrors.size();
-        // double jsonErrorStdDev = json.get("standardDeviation").asDouble();
-
-        // assign the read JSON values to this CameraProperties
-        this.resWidth = jsonWidth;
-        this.resHeight = jsonHeight;
-        this.cameraMatrix = MatBuilder.fill(Nat.N3(), Nat.N3(), jsonIntrinsics);
-        this.distCoeffs = MatBuilder.fill(Nat.N8(), Nat.N1(), jsonDistortion);
-        avgErrorPx = 0.02; // jsonAvgError;
-        errorStdDevPx = 0.05; // jsonErrorStdDev;
-        success = true;
-      }
-    } catch (Exception e) {
-      throw new IOException("Invalid calibration JSON");
-    }
-    if (!success) throw new IOException("Requested resolution not found in calibration");
+        if (!success) throw new IOException("Requested resolution not found in calibration");
   }
 
   public static CameraParameters loadFromName(String cameraName, int resWidth, int resHeight) {
