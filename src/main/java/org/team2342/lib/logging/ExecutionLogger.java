@@ -6,8 +6,8 @@
 
 package org.team2342.lib.logging;
 
-import org.wpilib.system.Timer;
 import org.littletonrobotics.junction.Logger;
+import org.wpilib.system.Timer;
 
 /** Class to log code execution times */
 public class ExecutionLogger {

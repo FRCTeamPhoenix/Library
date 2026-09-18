@@ -6,8 +6,8 @@
 
 package org.team2342.lib.leds;
 
-import org.wpilib.util.Color;
 import org.littletonrobotics.junction.Logger;
+import org.wpilib.util.Color;
 
 public class LedIOSim implements LedIO {
   private Color firstColor = Color.BLACK;

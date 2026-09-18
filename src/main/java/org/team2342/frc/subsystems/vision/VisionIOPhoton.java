@@ -6,15 +6,6 @@
 
 package org.team2342.frc.subsystems.vision;
 
-import org.wpilib.vision.apriltag.AprilTagFieldLayout;
-import org.wpilib.vision.apriltag.AprilTagFields;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +19,11 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.vision.apriltag.AprilTagFieldLayout;
+import org.wpilib.vision.apriltag.AprilTagFields;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {

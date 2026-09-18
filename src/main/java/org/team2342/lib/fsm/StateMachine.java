@@ -6,17 +6,17 @@
 
 package org.team2342.lib.fsm;
 
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.FunctionalCommand;
-import org.wpilib.command2.WaitUntilCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.fsm.graph.Transition;
 import org.team2342.lib.fsm.graph.TransitionGraph;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.FunctionalCommand;
+import org.wpilib.command2.WaitUntilCommand;
 
 public class StateMachine<E extends Enum<E>> {
   private final TransitionGraph<E> transitions;

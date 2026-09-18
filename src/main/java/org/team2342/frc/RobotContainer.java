@@ -8,17 +8,6 @@ package org.team2342.frc;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Pose3d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Transform2d;
-import org.wpilib.telemetry.Telemetry;
-import org.wpilib.util.Alert;
-import org.wpilib.util.Alert.Level;
-import org.wpilib.hardware.power.PowerDistribution.ModuleType;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.sysid.SysIdRoutine;
 import lombok.Getter;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedNetworkChooser;
@@ -41,6 +30,17 @@ import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.hardware.power.PowerDistribution.ModuleType;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform2d;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.Level;
 
 public class RobotContainer {
   @Getter private final Drive drive;

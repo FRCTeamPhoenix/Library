@@ -9,8 +9,8 @@ package org.team2342.frc.util;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.signals.RGBWColor;
-import org.wpilib.util.Color;
 import java.util.function.Supplier;
+import org.wpilib.util.Color;
 
 public class PhoenixUtils {
   // All registered signals
@@ -51,8 +51,7 @@ public class PhoenixUtils {
   }
 
   /**
-   * Used to convert {@link org.wpilib.util.Color} to {@link
-   * com.ctre.phoenix6.signals.RGBWColor}
+   * Used to convert {@link org.wpilib.util.Color} to {@link com.ctre.phoenix6.signals.RGBWColor}
    *
    * @param c WPILib Color to be converted
    */

@@ -6,6 +6,9 @@
 
 package org.team2342.lib.motors.smart;
 
+import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
+import org.team2342.lib.pidff.FeedforwardController;
+import org.team2342.lib.pidff.PIDFFConfigs;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.numbers.N1;
@@ -14,9 +17,6 @@ import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.LinearSystemSim;
-import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
-import org.team2342.lib.pidff.FeedforwardController;
-import org.team2342.lib.pidff.PIDFFConfigs;
 
 public class SmartMotorIOSim implements SmartMotorIO {
 

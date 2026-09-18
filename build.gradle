@@ -4,6 +4,7 @@ plugins {
     id "org.wpilib.GradleRIO" version "2027.0.0-alpha-7"
     id "com.peterabeles.gversion" version "1.10"
     id "com.diffplug.spotless" version "8.6.0"
+    id "io.freefair.lombok" version "8.4"
 }
 
 java {
@@ -42,7 +43,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/systemcore/deploy'
                     deleteOldFiles = false // Change to true to delete files on systemcore that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }

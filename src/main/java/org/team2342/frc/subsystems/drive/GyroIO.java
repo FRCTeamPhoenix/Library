@@ -6,8 +6,8 @@
 
 package org.team2342.frc.subsystems.drive;
 
-import org.wpilib.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
+import org.wpilib.math.geometry.Rotation2d;
 
 public interface GyroIO {
   @AutoLog

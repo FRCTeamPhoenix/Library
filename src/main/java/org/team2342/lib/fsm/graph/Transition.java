@@ -6,9 +6,9 @@
 
 package org.team2342.lib.fsm.graph;
 
+import lombok.Getter;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
-import lombok.Getter;
 
 public class Transition<E extends Enum<E>> {
 

@@ -6,8 +6,8 @@
 
 package org.team2342.lib.leds;
 
-import org.wpilib.util.Color;
 import org.littletonrobotics.junction.AutoLog;
+import org.wpilib.util.Color;
 
 public interface LedIO {
   @AutoLog

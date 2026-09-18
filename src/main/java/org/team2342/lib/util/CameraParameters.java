@@ -7,27 +7,22 @@
 package org.team2342.lib.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.wpilib.math.linalg.MatBuilder;
-import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.util.Nat;
-import org.wpilib.math.linalg.VecBuilder;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.math.numbers.N8;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.system.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import lombok.Getter;
 import lombok.Setter;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.linalg.MatBuilder;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.numbers.N8;
+import org.wpilib.math.util.Nat;
+import org.wpilib.system.Filesystem;
 
 public class CameraParameters {
 

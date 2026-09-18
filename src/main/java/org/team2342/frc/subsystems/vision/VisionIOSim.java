@@ -6,8 +6,6 @@
 
 package org.team2342.frc.subsystems.vision;
 
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
 import java.util.function.Supplier;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -16,6 +14,8 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 
 /** IO implementation for physics sim using PhotonVision simulator. */
 public class VisionIOSim extends VisionIOPhoton {

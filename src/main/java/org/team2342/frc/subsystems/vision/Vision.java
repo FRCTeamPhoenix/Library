@@ -7,16 +7,6 @@
 
 package org.team2342.frc.subsystems.vision;
 
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.linalg.VecBuilder;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Pose3d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.util.Alert;
-import org.wpilib.util.Alert.Level;
-import org.wpilib.command2.SubsystemBase;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -26,6 +16,16 @@ import org.team2342.frc.subsystems.vision.VisionIO.PoseObservationType;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.Timestamped;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.Level;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
@@ -55,7 +55,9 @@ public class Vision extends SubsystemBase {
     for (int i = 0; i < inputs.length; i++) {
       disconnectedAlerts[i] =
           new Alert(
-              "Vision camera " + Integer.toString(i) + " is disconnected.", Level.MEDIUM);
+              "camera" + Integer.toString(i),
+              "Vision camera " + Integer.toString(i) + " is disconnected.",
+              Level.MEDIUM);
     }
   }
 

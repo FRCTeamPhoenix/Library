@@ -7,6 +7,17 @@
 
 package org.team2342.frc.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import org.team2342.frc.Constants.DriveConstants;
+import org.team2342.frc.subsystems.drive.Drive;
+import org.team2342.lib.util.AllianceUtils;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.SlewRateLimiter;
 import org.wpilib.math.geometry.Pose2d;
@@ -17,17 +28,6 @@ import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import org.team2342.frc.Constants.DriveConstants;
-import org.team2342.frc.subsystems.drive.Drive;
-import org.team2342.lib.util.AllianceUtils;
 
 public class DriveCommands {
   private static final double ANGLE_KP = 5.0;
@@ -81,7 +81,8 @@ public class DriveCommands {
                   omega * drive.getMaxAngularSpeedRadPerSec());
           boolean isFlipped = AllianceUtils.isRedAlliance();
           drive.runVelocity(
-              speeds.toRobotRelative(isFlipped
+              speeds.toRobotRelative(
+                  isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
                       : drive.getRotation()));
         },
@@ -128,9 +129,10 @@ public class DriveCommands {
                       omega);
               boolean isFlipped = AllianceUtils.isRedAlliance();
               drive.runVelocity(
-                speeds.toRobotRelative(isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+                  speeds.toRobotRelative(
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
             },
             drive)
 

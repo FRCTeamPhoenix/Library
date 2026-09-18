@@ -6,19 +6,19 @@
 
 package org.team2342.frc.commands;
 
-import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.controller.ProfiledPIDController;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.system.Timer;
-import org.wpilib.command2.Command;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.subsystems.drive.Drive;
 import org.team2342.lib.util.AllianceUtils;
+import org.wpilib.command2.Command;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.system.Timer;
 
 public class RotationLockedDrive extends Command {
 
@@ -87,11 +87,14 @@ public class RotationLockedDrive extends Command {
     boolean isFlipped = AllianceUtils.isRedAlliance();
 
     drive.runVelocity(
-        ChassisVelocities.fromFieldRelativeSpeeds(
-            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-            omega,
-            isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
+        new ChassisVelocities(
+                linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                omega)
+            .toRobotRelative(
+                isFlipped
+                    ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                    : drive.getRotation()));
   }
 
   @Override

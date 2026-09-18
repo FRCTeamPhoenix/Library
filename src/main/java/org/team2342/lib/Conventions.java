@@ -41,6 +41,7 @@ public class Conventions {
   private double accelerationMetersPerSecSq = 5.0;
   private double appliedVolts = 12.0;
   private double currentAmps = 40.0;
+
   // Use meters and radians, rather than inches, degrees, or something else
 
   // Enum names use UpperCamelCase

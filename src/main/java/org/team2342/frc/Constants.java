@@ -6,11 +6,11 @@
 
 package org.team2342.frc;
 
+import org.team2342.lib.util.CameraParameters;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.geometry.Translation3d;
 import org.wpilib.math.util.Units;
-import org.team2342.lib.util.CameraParameters;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.REAL;

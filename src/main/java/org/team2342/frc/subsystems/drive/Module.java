@@ -6,16 +6,16 @@
 
 package org.team2342.frc.subsystems.drive;
 
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.kinematics.SwerveModulePosition;
-import org.wpilib.math.kinematics.SwerveModuleState;
-import org.wpilib.math.util.Units;
-import org.wpilib.util.Alert;
-import org.wpilib.util.Alert.Level;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.lib.logging.ExecutionLogger;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.SwerveModulePosition;
+import org.wpilib.math.kinematics.SwerveModuleVelocity;
+import org.wpilib.math.util.Units;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.Level;
 
 /** Class for controlling individual swerve modules */
 public class Module {
@@ -37,12 +37,19 @@ public class Module {
     // Create alerts for disconnected electronics
     driveAlert =
         new Alert(
-            "Module " + Integer.toString(index) + " drive motor disconnected!", Level.HIGH);
+            "module" + Integer.toString(index) + "drive",
+            "Module " + Integer.toString(index) + " drive motor disconnected!",
+            Level.HIGH);
     turnAlert =
         new Alert(
-            "Module " + Integer.toString(index) + " turn motor disconnected!", Level.HIGH);
+            "module" + Integer.toString(index) + "turn",
+            "Module " + Integer.toString(index) + " turn motor disconnected!",
+            Level.HIGH);
     encoderAlert =
-        new Alert("Module " + Integer.toString(index) + " encoder disconnected!", Level.HIGH);
+        new Alert(
+            "module" + Integer.toString(index) + "encoder",
+            "Module " + Integer.toString(index) + " encoder disconnected!",
+            Level.HIGH);
   }
 
   /** Periodic function for modules. */
@@ -68,7 +75,7 @@ public class Module {
   }
 
   /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
-  public void runSetpoint(SwerveModuleState state) {
+  public void runSetpoint(SwerveModuleVelocity state) {
     // Optimize states
     state.optimize(getAngle());
     state.cosineScale(getAngle());
@@ -111,8 +118,8 @@ public class Module {
   }
 
   /** Returns the module state (turn angle and drive velocity). */
-  public SwerveModuleState getState() {
-    return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
+  public SwerveModuleVelocity getState() {
+    return new SwerveModuleVelocity(getVelocityMetersPerSec(), getAngle());
   }
 
   /** Returns the timestamps of the samples received this cycle. */

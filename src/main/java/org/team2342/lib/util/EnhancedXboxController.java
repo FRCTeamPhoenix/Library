@@ -6,13 +6,13 @@
 
 package org.team2342.lib.util;
 
-import org.wpilib.math.util.MathUtil;
-import org.wpilib.driverstation.GenericHID.RumbleType;
+import lombok.Getter;
+import lombok.Setter;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.button.CommandXboxController;
-import lombok.Getter;
-import lombok.Setter;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.math.util.MathUtil;
 
 /** Extended {@link CommandXboxController} class */
 public class EnhancedXboxController extends CommandXboxController {
@@ -47,7 +47,8 @@ public class EnhancedXboxController extends CommandXboxController {
    */
   public Command rumble(RumbleType type, double intensity) {
     return Commands.startEnd(
-        () -> super.setRumble(type, intensity), () -> super.setRumble(type, 0.0));
+        () -> super.getController().setRumble(type, intensity),
+        () -> super.getController().setRumble(type, 0.0));
   }
 
   /**
@@ -59,7 +60,9 @@ public class EnhancedXboxController extends CommandXboxController {
    * @return A command to rumble the controller for the specifed time
    */
   public Command timedRumble(RumbleType type, double intensity, double seconds) {
-    return Commands.runEnd(() -> super.setRumble(type, intensity), () -> super.setRumble(type, 0.0))
+    return Commands.runEnd(
+            () -> super.getController().setRumble(type, intensity),
+            () -> super.getController().setRumble(type, 0.0))
         .withTimeout(seconds);
   }
 

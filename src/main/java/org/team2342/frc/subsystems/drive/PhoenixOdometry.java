@@ -7,7 +7,6 @@
 package org.team2342.frc.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import org.wpilib.system.RobotController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -15,6 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.team2342.frc.Constants.DriveConstants;
+import org.wpilib.system.RobotController;
 
 /** Reads high-frequency measurements into queues for odometry. */
 @SuppressWarnings("unused")

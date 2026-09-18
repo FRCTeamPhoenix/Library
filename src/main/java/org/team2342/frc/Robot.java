@@ -7,23 +7,6 @@
 package org.team2342.frc;
 
 import com.ctre.phoenix6.SignalLogger;
-import org.wpilib.hardware.hal.FRCNetComm.tInstances;
-import org.wpilib.hardware.hal.FRCNetComm.tResourceType;
-import org.wpilib.hardware.hal.HAL;
-import org.wpilib.math.util.MathShared;
-import org.wpilib.math.util.MathSharedStore;
-import org.wpilib.math.MathUsageId;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.framework.IterativeRobotBase;
-import org.wpilib.system.RobotController;
-import org.wpilib.system.Watchdog;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +17,16 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-// import org.team2342.frc.subsystems.CANdleSystem.CANdleSystem;
 import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.logging.ExecutionLogger;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.framework.IterativeRobotBase;
+import org.wpilib.math.util.MathShared;
+import org.wpilib.math.util.MathSharedStore;
+import org.wpilib.system.RobotController;
+import org.wpilib.system.Watchdog;
 
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;

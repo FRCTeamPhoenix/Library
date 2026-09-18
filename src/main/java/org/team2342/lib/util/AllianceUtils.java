@@ -6,34 +6,31 @@
 
 package org.team2342.lib.util;
 
-import org.wpilib.vision.apriltag.AprilTagFieldLayout;
-import org.wpilib.vision.apriltag.AprilTagFields;
+import lombok.Getter;
+import lombok.Setter;
+import org.wpilib.command2.button.Trigger;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.fields.Field;
+import org.wpilib.fields.Fields;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.geometry.Translation3d;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.command2.button.Trigger;
-import lombok.Getter;
-import lombok.Setter;
 
 /** Class with alliance-related utility functions */
 public class AllianceUtils {
 
   @Getter @Setter
-  private static AprilTagFieldLayout fieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+  private static Field fieldLayout = Field.loadField(Fields.FRC_2026_REBUILT_ANDY_MARK);
 
   public static void loadFieldLayout(String resourcePath) {
     try {
-      fieldLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
+      fieldLayout = Field.loadFromResource(resourcePath);
     } catch (Exception e) {
       DriverStationErrors.reportError("Failed to load AprilTagFieldLayout from resource", false);
     }
@@ -52,19 +49,19 @@ public class AllianceUtils {
   }
 
   public static Trigger driverStationAttachedTrigger() {
-    return new Trigger(DriverStation::isDSAttached);
+    return new Trigger(RobotState::isDSAttached);
   }
 
-  public static Pose2d flipToAlliance(Pose2d bluePose, AprilTagFieldLayout field) {
+  public static Pose2d flipToAlliance(Pose2d bluePose, Field field) {
     return isRedAlliance()
         ? new Pose2d(
             field.getFieldLength() - bluePose.getX(),
             field.getFieldWidth() - bluePose.getY(),
-            bluePose.getRotation().rotateBy(Rotation2d.kPi))
+            bluePose.getRotation().rotateBy(Rotation2d.PI))
         : bluePose;
   }
 
-  public static Pose3d flipToAlliance(Pose3d bluePose, AprilTagFieldLayout field) {
+  public static Pose3d flipToAlliance(Pose3d bluePose, Field field) {
     return isRedAlliance()
         ? new Pose3d(
             field.getFieldLength() - bluePose.getX(),
@@ -74,8 +71,7 @@ public class AllianceUtils {
         : bluePose;
   }
 
-  public static Translation2d flipToAlliance(
-      Translation2d blueTranslation, AprilTagFieldLayout field) {
+  public static Translation2d flipToAlliance(Translation2d blueTranslation, Field field) {
     return isRedAlliance()
         ? new Translation2d(
             field.getFieldLength() - blueTranslation.getX(),
@@ -83,8 +79,7 @@ public class AllianceUtils {
         : blueTranslation;
   }
 
-  public static Translation3d flipToAlliance(
-      Translation3d blueTranslation, AprilTagFieldLayout field) {
+  public static Translation3d flipToAlliance(Translation3d blueTranslation, Field field) {
     return isRedAlliance()
         ? new Translation3d(
             field.getFieldLength() - blueTranslation.getX(),

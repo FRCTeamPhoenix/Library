@@ -26,18 +26,18 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import org.wpilib.math.filter.Debouncer;
-import org.wpilib.math.util.Units;
-import org.wpilib.units.measure.Angle;
-import org.wpilib.units.measure.AngularVelocity;
-import org.wpilib.units.measure.Current;
-import org.wpilib.units.measure.Voltage;
 import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FeedbackConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
+import org.wpilib.math.filter.Debouncer;
+import org.wpilib.math.util.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Voltage;
 
 public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
 

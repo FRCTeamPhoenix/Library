@@ -6,14 +6,14 @@
 
 package org.team2342.lib.leds;
 
-import org.wpilib.util.Color;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.leds.LedIO.LEDAnimation;
 import org.team2342.lib.leds.LedIO.LEDEffect;
 import org.team2342.lib.logging.ExecutionLogger;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.util.Color;
 
 public class LedStrip extends SubsystemBase {
   private final LedIO io;

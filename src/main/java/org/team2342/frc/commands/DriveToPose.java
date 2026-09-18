@@ -6,7 +6,12 @@
 
 package org.team2342.frc.commands;
 
-import org.wpilib.math.util.MathUtil;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
+import org.team2342.frc.subsystems.drive.Drive;
+import org.team2342.lib.util.AllianceUtils;
+import org.wpilib.command2.Command;
 import org.wpilib.math.controller.HolonomicDriveController;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.ProfiledPIDController;
@@ -16,13 +21,8 @@ import org.wpilib.math.geometry.Transform2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
-import org.wpilib.command2.Command;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
-import org.team2342.frc.subsystems.drive.Drive;
-import org.team2342.lib.util.AllianceUtils;
 
 public class DriveToPose extends Command {
   private PIDController xController = new PIDController(4.0, 0.0, 0.02);
@@ -118,12 +118,8 @@ public class DriveToPose extends Command {
                 ? currentPosition.getRotation().plus(new Rotation2d(Math.PI))
                 : currentPosition.getRotation());
 
-    speeds.vx =
-        MathUtil.interpolate(
-            speeds.vx, controlled.vx, controllerBias);
-    speeds.vy =
-        MathUtil.interpolate(
-            speeds.vy, controlled.vy, controllerBias);
+    speeds.vx = MathUtil.interpolate(speeds.vx, controlled.vx, controllerBias);
+    speeds.vy = MathUtil.interpolate(speeds.vy, controlled.vy, controllerBias);
 
     drive.runVelocity(speeds);
     isDone = controller.atReference();

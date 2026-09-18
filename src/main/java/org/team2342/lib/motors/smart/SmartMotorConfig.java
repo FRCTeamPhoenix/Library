@@ -6,9 +6,9 @@
 
 package org.team2342.lib.motors.smart;
 
-import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
+import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 
 public class SmartMotorConfig extends MotorConfig {
 

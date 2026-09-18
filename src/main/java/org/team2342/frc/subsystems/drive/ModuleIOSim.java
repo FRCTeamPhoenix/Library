@@ -6,15 +6,15 @@
 
 package org.team2342.frc.subsystems.drive;
 
+import org.team2342.frc.Constants.DriveConstants;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.SimpleMotorFeedforward;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
-import org.wpilib.math.system.LinearSystemId;
+import org.wpilib.math.system.Models;
 import org.wpilib.math.util.Units;
-import org.wpilib.system.Timer;
 import org.wpilib.simulation.DCMotorSim;
-import org.team2342.frc.Constants.DriveConstants;
+import org.wpilib.system.Timer;
 
 /* ModuleIO implementation using WPILib simulation classes. */
 public class ModuleIOSim implements ModuleIO {
@@ -36,13 +36,13 @@ public class ModuleIOSim implements ModuleIO {
     // Create DCMotorSims for each motor
     driveSim =
         new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
+            Models.singleJointedArmFromPhysicalConstants(
                 DCMotor.getKrakenX60(1), 0.025, DriveConstants.DRIVE_GEARING),
             DCMotor.getKrakenX60(1));
 
     turnSim =
         new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
+            Models.singleJointedArmFromPhysicalConstants(
                 DCMotor.getKrakenX60(1), 0.004, DriveConstants.TURN_GEARING),
             DCMotor.getKrakenX60(1));
 
@@ -56,18 +56,18 @@ public class ModuleIOSim implements ModuleIO {
     turnSim.update(0.02);
 
     inputs.driveConnected = true;
-    inputs.drivePositionRad = driveSim.getAngularPositionRad();
-    inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
+    inputs.drivePositionRad = driveSim.getAngularPosition();
+    inputs.driveVelocityRadPerSec = driveSim.getAngularVelocity();
     inputs.driveAppliedVolts = driveAppliedVolts;
-    inputs.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
+    inputs.driveCurrentAmps = Math.abs(driveSim.getCurrentDraw());
 
     inputs.turnConnected = true;
     inputs.encoderConnected = true;
-    inputs.turnAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad());
-    inputs.turnPosition = new Rotation2d(turnSim.getAngularPositionRad());
-    inputs.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
+    inputs.turnAbsolutePosition = new Rotation2d(turnSim.getAngularPosition());
+    inputs.turnPosition = new Rotation2d(turnSim.getAngularPosition());
+    inputs.turnVelocityRadPerSec = turnSim.getAngularVelocity();
     inputs.turnAppliedVolts = turnAppliedVolts;
-    inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
+    inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDraw());
 
     inputs.odometryTimestamps = new double[] {Timer.getTimestamp()};
     inputs.odometryDrivePositionsRad = new double[] {inputs.drivePositionRad};
@@ -77,7 +77,7 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void runDriveVelocity(double velocityRadPerSec) {
     driveAppliedVolts =
-        driveController.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadPerSec)
+        driveController.calculate(driveSim.getAngularVelocity(), velocityRadPerSec)
             + ff.calculate(velocityRadPerSec);
     driveSim.setInputVoltage(driveAppliedVolts);
   }
@@ -91,7 +91,7 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void setTurnPosition(Rotation2d rotation) {
     turnAppliedVolts =
-        turnController.calculate(turnSim.getAngularPositionRad(), rotation.getRadians());
+        turnController.calculate(turnSim.getAngularPosition(), rotation.getRadians());
     turnSim.setInputVoltage(turnAppliedVolts);
   }
 

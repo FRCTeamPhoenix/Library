@@ -20,8 +20,8 @@ import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
-import org.wpilib.util.Color;
 import org.team2342.frc.util.PhoenixUtils;
+import org.wpilib.util.Color;
 
 public class LedIOCANdle implements LedIO {
   private final CANdle candle;

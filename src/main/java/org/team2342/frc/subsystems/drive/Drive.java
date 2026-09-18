@@ -15,33 +15,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.estimator.SwerveDrivePoseEstimator;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.math.geometry.Twist2d;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.kinematics.SwerveDriveKinematics;
-import org.wpilib.math.kinematics.SwerveModulePosition;
-import org.wpilib.math.kinematics.SwerveModuleState;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.math.system.DCMotor;
-import org.wpilib.util.sendable.SendableBuilder;
-import org.wpilib.util.Alert;
-import org.wpilib.util.Alert.Level;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.system.Timer;
-import org.wpilib.smartdashboard.Field2d;
-import org.wpilib.smartdashboard.SmartDashboard;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.SubsystemBase;
-import org.wpilib.command2.sysid.SysIdRoutine;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -55,6 +28,28 @@ import org.team2342.lib.util.SwerveSetpointGenerator;
 import org.team2342.lib.util.SwerveSetpointGenerator.ModuleLimits;
 import org.team2342.lib.util.SwerveSetpointGenerator.SwerveSetpoint;
 import org.team2342.lib.util.Timestamped;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.math.estimator.SwerveDrivePoseEstimator;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Twist2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.kinematics.SwerveDriveKinematics;
+import org.wpilib.math.kinematics.SwerveModulePosition;
+import org.wpilib.math.kinematics.SwerveModuleVelocity;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.smartdashboard.Field2d;
+import org.wpilib.system.Timer;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.Level;
 
 public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
@@ -65,7 +60,7 @@ public class Drive extends SubsystemBase {
 
   private final Field2d dashboardField = new Field2d();
   private final Alert gyroAlert =
-      new Alert("Gyro disconnected, using fallback!", Level.MEDIUM);
+      new Alert("gyro", "Gyro disconnected, using fallback!", Level.MEDIUM);
 
   @Getter private final RobotConfig pathplannerConfig;
   private final SysIdRoutine sysId;
@@ -165,9 +160,7 @@ public class Drive extends SubsystemBase {
             DriveConstants.MAX_LINEAR_ACCELERATION,
             DriveConstants.MAX_MODULE_VELOCITY_RAD);
 
-    // Put swerve widget on the dashboard
-    SmartDashboard.putData("DashboardSwerve", this);
-    SmartDashboard.putData("DashboardField", dashboardField);
+    Telemetry.log("DashboardField", dashboardField);
   }
 
   @Override
@@ -189,8 +182,8 @@ public class Drive extends SubsystemBase {
 
     // Log empty setpoint states when disabled
     if (RobotState.isDisabled()) {
-      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleVelocity[] {});
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleVelocity[] {});
     }
 
     double[] sampleTimestamps =
@@ -204,8 +197,7 @@ public class Drive extends SubsystemBase {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] =
             new SwerveModulePosition(
-                modulePositions[moduleIndex].distanceMeters
-                    - lastModulePositions[moduleIndex].distanceMeters,
+                modulePositions[moduleIndex].distance - lastModulePositions[moduleIndex].distance,
                 modulePositions[moduleIndex].angle);
         lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
@@ -274,7 +266,7 @@ public class Drive extends SubsystemBase {
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
-      headings[i] = getModuleTranslations()[i].getAngle();
+      headings[i] = getModuleTranslations()[i].getAngle().orElse(Rotation2d.ZERO);
     }
     kinematics.resetHeadings(headings);
     stop();
@@ -294,8 +286,8 @@ public class Drive extends SubsystemBase {
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")
-  private SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
+  private SwerveModuleVelocity[] getModuleStates() {
+    SwerveModuleVelocity[] states = new SwerveModuleVelocity[4];
     for (int i = 0; i < 4; i++) {
       states[i] = modules[i].getState();
     }
@@ -390,30 +382,5 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       System.out.println(module.getAbsoluteAngle());
     }
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("SwerveDrive");
-
-    builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
-    builder.addDoubleProperty(
-        "Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
-
-    builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
-    builder.addDoubleProperty(
-        "Front Right Velocity", () -> modules[1].getVelocityMetersPerSec(), null);
-
-    builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
-    builder.addDoubleProperty(
-        "Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
-
-    builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
-    builder.addDoubleProperty(
-        "Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
-    builder.addDoubleProperty(
-        "Robot Angle",
-        () -> getRotation().getRadians() + (AllianceUtils.isRedAlliance() ? Math.PI : 0),
-        null);
   }
 }

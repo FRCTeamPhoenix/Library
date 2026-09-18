@@ -16,6 +16,7 @@ public class DistanceSensorIOSim implements DistanceSensorIO {
 
   private final String entryKey;
   private final double defaultValue;
+
   /**
    * Constructor to configure the sim
    *

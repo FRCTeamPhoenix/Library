@@ -21,6 +21,11 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import java.util.Queue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import org.team2342.frc.Constants.DriveConstants;
+import org.team2342.frc.util.PhoenixUtils;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
@@ -28,11 +33,6 @@ import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
-import java.util.Queue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import org.team2342.frc.Constants.DriveConstants;
-import org.team2342.frc.util.PhoenixUtils;
 
 /* ModuleIO implementation for dual TalonFX module with a CANcoder. */
 public class ModuleIOTalonFX implements ModuleIO {

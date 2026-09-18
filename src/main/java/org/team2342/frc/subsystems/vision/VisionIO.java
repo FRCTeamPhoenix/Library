@@ -7,10 +7,10 @@
 
 package org.team2342.frc.subsystems.vision;
 
-import org.wpilib.math.geometry.Pose3d;
-import org.wpilib.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 import org.team2342.lib.util.Timestamped;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
 
 public interface VisionIO {
   @AutoLog
