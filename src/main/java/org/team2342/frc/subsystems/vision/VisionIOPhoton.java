@@ -14,16 +14,14 @@ import java.util.Set;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
 import org.wpilib.driverstation.RobotState;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.vision.apriltag.AprilTagFieldLayout;
-import org.wpilib.vision.apriltag.AprilTagFields;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhoton implements VisionIO {
@@ -32,12 +30,7 @@ public class VisionIOPhoton implements VisionIO {
   protected final Transform3d robotToCamera;
   private final PhotonPoseEstimator poseEstimator;
 
-  private final PoseStrategy primaryStrategy;
-
   private boolean hasEnabled = false;
-
-  public static final Optional<ConstrainedSolvepnpParams> CONSTRAINED_SOLVEPNP_PARAMETERS =
-      Optional.of(new ConstrainedSolvepnpParams(false, 0.5));
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -45,28 +38,15 @@ public class VisionIOPhoton implements VisionIO {
    * @param name The configured name of the camera.
    * @param robotToCamera The 3D position of the camera relative to the robot.
    */
-  public VisionIOPhoton(
-      CameraParameters parameters, PoseStrategy primaryStrategy, PoseStrategy disabledStrategy) {
+  public VisionIOPhoton(CameraParameters parameters) {
     camera = new PhotonCamera(parameters.getCameraName());
     this.robotToCamera = parameters.getTransform();
     this.parameters = parameters;
-    poseEstimator =
-        new PhotonPoseEstimator(
-            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
-            disabledStrategy,
-            robotToCamera);
-    this.primaryStrategy = primaryStrategy;
+    poseEstimator = new PhotonPoseEstimator(AllianceUtils.getFieldLayout(), robotToCamera);
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
-    if (!hasEnabled) {
-      if (RobotState.isEnabled()) {
-        poseEstimator.setPrimaryStrategy(primaryStrategy);
-        hasEnabled = true;
-      }
-    }
-
     inputs.connected = camera.isConnected();
 
     poseEstimator.addHeadingData(heading.getTimestamp(), heading.get());
@@ -79,12 +59,27 @@ public class VisionIOPhoton implements VisionIO {
         continue;
       }
 
-      Optional<EstimatedRobotPose> optional =
-          poseEstimator.update(
-              result,
-              Optional.of(parameters.getCameraMatrix()),
-              Optional.of(parameters.getDistCoeffs()),
-              CONSTRAINED_SOLVEPNP_PARAMETERS);
+      Optional<EstimatedRobotPose> optional = Optional.empty();
+      if (!hasEnabled) {
+        if (RobotState.isEnabled()) {
+          optional = poseEstimator.estimateCoprocMultiTagPose(result);
+          hasEnabled = true;
+        }
+      } else {
+        Optional<EstimatedRobotPose> coproc = poseEstimator.estimateCoprocMultiTagPose(result);
+        if (optional.isEmpty()) {
+          continue;
+        }
+        optional =
+            poseEstimator.estimateConstrainedSolvepnpPose(
+                result,
+                parameters.getCameraMatrix(),
+                parameters.getDistCoeffs(),
+                coproc.get().estimatedPose,
+                true,
+                0.5);
+      }
+
       if (optional.isEmpty()) {
         continue;
       }

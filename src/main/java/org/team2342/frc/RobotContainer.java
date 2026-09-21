@@ -6,17 +6,13 @@
 
 package org.team2342.frc;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import lombok.Getter;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
-import org.littletonrobotics.junction.networktables.LoggedNetworkChooser;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.commands.DriveCommands;
-import org.team2342.frc.commands.DriveToPose;
 import org.team2342.frc.commands.RotationLockedDrive;
 import org.team2342.frc.subsystems.drive.Drive;
 import org.team2342.frc.subsystems.drive.GyroIO;
@@ -28,17 +24,15 @@ import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
-import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.sysid.SysIdRoutine;
 import org.wpilib.hardware.power.PowerDistribution.ModuleType;
 import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Transform2d;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.tunable.Selectable;
 import org.wpilib.util.Alert;
 import org.wpilib.util.Alert.Level;
 
@@ -46,7 +40,7 @@ public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
 
-  private final LoggedNetworkChooser<Command> autoChooser;
+  private final Selectable<Command> autoChooser = null;
 
   @Getter
   private final EnhancedXboxController driverController =
@@ -69,12 +63,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
-                new VisionIOPhoton(
-                    VisionConstants.LEFT_PARAMETERS,
-                    PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR));
+                new VisionIOPhoton(VisionConstants.LEFT_PARAMETERS));
 
-        LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
+        LoggedPowerDistribution.getInstance(0, CANConstants.PDH_ID, ModuleType.REV);
         break;
 
       case SIM:
@@ -89,11 +80,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
-                new VisionIOSim(
-                    VisionConstants.LEFT_PARAMETERS,
-                    PoseStrategy.CONSTRAINED_SOLVEPNP,
-                    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    drive::getRawOdometryPose));
+                new VisionIOSim(VisionConstants.LEFT_PARAMETERS, drive::getRawOdometryPose));
 
         break;
 
@@ -117,8 +104,8 @@ public class RobotContainer {
 
     configureNamedCommands();
 
-    autoChooser = new LoggedNetworkChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.get();
+    // autoChooser = new LoggedNetworkChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser.get();
 
     Telemetry.log(
         "Calculate Vision Heading Offset",
@@ -153,26 +140,26 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-    driverController
-        .a()
-        .whileTrue(
-            new DriveToPose(
-                drive,
-                AllianceUtils.getFieldLayout()
-                    .getTagPose(7)
-                    .orElse(new Pose3d())
-                    .toPose2d()
-                    .plus(
-                        new Transform2d(
-                            DriveConstants.DRIVE_BASE_RADIUS + 0.45, 0, Rotation2d.k180deg)),
-                drive::getPose,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX()));
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         new DriveToPose(
+    //             drive,
+    //             AllianceUtils.getFieldLayout()
+    //                 .getTagPose(7)
+    //                 .orElse(new Pose3d())
+    //                 .toPose2d()
+    //                 .plus(
+    //                     new Transform2d(
+    //                         DriveConstants.DRIVE_BASE_RADIUS + 0.45, 0, Rotation2d.k180deg)),
+    //             drive::getPose,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX()));
   }
 
-  public Command getAutonomousCommand() {
-    return autoChooser.get();
-  }
+  //   public Command getAutonomousCommand() {
+  //     return autoChooser.get();
+  //   }
 
   private void setupDevelopmentRoutines() {
     autoChooser.add(

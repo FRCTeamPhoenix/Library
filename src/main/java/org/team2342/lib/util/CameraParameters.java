@@ -6,11 +6,9 @@
 
 package org.team2342.lib.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.avaje.json.JsonIoException;
+import io.avaje.jsonb.Json;
 import io.avaje.jsonb.Jsonb;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,6 +28,25 @@ import org.wpilib.math.util.Nat;
 import org.wpilib.system.Filesystem;
 
 public class CameraParameters {
+  @Json
+  record SimCameraData(SimCameraCalibrationData[] calibrations) {
+    @Json
+    record SimCameraCalibrationData(
+        ResolutionData resolution,
+        CameraIntrinsicsData cameraIntrinsics,
+        DistortionCoefficients distCoeffs,
+        double[] perViewErrors,
+        double standardDeviation) {
+      @Json
+      record ResolutionData(int width, int height) {}
+
+      @Json
+      record CameraIntrinsicsData(double[] data) {}
+
+      @Json
+      record DistortionCoefficients(double[] data) {}
+    }
+  }
 
   @Getter @Setter private String cameraName;
   @Getter @Setter private int resWidth, resHeight;
@@ -59,7 +76,7 @@ public class CameraParameters {
   }
 
   public CameraParameters(String cameraName, int resWidth, int resHeight) {
-    this(cameraName, resWidth, resHeight, 0.02, 0.05, Rotation2d.kCCW_90deg);
+    this(cameraName, resWidth, resHeight, 0.02, 0.05, Rotation2d.CCW_90DEG);
   }
 
   public CameraParameters(
@@ -102,28 +119,28 @@ public class CameraParameters {
 
   public CameraParameters(String cameraName, int resWidth, int resHeight, Path path)
       throws IOException {
-        SimCameraData data;
-        this.cameraName = cameraName;
-        try (var stream = new FileInputStream(path.toFile())) {
-            data = Jsonb.instance().type(SimCameraData.class).fromJson(stream);
-        } catch (JsonIoException e) {
-            throw new IOException("Invalid calibration JSON", e);
-        }
-        boolean success = false;
-        for (var calib : data.calibrations) {
-            // check if this calibration entry is our desired resolution
-            if (calib.resolution.width != width || calib.resolution.height != height) continue;
-            // get the relevant calibration values
-            double avgViewError = Arrays.stream(calib.perViewErrors).average().orElse(0);
-            // assign the read JSON values to this CameraProperties
-            resWidth = calib.resolution.width;
-            resHeight = calib.resolution.height;
-            cameraMatrix = MatBuilder.fill(Nat.N3(), Nat.N3(), calib.cameraIntrinsics.data);
-            distCoeffs = MatBuilder.fill(Nat.N8(), Nat.N1(), calib.distCoeffs.data);
-            avgErrorPx = avgViewError;
-            errorStdDevPx = calib.standardDeviation;
-        }
-        if (!success) throw new IOException("Requested resolution not found in calibration");
+    SimCameraData data;
+    this.cameraName = cameraName;
+    try (var stream = new FileInputStream(path.toFile())) {
+      data = Jsonb.instance().type(SimCameraData.class).fromJson(stream);
+    } catch (JsonIoException e) {
+      throw new IOException("Invalid calibration JSON", e);
+    }
+    boolean success = false;
+    for (var calib : data.calibrations) {
+      // check if this calibration entry is our desired resolution
+      if (calib.resolution.width != resWidth || calib.resolution.height != resHeight) continue;
+      // get the relevant calibration values
+      double avgViewError = Arrays.stream(calib.perViewErrors).average().orElse(0);
+      // assign the read JSON values to this CameraProperties
+      resWidth = calib.resolution.width;
+      resHeight = calib.resolution.height;
+      cameraMatrix = MatBuilder.fill(Nat.N3(), Nat.N3(), calib.cameraIntrinsics.data);
+      distCoeffs = MatBuilder.fill(Nat.N8(), Nat.N1(), calib.distCoeffs.data);
+      avgErrorPx = avgViewError;
+      errorStdDevPx = calib.standardDeviation;
+    }
+    if (!success) throw new IOException("Requested resolution not found in calibration");
   }
 
   public static CameraParameters loadFromName(String cameraName, int resWidth, int resHeight) {

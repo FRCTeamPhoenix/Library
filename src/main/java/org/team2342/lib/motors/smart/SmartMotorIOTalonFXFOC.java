@@ -7,6 +7,7 @@
 package org.team2342.lib.motors.smart;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -73,10 +74,11 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
   private final SmartMotorConfig config;
 
   @SuppressWarnings("unchecked") // lol type "safety"
-  public SmartMotorIOTalonFXFOC(int canID, SmartMotorConfig config, FollowerConfig... followers) {
+  public SmartMotorIOTalonFXFOC(
+      int canID, CANBus canBus, SmartMotorConfig config, FollowerConfig... followers) {
     this.config = config;
 
-    leaderTalon = new TalonFX(canID);
+    leaderTalon = new TalonFX(canID, canBus);
 
     talonConfig = new TalonFXConfiguration();
     configureTalon();
@@ -104,7 +106,7 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
 
     for (int i = 0; i < followers.length; i++) {
       FollowerConfig followerConfig = followers[i];
-      followerTalons[i] = new TalonFX(followerConfig.canID());
+      followerTalons[i] = new TalonFX(followerConfig.canID(), canBus);
       final int j = i;
 
       var followerConfigFX = new TalonFXConfiguration();
@@ -276,7 +278,7 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
   }
 
   private void configureCANcoder(FeedbackConfig feedback) {
-    cancoder = new CANcoder(feedback.encoderID());
+    cancoder = new CANcoder(feedback.encoderID(), feedback.canBus());
 
     var cfg = new CANcoderConfiguration();
     cfg.MagnetSensor.SensorDirection =

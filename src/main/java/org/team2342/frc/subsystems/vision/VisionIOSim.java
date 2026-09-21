@@ -7,7 +7,6 @@
 package org.team2342.frc.subsystems.vision;
 
 import java.util.function.Supplier;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -30,12 +29,8 @@ public class VisionIOSim extends VisionIOPhoton {
    * @param name The name of the camera.
    * @param poseSupplier Supplier for the robot pose to use in simulation.
    */
-  public VisionIOSim(
-      CameraParameters parameters,
-      PoseStrategy primaryStrategy,
-      PoseStrategy disabledStrategy,
-      Supplier<Pose2d> poseSupplier) {
-    super(parameters, primaryStrategy, disabledStrategy);
+  public VisionIOSim(CameraParameters parameters, Supplier<Pose2d> poseSupplier) {
+    super(parameters);
     this.poseSupplier = poseSupplier;
 
     if (visionSim == null) {

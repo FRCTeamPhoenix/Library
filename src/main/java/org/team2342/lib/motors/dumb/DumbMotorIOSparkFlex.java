@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import org.team2342.lib.motors.MotorConfig;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.filter.Debouncer;
 
 public class DumbMotorIOSparkFlex implements DumbMotorIO {
@@ -29,8 +30,8 @@ public class DumbMotorIOSparkFlex implements DumbMotorIO {
    * @param config The configuration settings for the motor
    * @param type The type of motor being controlled
    */
-  public DumbMotorIOSparkFlex(int canID, MotorConfig config, MotorType type) {
-    motor = new SparkFlex(canID, type);
+  public DumbMotorIOSparkFlex(int canID, CANPort canPort, MotorConfig config, MotorType type) {
+    motor = new SparkFlex(canPort, canID, type);
     motorConfig.inverted(config.motorInverted);
     motorConfig.idleMode(
         config.idleMode == MotorConfig.IdleMode.BRAKE
@@ -49,8 +50,8 @@ public class DumbMotorIOSparkFlex implements DumbMotorIO {
   @Override
   public void updateInputs(DumbMotorIOInputs inputs) {
     inputs.connected = connectedDebouncer.calculate(motor.getLastError() == REVLibError.kOk);
-    inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
-    inputs.currentAmps = motor.getOutputCurrent();
+    inputs.appliedVolts = motor.getAppliedOutput().get() * motor.getBusVoltage().get();
+    inputs.currentAmps = motor.getOutputCurrent().get();
   }
 
   /**

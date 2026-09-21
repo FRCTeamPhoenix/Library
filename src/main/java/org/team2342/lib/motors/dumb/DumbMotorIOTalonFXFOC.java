@@ -7,6 +7,7 @@
 package org.team2342.lib.motors.dumb;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -41,8 +42,8 @@ public class DumbMotorIOTalonFXFOC implements DumbMotorIO {
    * @param canID The CAN ID of the TalonFX motor controller
    * @param config The configuration settings for the motor
    */
-  public DumbMotorIOTalonFXFOC(int canID, MotorConfig config) {
-    talon = new TalonFX(canID);
+  public DumbMotorIOTalonFXFOC(int canID, CANBus canBus, MotorConfig config) {
+    talon = new TalonFX(canID, canBus);
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
     talonConfig.CurrentLimits.SupplyCurrentLimit = config.supplyLimit;

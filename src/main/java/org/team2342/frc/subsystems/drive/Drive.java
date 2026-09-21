@@ -13,6 +13,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import java.util.concurrent.locks.Lock;
@@ -23,7 +24,6 @@ import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.team2342.lib.util.AllianceUtils;
-import org.team2342.lib.util.LocalADStarAK;
 import org.team2342.lib.util.SwerveSetpointGenerator;
 import org.team2342.lib.util.SwerveSetpointGenerator.ModuleLimits;
 import org.team2342.lib.util.SwerveSetpointGenerator.SwerveSetpoint;
@@ -129,7 +129,7 @@ public class Drive extends SubsystemBase {
         this);
 
     // Logging callbacks for PathPlanner
-    Pathfinding.setPathfinder(new LocalADStarAK());
+    Pathfinding.setPathfinder(new LocalADStar());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
           Logger.recordOutput(
@@ -305,7 +305,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisVelocities/Measured")
-  private ChassisVelocities getChassisVelocities() {
+  public ChassisVelocities getChassisVelocities() {
     return kinematics.toChassisVelocities(getModuleStates());
   }
 

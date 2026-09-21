@@ -7,10 +7,10 @@
 package org.team2342.lib.motors.smart;
 
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
-import org.team2342.lib.pidff.FeedforwardController;
 import org.team2342.lib.pidff.PIDFFConfigs;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.controller.SimpleMotorFeedforward;
 import org.wpilib.math.numbers.N1;
 import org.wpilib.math.numbers.N2;
 import org.wpilib.math.system.DCMotor;
@@ -26,7 +26,7 @@ public class SmartMotorIOSim implements SmartMotorIO {
 
   private final PIDController pid;
   private final ProfiledPIDController profiled;
-  private final FeedforwardController ff;
+  private final SimpleMotorFeedforward ff;
   private final DCMotor motor;
 
   private final int followers;
@@ -69,7 +69,9 @@ public class SmartMotorIOSim implements SmartMotorIO {
           new PIDController(config.pidffConfigs.kP, config.pidffConfigs.kI, config.pidffConfigs.kD);
       profiled = null;
     }
-    ff = new FeedforwardController(config.pidffConfigs);
+    ff =
+        new SimpleMotorFeedforward(
+            config.pidffConfigs.kS, config.pidffConfigs.kV, config.pidffConfigs.kA);
   }
 
   @Override
@@ -101,8 +103,7 @@ public class SmartMotorIOSim implements SmartMotorIO {
       double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
       double currentVel = sim.getOutput(1) / config.simRatio;
       double control =
-          pid.calculate(currentVel, velocityRotPerSec)
-              + ff.calculate(velocityRotPerSec, 0, sim.getOutput(0) / config.simRatio);
+          pid.calculate(currentVel, velocityRotPerSec) + ff.calculate(velocityRotPerSec);
       sim.setInput(control);
     } else {
       throw new IllegalStateException(
@@ -117,16 +118,13 @@ public class SmartMotorIOSim implements SmartMotorIO {
     if (config.controlType == ControlType.POSITION) {
       double positionRot = Units.radiansToRotations(positionRad);
       double currentPos = sim.getOutput(0) / config.simRatio;
-      double control =
-          pid.calculate(currentPos, positionRot)
-              + ff.calculate(0, 0, sim.getOutput(0) / config.simRatio);
+      double control = pid.calculate(currentPos, positionRot) + ff.calculate(0);
       sim.setInput(control);
     } else if (config.controlType == ControlType.PROFILED_POSITION) {
       double positionRot = Units.radiansToRotations(positionRad);
       double currentPos = sim.getOutput(0) / config.simRatio;
       double pidOutput = profiled.calculate(currentPos, positionRot);
-      double ffOutput =
-          ff.calculate(profiled.getSetpoint().velocity, 0, sim.getOutput(0) / config.simRatio);
+      double ffOutput = ff.calculate(profiled.getSetpoint().velocity);
       sim.setInput(pidOutput + ffOutput);
     } else {
       throw new IllegalStateException(
@@ -150,7 +148,9 @@ public class SmartMotorIOSim implements SmartMotorIO {
   public void reconfigurePIDFF(PIDFFConfigs configs) {
     this.config.pidffConfigs = configs;
     pid.setPID(configs.kP, configs.kI, configs.kD);
-    ff.setConfigs(configs);
+    ff.setKs(configs.kS);
+    ff.setKv(configs.kV);
+    ff.setKa(configs.kA);
   }
 
   @Override

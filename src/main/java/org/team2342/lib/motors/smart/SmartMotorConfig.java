@@ -6,6 +6,7 @@
 
 package org.team2342.lib.motors.smart;
 
+import com.ctre.phoenix6.CANBus;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
 import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
@@ -15,7 +16,7 @@ public class SmartMotorConfig extends MotorConfig {
   public PIDFFConfigs pidffConfigs = new PIDFFConfigs();
   public double gearRatio = 1;
   public ControlType controlType = null;
-  public FeedbackConfig feedbackConfig = FeedbackConfig.internal();
+  public FeedbackConfig feedbackConfig = FeedbackConfig.internal(null);
 
   public Constraints profileConstraintsRad = new Constraints(0, 0);
 
@@ -99,23 +100,32 @@ public class SmartMotorConfig extends MotorConfig {
   public record FeedbackConfig(
       FeedbackType type,
       int encoderID,
+      CANBus canBus,
       double rotorToSensor,
       double offsetRotations,
       boolean inverted) {
-    public static FeedbackConfig internal() {
-      return new FeedbackConfig(FeedbackType.INTERNAL, -1, 1.0, 0.0, false);
+    public static FeedbackConfig internal(CANBus canBus) {
+      return new FeedbackConfig(FeedbackType.INTERNAL, -1, canBus, 1.0, 0.0, false);
     }
 
     public static FeedbackConfig remote(
-        int encoderID, double rotorToSensor, double offsetRotations, boolean inverted) {
+        int encoderID,
+        CANBus canBus,
+        double rotorToSensor,
+        double offsetRotations,
+        boolean inverted) {
       return new FeedbackConfig(
-          FeedbackType.REMOTE, encoderID, rotorToSensor, offsetRotations, inverted);
+          FeedbackType.REMOTE, encoderID, canBus, rotorToSensor, offsetRotations, inverted);
     }
 
     public static FeedbackConfig fused(
-        int encoderID, double rotorToSensor, double offsetRotations, boolean inverted) {
+        int encoderID,
+        CANBus canBus,
+        double rotorToSensor,
+        double offsetRotations,
+        boolean inverted) {
       return new FeedbackConfig(
-          FeedbackType.FUSED, encoderID, rotorToSensor, offsetRotations, inverted);
+          FeedbackType.FUSED, encoderID, canBus, rotorToSensor, offsetRotations, inverted);
     }
 
     public enum FeedbackType {

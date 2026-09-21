@@ -24,6 +24,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.util.PhoenixUtils;
 import org.wpilib.math.filter.Debouncer;
@@ -81,9 +82,9 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final Debouncer encoderConnectedDebounce = new Debouncer(0.5);
 
   public ModuleIOTalonFX(int[] canIDArray, double encoderOffset) {
-    driveTalon = new TalonFX(canIDArray[0]);
-    turnTalon = new TalonFX(canIDArray[1]);
-    cancoder = new CANcoder(canIDArray[2]);
+    driveTalon = new TalonFX(canIDArray[0], CANConstants.DRIVE_BUS);
+    turnTalon = new TalonFX(canIDArray[1], CANConstants.DRIVE_BUS);
+    cancoder = new CANcoder(canIDArray[2], CANConstants.DRIVE_BUS);
     offset = encoderOffset;
 
     // Configure Drive

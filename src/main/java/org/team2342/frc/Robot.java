@@ -21,6 +21,7 @@ import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
+import org.wpilib.command2.Commands;
 import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.framework.IterativeRobotBase;
 import org.wpilib.math.util.MathShared;
@@ -160,7 +161,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
+    // autonomousCommand = robotContainer.getAutonomousCommand();
+    autonomousCommand = Commands.none();
 
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);

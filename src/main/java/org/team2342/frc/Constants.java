@@ -6,7 +6,9 @@
 
 package org.team2342.frc;
 
+import com.ctre.phoenix6.CANBus;
 import org.team2342.lib.util.CameraParameters;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.geometry.Translation3d;
@@ -105,6 +107,8 @@ public final class Constants {
   }
 
   public static final class CANConstants {
+    public static final CANBus DRIVE_BUS = new CANBus(CANPort.CAN_D0);
+
     public static final int PDH_ID = 14;
 
     public static final int PIGEON_ID = 13;

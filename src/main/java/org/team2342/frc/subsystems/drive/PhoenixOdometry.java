@@ -13,11 +13,10 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.team2342.frc.Constants.DriveConstants;
-import org.wpilib.system.RobotController;
+import org.team2342.frc.Constants.CANConstants;
+import org.wpilib.system.Timer;
 
 /** Reads high-frequency measurements into queues for odometry. */
-@SuppressWarnings("unused")
 public class PhoenixOdometry extends Thread {
   private final Lock signalLock = new ReentrantLock();
 
@@ -26,6 +25,7 @@ public class PhoenixOdometry extends Thread {
   private final List<Queue<Double>> measurementQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
+  private static boolean isCANFD = CANConstants.DRIVE_BUS.isNetworkFD();
   private static PhoenixOdometry instance = null;
 
   public static PhoenixOdometry getInstance() {
@@ -78,10 +78,11 @@ public class PhoenixOdometry extends Thread {
     while (true) {
       signalLock.lock();
       try {
-        if (DriveConstants.IS_CANFD && signals.length > 0) {
-          BaseStatusSignal.waitForAll(2.0 / DriveConstants.ODOMETRY_FREQUENCY, signals);
+        if (isCANFD && signals.length > 0) {
+          BaseStatusSignal.waitForAll(
+              2.0 / (CANConstants.DRIVE_BUS.isNetworkFD() ? 250.0 : 100.0), signals);
         } else {
-          Thread.sleep((long) (1000.0 / DriveConstants.ODOMETRY_FREQUENCY));
+          Thread.sleep((long) (1000.0 / (CANConstants.DRIVE_BUS.isNetworkFD() ? 250.0 : 100.0)));
           if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
         }
       } catch (Exception e) {
@@ -92,7 +93,7 @@ public class PhoenixOdometry extends Thread {
 
       Drive.odometryLock.lock();
       try {
-        double timestamp = RobotController.getFPGATime() / 1e6;
+        double timestamp = Timer.getMonotonicTimestamp();
         double totalLatency = 0.0;
         for (BaseStatusSignal signal : signals) {
           totalLatency += signal.getTimestamp().getLatency();

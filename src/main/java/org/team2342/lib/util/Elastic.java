@@ -2,8 +2,7 @@
 // // This software can be modified and/or shared under the terms
 // // defined by the Elastic license:
 // // https://github.com/Gold872/elastic_dashboard/blob/main/LICENSE
-
-// package org.team2342.lib.util;
+package org.team2342.lib.util;
 
 // import com.fasterxml.jackson.annotation.JsonProperty;
 // import com.fasterxml.jackson.core.JsonProcessingException;

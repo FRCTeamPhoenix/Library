@@ -18,6 +18,7 @@ import org.wpilib.util.Color;
 public class LedStrip extends SubsystemBase {
   private final LedIO io;
   private final String name;
+
   private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
   public LedStrip(LedIO io, String name) {
