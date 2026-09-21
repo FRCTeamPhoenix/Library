@@ -4,7 +4,6 @@ plugins {
     id "org.wpilib.GradleRIO" version "2027.0.0-alpha-7"
     id "com.peterabeles.gversion" version "1.10"
     id "com.diffplug.spotless" version "8.6.0"
-    id "io.freefair.lombok" version "8.4"
 }
 
 java {
@@ -56,7 +55,7 @@ def deployArtifact = deploy.targets.systemcore.artifacts.wpilibJava
 wpi.java.runSimWithDebugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = false
+def includeDesktopSupport = true
 
 // Configuration for AdvantageKit
 task(replayWatch, type: JavaExec) {
@@ -88,7 +87,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // ...
+    compileOnly "org.projectlombok:lombok:1.18.44"
+    annotationProcessor "org.projectlombok:lombok:1.18.44"
+
+    testCompileOnly "org.projectlombok:lombok:1.18.44"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.44"
+
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 }
@@ -99,7 +103,11 @@ test {
 }
 
 // Simulation configuration (e.g. environment variables).
-wpi.sim.addGui().defaultEnabled = true
+//
+// The sim GUI is *disabled* by default to support running
+// AdvantageKit log replay, which requires that all HAL
+// sim extensions be disabled.
+wpi.sim.addGui().defaultEnabled = false
 wpi.sim.addDriverstation()
 
 application.mainClass = ROBOT_MAIN_CLASS
@@ -119,16 +127,19 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+
+// Create version file
 project.compileJava.dependsOn(createVersionFile)
 gversion {
     srcDir       = "src/main/java/"
     classPackage = "org.team2342.frc"
     className    = "BuildConstants"
     dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-    timeZone     = "America/New_York" // Use preferred time zone
+    timeZone     = "America/New_York"
     indent       = "  "
 }
 
+// Create commit with working changes on event branches
 task(eventDeploy) {
     doLast {
         if (project.gradle.startParameter.taskNames.any({ it.toLowerCase().contains("deploy") })) {
@@ -231,7 +242,7 @@ spotless {
     json {
         target fileTree(".") {
             include "**/*.json"
-            exclude "**/build/**", "**/build-*/**", "**/calibrations/**", "**/launch.json"
+            exclude "**/build/**", "**/build-*/**", "**/calibrations/**", ".wpilib/**", "**/launch.json"
         }
         gson().indentWithSpaces(2)
     }
