@@ -7,7 +7,6 @@
 package org.team2342.lib.motors.dumb;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -17,6 +16,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.team2342.frc.util.PhoenixUtils;
 import org.team2342.lib.motors.MotorConfig;
+import org.team2342.lib.util.CANDevice;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
@@ -40,8 +40,8 @@ public class DumbMotorIOTalonFX implements DumbMotorIO {
    * @param canID The CAN ID of the TalonFX motor controller
    * @param config The configuration settings for the motor
    */
-  public DumbMotorIOTalonFX(int canID, CANBus canBus, MotorConfig config) {
-    talon = new TalonFX(canID, canBus);
+  public DumbMotorIOTalonFX(CANDevice motor, MotorConfig config) {
+    talon = new TalonFX(motor.getDeviceNumber(), motor.getCANBus());
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
     talonConfig.CurrentLimits.SupplyCurrentLimit = config.supplyLimit;

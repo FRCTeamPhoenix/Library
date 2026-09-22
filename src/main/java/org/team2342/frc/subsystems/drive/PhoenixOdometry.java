@@ -25,7 +25,7 @@ public class PhoenixOdometry extends Thread {
   private final List<Queue<Double>> measurementQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  private static boolean isCANFD = CANConstants.DRIVE_BUS.isNetworkFD();
+  private static boolean isCANFD = CANConstants.PIGEON.getCANBus().isNetworkFD();
   private static PhoenixOdometry instance = null;
 
   public static PhoenixOdometry getInstance() {
@@ -79,10 +79,9 @@ public class PhoenixOdometry extends Thread {
       signalLock.lock();
       try {
         if (isCANFD && signals.length > 0) {
-          BaseStatusSignal.waitForAll(
-              2.0 / (CANConstants.DRIVE_BUS.isNetworkFD() ? 250.0 : 100.0), signals);
+          BaseStatusSignal.waitForAll(2.0 / (isCANFD ? 250.0 : 100.0), signals);
         } else {
-          Thread.sleep((long) (1000.0 / (CANConstants.DRIVE_BUS.isNetworkFD() ? 250.0 : 100.0)));
+          Thread.sleep((long) (1000.0 / (isCANFD ? 250.0 : 100.0)));
           if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
         }
       } catch (Exception e) {

@@ -9,6 +9,8 @@ package org.team2342.lib.motors.smart;
 import com.ctre.phoenix6.CANBus;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.util.CANDevice;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 
 public class SmartMotorConfig extends MotorConfig {
@@ -99,33 +101,25 @@ public class SmartMotorConfig extends MotorConfig {
 
   public record FeedbackConfig(
       FeedbackType type,
-      int encoderID,
-      CANBus canBus,
+      CANDevice device,
       double rotorToSensor,
       double offsetRotations,
       boolean inverted) {
     public static FeedbackConfig internal(CANBus canBus) {
-      return new FeedbackConfig(FeedbackType.INTERNAL, -1, canBus, 1.0, 0.0, false);
+      return new FeedbackConfig(
+          FeedbackType.INTERNAL, new CANDevice(-1, CANPort.CAN_S0), 1.0, 0.0, false);
     }
 
     public static FeedbackConfig remote(
-        int encoderID,
-        CANBus canBus,
-        double rotorToSensor,
-        double offsetRotations,
-        boolean inverted) {
+        CANDevice device, double rotorToSensor, double offsetRotations, boolean inverted) {
       return new FeedbackConfig(
-          FeedbackType.REMOTE, encoderID, canBus, rotorToSensor, offsetRotations, inverted);
+          FeedbackType.REMOTE, device, rotorToSensor, offsetRotations, inverted);
     }
 
     public static FeedbackConfig fused(
-        int encoderID,
-        CANBus canBus,
-        double rotorToSensor,
-        double offsetRotations,
-        boolean inverted) {
+        CANDevice device, double rotorToSensor, double offsetRotations, boolean inverted) {
       return new FeedbackConfig(
-          FeedbackType.FUSED, encoderID, canBus, rotorToSensor, offsetRotations, inverted);
+          FeedbackType.FUSED, device, rotorToSensor, offsetRotations, inverted);
     }
 
     public enum FeedbackType {
@@ -135,5 +129,5 @@ public class SmartMotorConfig extends MotorConfig {
     }
   }
 
-  public record FollowerConfig(int canID, boolean inverted) {}
+  public record FollowerConfig(CANDevice device, boolean inverted) {}
 }

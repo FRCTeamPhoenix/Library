@@ -60,33 +60,34 @@ public class RobotConfig {
 
   // Validation alerts
   private static final Alert BAD_GUI_CONFIG =
-      new Alert("PathPlanner", "GUI Config Couldn't be loaded", Level.HIGH);
+      new Alert("PathPlannerGUI", "GUI Config Couldn't be loaded", Level.HIGH);
 
   private static final Alert MOI_ALERT =
-      new Alert("PathPlanner", "MOI Config Mismatch", Level.HIGH);
+      new Alert("PathPlannerMOI", "MOI Config Mismatch", Level.HIGH);
 
   private static final Alert MASS_ALERT =
-      new Alert("PathPlanner", "Mass Config Mismatch", Level.HIGH);
+      new Alert("PathPlannerMass", "Mass Config Mismatch", Level.HIGH);
 
   private static final Alert TORQUE_ALERT =
-      new Alert("PathPlanner", "Torque Friction Mismatch", Level.HIGH);
+      new Alert("PathPlannerTorque", "Torque Friction Mismatch", Level.HIGH);
 
   private static final Alert CURRENT_ALERT =
-      new Alert("PathPlanner", "Drive Current Limit Mismatch", Level.HIGH);
+      new Alert("PathPlannerCurrent", "Drive Current Limit Mismatch", Level.HIGH);
 
   private static final Alert MOTOR_ALERT =
-      new Alert("PathPlanner", "Drive Motor Config Mismatch", Level.HIGH);
+      new Alert("PathPlannerMotor", "Drive Motor Config Mismatch", Level.HIGH);
 
   private static final Alert VELOCITY_ALERT =
-      new Alert("PathPlanner", "Max Drive Velocity Mismatch", Level.HIGH);
+      new Alert("PathPlannerVelocity", "Max Drive Velocity Mismatch", Level.HIGH);
 
-  private static final Alert COF_ALERT = new Alert("PathPlanner", "Wheel COF Mismatch", Level.HIGH);
+  private static final Alert COF_ALERT =
+      new Alert("PathPlannerCOF", "Wheel COF Mismatch", Level.HIGH);
 
   private static final Alert RADIUS_ALERT =
-      new Alert("PathPlanner", "Wheel Radius Mismatch", Level.HIGH);
+      new Alert("PathPlannerRadius", "Wheel Radius Mismatch", Level.HIGH);
 
   private static final Alert LOCATION_ALERT =
-      new Alert("PathPlanner", "Module Location Mismatch", Level.HIGH);
+      new Alert("PathPlannerLocation", "Module Location Mismatch", Level.HIGH);
 
   /**
    * Create a robot config object for a HOLONOMIC DRIVE robot

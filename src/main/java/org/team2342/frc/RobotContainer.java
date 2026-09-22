@@ -55,18 +55,19 @@ public class RobotContainer {
       case REAL:
         drive =
             new Drive(
-                new GyroIOPigeon2(CANConstants.PIGEON_ID),
-                new ModuleIOTalonFX(CANConstants.FL_IDS, DriveConstants.ENCODER_OFFSETS[0]),
-                new ModuleIOTalonFX(CANConstants.FR_IDS, DriveConstants.ENCODER_OFFSETS[1]),
-                new ModuleIOTalonFX(CANConstants.BL_IDS, DriveConstants.ENCODER_OFFSETS[2]),
-                new ModuleIOTalonFX(CANConstants.BR_IDS, DriveConstants.ENCODER_OFFSETS[3]));
+                new GyroIOPigeon2(CANConstants.PIGEON),
+                new ModuleIOTalonFX(CANConstants.FL_CAN, DriveConstants.ENCODER_OFFSETS[0]),
+                new ModuleIOTalonFX(CANConstants.FR_CAN, DriveConstants.ENCODER_OFFSETS[1]),
+                new ModuleIOTalonFX(CANConstants.BL_CAN, DriveConstants.ENCODER_OFFSETS[2]),
+                new ModuleIOTalonFX(CANConstants.BR_CAN, DriveConstants.ENCODER_OFFSETS[3]));
         vision =
             new Vision(
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
                 new VisionIOPhoton(VisionConstants.LEFT_PARAMETERS));
 
-        LoggedPowerDistribution.getInstance(0, CANConstants.PDH_ID, ModuleType.REV);
+        LoggedPowerDistribution.getInstance(
+            CANConstants.PDH.getPort().value, CANConstants.PDH.getDeviceNumber(), ModuleType.REV);
         break;
 
       case SIM:

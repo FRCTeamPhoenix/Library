@@ -24,9 +24,9 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.util.PhoenixUtils;
+import org.team2342.lib.util.CANDevice;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
@@ -81,10 +81,10 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
   private final Debouncer encoderConnectedDebounce = new Debouncer(0.5);
 
-  public ModuleIOTalonFX(int[] canIDArray, double encoderOffset) {
-    driveTalon = new TalonFX(canIDArray[0], CANConstants.DRIVE_BUS);
-    turnTalon = new TalonFX(canIDArray[1], CANConstants.DRIVE_BUS);
-    cancoder = new CANcoder(canIDArray[2], CANConstants.DRIVE_BUS);
+  public ModuleIOTalonFX(CANDevice[] canArray, double encoderOffset) {
+    driveTalon = new TalonFX(canArray[0].getDeviceNumber(), canArray[0].getCANBus());
+    turnTalon = new TalonFX(canArray[1].getDeviceNumber(), canArray[1].getCANBus());
+    cancoder = new CANcoder(canArray[2].getDeviceNumber(), canArray[2].getCANBus());
     offset = encoderOffset;
 
     // Configure Drive
@@ -111,7 +111,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Set up CANcoder as feedback device for turn motor
-    turnConfig.Feedback.FeedbackRemoteSensorID = canIDArray[2];
+    turnConfig.Feedback.FeedbackRemoteSensorID = canArray[2].getDeviceNumber();
     turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEARING;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;

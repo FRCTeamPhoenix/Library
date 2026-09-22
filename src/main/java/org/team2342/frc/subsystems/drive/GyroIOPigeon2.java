@@ -12,9 +12,9 @@ import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import java.util.Queue;
-import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.util.PhoenixUtils;
+import org.team2342.lib.util.CANDevice;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
@@ -33,8 +33,8 @@ public class GyroIOPigeon2 implements GyroIO {
   // Connection debouncer
   private final Debouncer gyroConnectedDebounce = new Debouncer(0.5);
 
-  public GyroIOPigeon2(int canID) {
-    pigeon = new Pigeon2(canID, CANConstants.DRIVE_BUS);
+  public GyroIOPigeon2(CANDevice gyro) {
+    pigeon = new Pigeon2(gyro.getDeviceNumber(), gyro.getCANBus());
     yaw = pigeon.getYaw();
     yawVelocity = pigeon.getAngularVelocityZWorld();
 

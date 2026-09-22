@@ -55,17 +55,15 @@ public class AllianceUtils {
   public static Pose2d flipToAlliance(Pose2d bluePose, Field field) {
     return isRedAlliance()
         ? new Pose2d(
-            field.getFieldLength() - bluePose.getX(),
-            field.getFieldWidth() - bluePose.getY(),
-            bluePose.getRotation().rotateBy(Rotation2d.PI))
+            -bluePose.getX(), -bluePose.getY(), bluePose.getRotation().rotateBy(Rotation2d.PI))
         : bluePose;
   }
 
   public static Pose3d flipToAlliance(Pose3d bluePose, Field field) {
     return isRedAlliance()
         ? new Pose3d(
-            field.getFieldLength() - bluePose.getX(),
-            field.getFieldWidth() - bluePose.getY(),
+            -bluePose.getX(),
+            -bluePose.getY(),
             bluePose.getZ(),
             bluePose.getRotation().rotateBy(new Rotation3d(0.0, 0.0, Math.PI)))
         : bluePose;
@@ -73,18 +71,14 @@ public class AllianceUtils {
 
   public static Translation2d flipToAlliance(Translation2d blueTranslation, Field field) {
     return isRedAlliance()
-        ? new Translation2d(
-            field.getFieldLength() - blueTranslation.getX(),
-            field.getFieldWidth() - blueTranslation.getY())
+        ? new Translation2d(-blueTranslation.getX(), -blueTranslation.getY())
         : blueTranslation;
   }
 
   public static Translation3d flipToAlliance(Translation3d blueTranslation, Field field) {
     return isRedAlliance()
         ? new Translation3d(
-            field.getFieldLength() - blueTranslation.getX(),
-            field.getFieldWidth() - blueTranslation.getY(),
-            blueTranslation.getZ())
+            -blueTranslation.getX(), -blueTranslation.getY(), blueTranslation.getZ())
         : blueTranslation;
   }
 

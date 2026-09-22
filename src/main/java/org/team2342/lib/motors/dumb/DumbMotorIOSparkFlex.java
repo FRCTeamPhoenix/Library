@@ -14,7 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import org.team2342.lib.motors.MotorConfig;
-import org.wpilib.hardware.bus.CANPort;
+import org.team2342.lib.util.CANDevice;
 import org.wpilib.math.filter.Debouncer;
 
 public class DumbMotorIOSparkFlex implements DumbMotorIO {
@@ -30,8 +30,8 @@ public class DumbMotorIOSparkFlex implements DumbMotorIO {
    * @param config The configuration settings for the motor
    * @param type The type of motor being controlled
    */
-  public DumbMotorIOSparkFlex(int canID, CANPort canPort, MotorConfig config, MotorType type) {
-    motor = new SparkFlex(canPort, canID, type);
+  public DumbMotorIOSparkFlex(CANDevice motor, MotorConfig config, MotorType type) {
+    this.motor = new SparkFlex(motor.getPort(), motor.getDeviceNumber(), type);
     motorConfig.inverted(config.motorInverted);
     motorConfig.idleMode(
         config.idleMode == MotorConfig.IdleMode.BRAKE
@@ -39,7 +39,8 @@ public class DumbMotorIOSparkFlex implements DumbMotorIO {
             : SparkBaseConfig.IdleMode.kCoast);
     motorConfig.smartCurrentLimit((int) config.supplyLimit);
 
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    this.motor.configure(
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**

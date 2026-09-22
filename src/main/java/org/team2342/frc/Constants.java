@@ -6,7 +6,7 @@
 
 package org.team2342.frc;
 
-import com.ctre.phoenix6.CANBus;
+import org.team2342.lib.util.CANDevice;
 import org.team2342.lib.util.CameraParameters;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.geometry.Rotation3d;
@@ -107,14 +107,23 @@ public final class Constants {
   }
 
   public static final class CANConstants {
-    public static final CANBus DRIVE_BUS = new CANBus(CANPort.CAN_D0);
+    public static final CANPort DRIVE_BUS = CANPort.CAN_S0;
 
-    public static final int PDH_ID = 14;
+    public static final CANDevice PDH = new CANDevice(14, DRIVE_BUS);
 
-    public static final int PIGEON_ID = 13;
-    public static final int[] FL_IDS = {1, 5, 9};
-    public static final int[] FR_IDS = {2, 6, 10};
-    public static final int[] BL_IDS = {3, 7, 11};
-    public static final int[] BR_IDS = {4, 8, 12};
+    public static final CANDevice PIGEON = new CANDevice(13, DRIVE_BUS);
+    public static final CANDevice[] FL_CAN = {
+      new CANDevice(1, DRIVE_BUS), new CANDevice(5, DRIVE_BUS), new CANDevice(9, DRIVE_BUS)
+    };
+    public static final CANDevice[] FR_CAN = {
+      new CANDevice(2, DRIVE_BUS), new CANDevice(6, DRIVE_BUS), new CANDevice(10, DRIVE_BUS)
+    };
+    public static final CANDevice[] BL_CAN = {
+      new CANDevice(3, DRIVE_BUS), new CANDevice(7, DRIVE_BUS), new CANDevice(11, DRIVE_BUS)
+    };
+    public static final CANDevice[] BR_CAN = {
+      new CANDevice(4, DRIVE_BUS), new CANDevice(8, DRIVE_BUS), new CANDevice(12, DRIVE_BUS)
+    };
+    ;
   }
 }

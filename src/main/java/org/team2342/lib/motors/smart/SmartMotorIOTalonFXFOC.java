@@ -7,7 +7,6 @@
 package org.team2342.lib.motors.smart;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -33,6 +32,7 @@ import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FeedbackConfig;
 import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
 import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.util.CANDevice;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.math.util.Units;
 import org.wpilib.units.measure.Angle;
@@ -75,10 +75,10 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
 
   @SuppressWarnings("unchecked") // lol type "safety"
   public SmartMotorIOTalonFXFOC(
-      int canID, CANBus canBus, SmartMotorConfig config, FollowerConfig... followers) {
+      CANDevice motor, SmartMotorConfig config, FollowerConfig... followers) {
     this.config = config;
 
-    leaderTalon = new TalonFX(canID, canBus);
+    leaderTalon = new TalonFX(motor.getDeviceNumber(), motor.getCANBus());
 
     talonConfig = new TalonFXConfiguration();
     configureTalon();
@@ -106,7 +106,9 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
 
     for (int i = 0; i < followers.length; i++) {
       FollowerConfig followerConfig = followers[i];
-      followerTalons[i] = new TalonFX(followerConfig.canID(), canBus);
+      followerTalons[i] =
+          new TalonFX(
+              followerConfig.device().getDeviceNumber(), followerConfig.device().getCANBus());
       final int j = i;
 
       var followerConfigFX = new TalonFXConfiguration();
@@ -262,7 +264,8 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
         configureCANcoder(config.feedbackConfig);
 
         talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        talonConfig.Feedback.FeedbackRemoteSensorID = config.feedbackConfig.encoderID();
+        talonConfig.Feedback.FeedbackRemoteSensorID =
+            config.feedbackConfig.device().getDeviceNumber();
         talonConfig.Feedback.SensorToMechanismRatio = config.gearRatio;
       }
 
@@ -270,7 +273,8 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
         configureCANcoder(config.feedbackConfig);
 
         talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        talonConfig.Feedback.FeedbackRemoteSensorID = config.feedbackConfig.encoderID();
+        talonConfig.Feedback.FeedbackRemoteSensorID =
+            config.feedbackConfig.device().getDeviceNumber();
         talonConfig.Feedback.RotorToSensorRatio = config.feedbackConfig.rotorToSensor();
         talonConfig.Feedback.SensorToMechanismRatio = config.gearRatio;
       }
@@ -278,7 +282,7 @@ public class SmartMotorIOTalonFXFOC implements SmartMotorIO {
   }
 
   private void configureCANcoder(FeedbackConfig feedback) {
-    cancoder = new CANcoder(feedback.encoderID(), feedback.canBus());
+    cancoder = new CANcoder(feedback.device().getDeviceNumber(), feedback.device().getCANBus());
 
     var cfg = new CANcoderConfiguration();
     cfg.MagnetSensor.SensorDirection =
