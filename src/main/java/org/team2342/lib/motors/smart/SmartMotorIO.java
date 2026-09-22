@@ -7,7 +7,7 @@
 package org.team2342.lib.motors.smart;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.util.PIDFFConfigs;
 
 public interface SmartMotorIO {
 

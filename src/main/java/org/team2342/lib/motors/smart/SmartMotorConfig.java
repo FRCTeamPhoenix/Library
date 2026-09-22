@@ -8,8 +8,8 @@ package org.team2342.lib.motors.smart;
 
 import com.ctre.phoenix6.CANBus;
 import org.team2342.lib.motors.MotorConfig;
-import org.team2342.lib.pidff.PIDFFConfigs;
 import org.team2342.lib.util.CANDevice;
+import org.team2342.lib.util.PIDFFConfigs;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.trajectory.TrapezoidProfile.Constraints;
 

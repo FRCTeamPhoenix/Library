@@ -4,7 +4,7 @@
 // This source code is licensed under the MIT License.
 // See the LICENSE file in the root directory of this project.
 
-package org.team2342.lib.pidff;
+package org.team2342.lib.util;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;

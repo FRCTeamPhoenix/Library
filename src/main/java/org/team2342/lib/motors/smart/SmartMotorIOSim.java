@@ -7,7 +7,7 @@
 package org.team2342.lib.motors.smart;
 
 import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
-import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.util.PIDFFConfigs;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.controller.SimpleMotorFeedforward;
