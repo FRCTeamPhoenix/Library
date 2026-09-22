@@ -13,8 +13,8 @@ import org.json.simple.parser.JSONParser;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.util.Pair;
 import org.wpilib.system.Filesystem;
+import org.wpilib.util.Pair;
 
 /**
  * Implementation of AD* running locally in a background thread
@@ -391,7 +391,9 @@ public class LocalADStar implements Pathfinder {
     fieldPosPath.set(fieldPosPath.size() - 1, realGoalPos);
     List<Pose2d> pathPoses = new ArrayList<>();
     pathPoses.add(
-        new Pose2d(fieldPosPath.get(0), fieldPosPath.get(1).minus(fieldPosPath.get(0)).getAngle().orElse(Rotation2d.ZERO)));
+        new Pose2d(
+            fieldPosPath.get(0),
+            fieldPosPath.get(1).minus(fieldPosPath.get(0)).getAngle().orElse(Rotation2d.ZERO)));
     for (int i = 1; i < fieldPosPath.size() - 1; i++) {
       Translation2d last = fieldPosPath.get(i - 1);
       Translation2d current = fieldPosPath.get(i);
@@ -409,7 +411,8 @@ public class LocalADStar implements Pathfinder {
             fieldPosPath
                 .get(fieldPosPath.size() - 1)
                 .minus(fieldPosPath.get(fieldPosPath.size() - 2))
-                .getAngle().orElse(Rotation2d.ZERO)));
+                .getAngle()
+                .orElse(Rotation2d.ZERO)));
     return PathPlannerPath.waypointsFromPoses(pathPoses);
   }
 

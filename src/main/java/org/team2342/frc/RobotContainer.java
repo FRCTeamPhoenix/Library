@@ -6,6 +6,8 @@
 
 package org.team2342.frc;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import lombok.Getter;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedNetworkChooser;
@@ -34,9 +36,6 @@ import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.util.Alert;
 import org.wpilib.util.Alert.Level;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
   @Getter private final Drive drive;
@@ -159,25 +158,21 @@ public class RobotContainer {
     //             () -> -driverController.getLeftX()));
   }
 
-    public Command getAutonomousCommand() {
-      return autoChooser.get();
-    }
+  public Command getAutonomousCommand() {
+    return autoChooser.get();
+  }
 
   private void setupDevelopmentRoutines() {
     autoChooser.add(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
     autoChooser.add(
         "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.add(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(Direction.FORWARD));
-    autoChooser.add(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(Direction.REVERSE));
-    autoChooser.add(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(Direction.FORWARD));
-    autoChooser.add(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(Direction.REVERSE));{}
+    autoChooser.add("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(Direction.FORWARD));
+    autoChooser.add("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(Direction.REVERSE));
+    autoChooser.add("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(Direction.FORWARD));
+    autoChooser.add("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(Direction.REVERSE));
+    {
+    }
     Telemetry.log(
         "Print Encoder Zeros",
         Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));

@@ -168,7 +168,11 @@ public class PathPlannerTrajectory {
             double appliedForce =
                 wheelForceDist > 1e-6
                     ? wheelForceDist
-                        * wheelForces[m].getAngle().orElse(Rotation2d.ZERO).minus(state.moduleStates[m].angle).getCos()
+                        * wheelForces[m]
+                            .getAngle()
+                            .orElse(Rotation2d.ZERO)
+                            .minus(state.moduleStates[m].angle)
+                            .getCos()
                     : 0.0;
             double wheelTorque = appliedForce * config.moduleConfig.wheelRadiusMeters;
             double torqueCurrent = config.moduleConfig.driveMotor.getCurrent(wheelTorque);
@@ -288,7 +292,8 @@ public class PathPlannerTrajectory {
           if (fieldTranslation.getNorm() <= 1e-6) {
             states.get(i).moduleStates[m].fieldAngle = Rotation2d.ZERO;
           } else {
-            states.get(i).moduleStates[m].fieldAngle = fieldTranslation.getAngle().orElse(Rotation2d.ZERO);
+            states.get(i).moduleStates[m].fieldAngle =
+                fieldTranslation.getAngle().orElse(Rotation2d.ZERO);
           }
           states.get(i).moduleStates[m].angle =
               states.get(i).moduleStates[m].fieldAngle.minus(states.get(i).pose.getRotation());
@@ -333,7 +338,12 @@ public class PathPlannerTrajectory {
 
         // Calculate the torque this module will apply to the robot
         Rotation2d angleToModule =
-            state.moduleStates[m].fieldPos.minus(state.pose.getTranslation()).getAngle().orElse(Rotation2d.ZERO);
+            state
+                .moduleStates[m]
+                .fieldPos
+                .minus(state.pose.getTranslation())
+                .getAngle()
+                .orElse(Rotation2d.ZERO);
         Rotation2d theta;
         if (forceVec.getNorm() <= 1e-6) {
           theta = Rotation2d.ZERO.minus(angleToModule);
@@ -474,7 +484,12 @@ public class PathPlannerTrajectory {
 
         // Calculate the torque this module will apply to the robot
         Rotation2d angleToModule =
-            state.moduleStates[m].fieldPos.minus(state.pose.getTranslation()).getAngle().orElse(Rotation2d.ZERO);
+            state
+                .moduleStates[m]
+                .fieldPos
+                .minus(state.pose.getTranslation())
+                .getAngle()
+                .orElse(Rotation2d.ZERO);
         Rotation2d theta;
         if (forceVec.getNorm() <= 1e-6) {
           theta = Rotation2d.ZERO.minus(angleToModule);

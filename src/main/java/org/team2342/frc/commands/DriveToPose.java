@@ -146,11 +146,7 @@ public class DriveToPose extends Command {
             + driveSetpoint.velocity * linearFFScaler;
     if (driveErrorAbs < driveController.getErrorTolerance()) driveVelocityScalar = 0.0;
     Rotation2d targetToCurrentAngle =
-        currentPose
-            .getTranslation()
-            .minus(targetPose.getTranslation())
-            .getAngle()
-            .get();
+        currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle().get();
 
     Translation2d driveVelocity = new Translation2d(driveVelocityScalar, targetToCurrentAngle);
     lastSetpointTranslation =

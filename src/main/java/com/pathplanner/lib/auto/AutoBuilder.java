@@ -21,8 +21,8 @@ import org.wpilib.command2.Subsystem;
 import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.tunable.Selectable;
 import org.wpilib.system.Filesystem;
+import org.wpilib.tunable.Selectable;
 import org.wpilib.units.measure.LinearVelocity;
 
 /** Utility class used to build auto routines */
@@ -460,9 +460,7 @@ public class AutoBuilder {
       chooser.setDefault(defaultOption.getName());
       chooser.add("None", Commands.none());
     }
-    optionsModifier
-        .apply(options.stream())
-        .forEach(auto -> chooser.add(auto.getName(), auto));
+    optionsModifier.apply(options.stream()).forEach(auto -> chooser.add(auto.getName(), auto));
     return chooser;
   }
 
