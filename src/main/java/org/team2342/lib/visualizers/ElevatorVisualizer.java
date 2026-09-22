@@ -11,11 +11,8 @@ import org.wpilib.util.Color8Bit;
 
 public class ElevatorVisualizer extends LoggedMechanismLigament2d {
 
-  private double startingHeight;
-
-  public ElevatorVisualizer(String name, double startingHeight, double angleDeg, Color8Bit color) {
-    super(name, startingHeight, angleDeg, 10, color);
-    this.startingHeight = startingHeight;
+  public ElevatorVisualizer(String name, double startingHeight, double angle, Color8Bit color) {
+    super(name, startingHeight, angle, 10, color);
   }
 
   public ElevatorVisualizer(String name, double startingHeight, Color8Bit color) {
@@ -23,6 +20,6 @@ public class ElevatorVisualizer extends LoggedMechanismLigament2d {
   }
 
   public void update(double height) {
-    setLength(height + startingHeight);
+    setLength(height);
   }
 }

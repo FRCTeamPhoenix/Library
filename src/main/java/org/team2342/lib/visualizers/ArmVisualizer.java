@@ -11,8 +11,6 @@ import org.wpilib.util.Color8Bit;
 
 public class ArmVisualizer extends LoggedMechanismLigament2d {
 
-  private double startingHeight;
-
   public ArmVisualizer(String name, double length, double startingAngle, Color8Bit color) {
     super(name, length, startingAngle, 10, color);
   }
@@ -21,7 +19,7 @@ public class ArmVisualizer extends LoggedMechanismLigament2d {
     super(name, length, 0, 10, color);
   }
 
-  public void update(double height) {
-    setLength(height + startingHeight);
+  public void update(double angle) {
+    setAngle(angle);
   }
 }
