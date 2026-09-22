@@ -32,7 +32,6 @@ import org.wpilib.system.Watchdog;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private static final double loopOverrunWarningTimeout = 0.2;
-  // private final CANdleSystem candle = new CANdleSystem(null);
 
   private final RobotContainer robotContainer;
 
@@ -156,8 +155,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    // autonomousCommand = robotContainer.getAutonomousCommand();
-    autonomousCommand = Commands.none();
+    autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);

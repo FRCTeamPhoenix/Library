@@ -15,7 +15,7 @@ import org.wpilib.math.geometry.Translation3d;
 import org.wpilib.math.util.Units;
 
 public final class Constants {
-  public static final Mode CURRENT_MODE = Mode.REAL;
+  public static final Mode CURRENT_MODE = Mode.SIM;
   public static final boolean TUNING = true;
 
   public static enum Mode {
@@ -69,7 +69,7 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double CONTROLLER_DEADBAND = 0.1;
+    public static final double CONTROLLER_DEADBAND = 0.0;
     public static final double ROTATION_LOCK_TIME = 0.25;
 
     public static final double MAX_LINEAR_SPEED = Units.feetToMeters(15.5);

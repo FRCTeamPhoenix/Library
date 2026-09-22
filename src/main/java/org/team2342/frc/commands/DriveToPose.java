@@ -150,7 +150,7 @@ public class DriveToPose extends Command {
             .getTranslation()
             .minus(targetPose.getTranslation())
             .getAngle()
-            .orElse(Rotation2d.ZERO);
+            .get();
 
     Translation2d driveVelocity = new Translation2d(driveVelocityScalar, targetToCurrentAngle);
     lastSetpointTranslation =

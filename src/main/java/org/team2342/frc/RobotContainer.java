@@ -6,9 +6,9 @@
 
 package org.team2342.frc;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import lombok.Getter;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
+import org.littletonrobotics.junction.networktables.LoggedNetworkChooser;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
@@ -27,20 +27,22 @@ import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.util.EnhancedXboxController;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
-import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.command2.sysid.SysIdRoutine.Direction;
 import org.wpilib.hardware.power.PowerDistribution.ModuleType;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.telemetry.Telemetry;
-import org.wpilib.tunable.Selectable;
 import org.wpilib.util.Alert;
 import org.wpilib.util.Alert.Level;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
 
-  private final Selectable<Command> autoChooser = null;
+  private final LoggedNetworkChooser<Command> autoChooser;
 
   @Getter
   private final EnhancedXboxController driverController =
@@ -104,8 +106,8 @@ public class RobotContainer {
 
     configureNamedCommands();
 
-    // autoChooser = new LoggedNetworkChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // autoChooser.get();
+    autoChooser = new LoggedNetworkChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.get();
 
     Telemetry.log(
         "Calculate Vision Heading Offset",
@@ -157,9 +159,9 @@ public class RobotContainer {
     //             () -> -driverController.getLeftX()));
   }
 
-  //   public Command getAutonomousCommand() {
-  //     return autoChooser.get();
-  //   }
+    public Command getAutonomousCommand() {
+      return autoChooser.get();
+    }
 
   private void setupDevelopmentRoutines() {
     autoChooser.add(
@@ -168,15 +170,14 @@ public class RobotContainer {
         "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
     autoChooser.add(
         "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.FORWARD));
+        drive.sysIdQuasistatic(Direction.FORWARD));
     autoChooser.add(
         "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.REVERSE));
+        drive.sysIdQuasistatic(Direction.REVERSE));
     autoChooser.add(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.FORWARD));
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(Direction.FORWARD));
     autoChooser.add(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.REVERSE));
-
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(Direction.REVERSE));{}
     Telemetry.log(
         "Print Encoder Zeros",
         Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));

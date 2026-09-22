@@ -8,20 +8,13 @@ package org.team2342.frc.subsystems.drive;
 
 import static org.wpilib.units.Units.Volts;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
+import org.team2342.frc.util.LocalADStarAK;
 import org.team2342.lib.logging.ExecutionLogger;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.SwerveSetpointGenerator;
@@ -50,6 +43,14 @@ import org.wpilib.system.Timer;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.util.Alert;
 import org.wpilib.util.Alert.Level;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
@@ -129,7 +130,7 @@ public class Drive extends SubsystemBase {
         this);
 
     // Logging callbacks for PathPlanner
-    Pathfinding.setPathfinder(new LocalADStar());
+    Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
           Logger.recordOutput(
@@ -266,7 +267,7 @@ public class Drive extends SubsystemBase {
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
-      headings[i] = getModuleTranslations()[i].getAngle().orElse(Rotation2d.ZERO);
+      headings[i] = getModuleTranslations()[i].getAngle().get();
     }
     kinematics.resetHeadings(headings);
     stop();
