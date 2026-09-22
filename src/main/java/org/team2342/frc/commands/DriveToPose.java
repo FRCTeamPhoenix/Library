@@ -25,11 +25,11 @@ import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
 
 public class DriveToPose extends Command {
-  public static double MAX_VELOCITY = 4.0;
-  public static double MAX_ACCELERATION = 4.0;
+  public static final double MAX_VELOCITY = 4.0;
+  public static final double MAX_ACCELERATION = 4.0;
 
-  public static double MAX_ANGULAR_VELOCITY = 500.0;
-  public static double MAX_ANGULAR_ACCELERATION = 8.0;
+  public static final double MAX_ANGULAR_VELOCITY = 500.0;
+  public static final double MAX_ANGULAR_ACCELERATION = 8.0;
 
   private double driveTolerance = 0.01;
   private double thetaTolerance = Units.degreesToRadians(1.0);
@@ -49,7 +49,7 @@ public class DriveToPose extends Command {
   private final PIDController driveController = new PIDController(1.8, 0.0, 0.0);
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          5.0, 0.0, 0.5, new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ACCELERATION));
+          5.0, 0.0, 0.5, new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION));
 
   private Translation2d lastSetpointTranslation = Translation2d.ZERO;
   private Translation2d lastSetpointVelocity = Translation2d.ZERO;

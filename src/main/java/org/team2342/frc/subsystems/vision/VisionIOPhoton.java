@@ -59,6 +59,7 @@ public class VisionIOPhoton implements VisionIO {
         continue;
       }
 
+      // TODO: test fixed rotation ConstrainedPNP
       Optional<EstimatedRobotPose> optional = Optional.empty();
       if (!hasEnabled) {
         if (RobotState.isEnabled()) {
