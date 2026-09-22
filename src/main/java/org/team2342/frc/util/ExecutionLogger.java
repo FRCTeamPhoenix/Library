@@ -4,7 +4,7 @@
 // This source code is licensed under the MIT License.
 // See the LICENSE file in the root directory of this project.
 
-package org.team2342.lib.logging;
+package org.team2342.frc.util;
 
 import org.littletonrobotics.junction.Logger;
 import org.wpilib.system.Timer;

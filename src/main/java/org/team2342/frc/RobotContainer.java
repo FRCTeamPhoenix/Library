@@ -15,7 +15,7 @@ import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.commands.DriveCommands;
-import org.team2342.frc.commands.RotationLockedDrive;
+import org.team2342.frc.commands.DriveToPose;
 import org.team2342.frc.subsystems.drive.Drive;
 import org.team2342.frc.subsystems.drive.GyroIO;
 import org.team2342.frc.subsystems.drive.GyroIOPigeon2;
@@ -26,13 +26,16 @@ import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
+import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.sysid.SysIdRoutine.Direction;
 import org.wpilib.hardware.power.PowerDistribution.ModuleType;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform2d;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.util.Alert;
 import org.wpilib.util.Alert.Level;
@@ -127,7 +130,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Basic drive controls
     drive.setDefaultCommand(
-        new RotationLockedDrive(
+        DriveCommands.joystickDrive(
             drive,
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
@@ -142,21 +145,18 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-    // driverController
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drive,
-    //             AllianceUtils.getFieldLayout()
-    //                 .getTagPose(7)
-    //                 .orElse(new Pose3d())
-    //                 .toPose2d()
-    //                 .plus(
-    //                     new Transform2d(
-    //                         DriveConstants.DRIVE_BASE_RADIUS + 0.45, 0, Rotation2d.k180deg)),
-    //             drive::getPose,
-    //             () -> -driverController.getLeftY(),
-    //             () -> -driverController.getLeftX()));
+    driverController
+        .a()
+        .whileTrue(
+            new DriveToPose(
+                drive,
+                AllianceUtils.getFieldLayout()
+                    .getTagPose(7)
+                    .orElse(new Pose3d())
+                    .toPose2d()
+                    .plus(
+                        new Transform2d(
+                            DriveConstants.DRIVE_BASE_RADIUS + 0.45, 0, Rotation2d.k180deg))));
   }
 
   public Command getAutonomousCommand() {
@@ -172,8 +172,7 @@ public class RobotContainer {
     autoChooser.add("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(Direction.REVERSE));
     autoChooser.add("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(Direction.FORWARD));
     autoChooser.add("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(Direction.REVERSE));
-    {
-    }
+
     Telemetry.log(
         "Print Encoder Zeros",
         Commands.runOnce(() -> drive.printModuleAbsoluteAngles()).ignoringDisable(true));

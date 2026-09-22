@@ -100,13 +100,6 @@ public class DriveToPose extends Command {
   public void execute() {
     running = true;
 
-    // driveProfile =
-    //     new TrapezoidProfile(
-    //         new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-    // thetaController.setConstraints(
-    //     new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ACCELERATION));
-
-    // Get current pose and target pose
     Pose2d currentPose = drive.getPose();
     Pose2d targetPose = target.get();
 
@@ -125,22 +118,15 @@ public class DriveToPose extends Command {
             0.0,
             1.0);
 
-    // Calculate drive velocity
-    // Calculate setpoint velocity towards target pose
     var direction = targetPose.getTranslation().minus(lastSetpointTranslation).toVector();
     double setpointVelocity =
-        direction.norm()
-                <= minDistanceVelocityCorrection // Don't calculate velocity in direction when
-            // really close
+        direction.norm() <= minDistanceVelocityCorrection
             ? lastSetpointVelocity.getNorm()
             : lastSetpointVelocity.toVector().dot(direction) / direction.norm();
     setpointVelocity = Math.max(setpointVelocity, setpointMinVelocity);
     State driveSetpoint =
         driveProfile.calculate(
-            0.02,
-            new State(
-                direction.norm(), -setpointVelocity), // Use negative as profile has zero at target
-            new State(0.0, 0.0));
+            0.02, new State(direction.norm(), -setpointVelocity), new State(0.0, 0.0));
     double driveVelocityScalar =
         driveController.calculate(driveErrorAbs, driveSetpoint.position)
             + driveSetpoint.velocity * linearFFScaler;
@@ -155,7 +141,6 @@ public class DriveToPose extends Command {
             .getTranslation();
     lastSetpointVelocity = new Translation2d(driveSetpoint.velocity, targetToCurrentAngle);
 
-    // Calculate theta speed
     double thetaSetpointVelocity =
         Math.abs((targetPose.getRotation().minus(lastGoalRotation)).getDegrees()) < 10.0
             ? (targetPose.getRotation().minus(lastGoalRotation)).getRadians()
@@ -170,7 +155,6 @@ public class DriveToPose extends Command {
     lastGoalRotation = targetPose.getRotation();
     lastTime = Timer.getTimestamp();
 
-    // Command speeds
     if (drive != null) {
       drive.runVelocity(
           new ChassisVelocities(
@@ -196,5 +180,21 @@ public class DriveToPose extends Command {
               Rotation2d.fromRadians(thetaController.getSetpoint().position))
         });
     Logger.recordOutput("DriveToPose/Goal", new Pose2d[] {targetPose});
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    if (drive != null) drive.stop();
+    running = false;
+
+    // Clear logs
+    Logger.recordOutput("DriveToPose/Setpoint", new Pose2d[] {});
+    Logger.recordOutput("DriveToPose/Goal", new Pose2d[] {});
+  }
+
+  public boolean withinTolerance() {
+    return running
+        && Math.abs(driveErrorAbs) < driveTolerance
+        && Math.abs(thetaErrorAbs) < thetaTolerance;
   }
 }

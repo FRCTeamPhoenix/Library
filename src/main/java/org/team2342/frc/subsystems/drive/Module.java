@@ -9,7 +9,7 @@ package org.team2342.frc.subsystems.drive;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.DriveConstants;
-import org.team2342.lib.logging.ExecutionLogger;
+import org.team2342.frc.util.ExecutionLogger;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.kinematics.SwerveModulePosition;
 import org.wpilib.math.kinematics.SwerveModuleVelocity;
