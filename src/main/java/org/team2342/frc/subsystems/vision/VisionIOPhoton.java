@@ -29,8 +29,6 @@ public class VisionIOPhoton implements VisionIO {
   protected final Transform3d robotToCamera;
   private final PhotonPoseEstimator poseEstimator;
 
-  private boolean hasEnabled = false;
-
   /**
    * Creates a new VisionIOPhotonVision.
    *

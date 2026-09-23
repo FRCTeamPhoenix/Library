@@ -18,6 +18,11 @@ public class LedIOSim implements LedIO {
   @Override
   public void setEffect(Half half, LEDEffect effect) {
     switch (half) {
+      case ALL:
+        firstColor = effect.color();
+        firstAnimation = effect.animation();
+        secondColor = effect.color();
+        secondAnimation = effect.animation();
       case FIRST:
         firstColor = effect.color();
         firstAnimation = effect.animation();
@@ -25,6 +30,8 @@ public class LedIOSim implements LedIO {
       case SECOND:
         secondColor = effect.color();
         secondAnimation = effect.animation();
+        break;
+      default:
         break;
     }
   }

@@ -31,10 +31,6 @@ public class LedIOCANdle implements LedIO {
   private final int slot0EndIdx;
   private final int slot1StartIdx;
   private final int slot1EndIdx;
-  private final int candleFirstStart = 0;
-  private final int canddleFirstEnd = 3;
-  private final int candleSecondStart = 4;
-  private final int candleSecondEnd = 7;
   private Color firstColor = Color.BLACK;
   private Color secondColor = Color.BLACK;
   private LEDAnimation firstAnimation = LEDAnimation.OFF;
