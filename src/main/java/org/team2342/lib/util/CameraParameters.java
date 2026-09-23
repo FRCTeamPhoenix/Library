@@ -6,15 +6,11 @@
 
 package org.team2342.lib.util;
 
-import io.avaje.json.JsonIoException;
-import io.avaje.jsonb.Json;
-import io.avaje.jsonb.Jsonb;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import lombok.Getter;
 import lombok.Setter;
+import org.photonvision.simulation.SimCameraProperties;
 import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform3d;
@@ -28,32 +24,11 @@ import org.wpilib.math.util.Nat;
 import org.wpilib.system.Filesystem;
 
 public class CameraParameters {
-  @Json
-  record SimCameraData(SimCameraCalibrationData[] calibrations) {
-    @Json
-    record SimCameraCalibrationData(
-        ResolutionData resolution,
-        CameraIntrinsicsData cameraIntrinsics,
-        DistortionCoefficients distCoeffs,
-        double[] perViewErrors,
-        double standardDeviation) {
-      @Json
-      record ResolutionData(int width, int height) {}
-
-      @Json
-      record CameraIntrinsicsData(double[] data) {}
-
-      @Json
-      record DistortionCoefficients(double[] data) {}
-    }
-  }
 
   @Getter @Setter private String cameraName;
   @Getter @Setter private int resWidth, resHeight;
   @Getter @Setter private Matrix<N3, N3> cameraMatrix;
   @Getter @Setter private Matrix<N8, N1> distCoeffs;
-  @Getter @Setter private double avgErrorPx;
-  @Getter @Setter private double errorStdDevPx;
   @Getter @Setter private Transform3d transform;
 
   public CameraParameters(
@@ -68,29 +43,19 @@ public class CameraParameters {
     this.cameraName = cameraName;
     this.resWidth = resWidth;
     this.resHeight = resHeight;
-    this.avgErrorPx = avgErrorPx;
-    this.errorStdDevPx = errorStdDevPx;
     this.cameraMatrix = cameraMatrix;
     this.distCoeffs = distCoeffs;
     this.transform = transform;
   }
 
   public CameraParameters(String cameraName, int resWidth, int resHeight) {
-    this(cameraName, resWidth, resHeight, 0.02, 0.05, Rotation2d.CCW_90DEG);
+    this(cameraName, resWidth, resHeight, Rotation2d.CCW_90DEG);
   }
 
-  public CameraParameters(
-      String cameraName,
-      int resWidth,
-      int resHeight,
-      double avgErrorPx,
-      double errorStdDevPx,
-      Rotation2d fovDiag) {
+  public CameraParameters(String cameraName, int resWidth, int resHeight, Rotation2d fovDiag) {
     this.cameraName = cameraName;
     this.resWidth = resWidth;
     this.resHeight = resHeight;
-    this.avgErrorPx = avgErrorPx;
-    this.errorStdDevPx = errorStdDevPx;
 
     if (fovDiag.getDegrees() < 1 || fovDiag.getDegrees() > 179) {
       fovDiag = Rotation2d.fromDegrees(Math.clamp(fovDiag.getDegrees(), 1, 179));
@@ -119,28 +84,12 @@ public class CameraParameters {
 
   public CameraParameters(String cameraName, int resWidth, int resHeight, Path path)
       throws IOException {
-    SimCameraData data;
     this.cameraName = cameraName;
-    try (var stream = new FileInputStream(path.toFile())) {
-      data = Jsonb.instance().type(SimCameraData.class).fromJson(stream);
-    } catch (JsonIoException e) {
-      throw new IOException("Invalid calibration JSON", e);
-    }
-    boolean success = false;
-    for (var calib : data.calibrations) {
-      // check if this calibration entry is our desired resolution
-      if (calib.resolution.width != resWidth || calib.resolution.height != resHeight) continue;
-      // get the relevant calibration values
-      double avgViewError = Arrays.stream(calib.perViewErrors).average().orElse(0);
-      // assign the read JSON values to this CameraProperties
-      resWidth = calib.resolution.width;
-      resHeight = calib.resolution.height;
-      cameraMatrix = MatBuilder.fill(Nat.N3(), Nat.N3(), calib.cameraIntrinsics.data);
-      distCoeffs = MatBuilder.fill(Nat.N8(), Nat.N1(), calib.distCoeffs.data);
-      avgErrorPx = avgViewError;
-      errorStdDevPx = calib.standardDeviation;
-    }
-    if (!success) throw new IOException("Requested resolution not found in calibration");
+    SimCameraProperties prop = new SimCameraProperties(path, resWidth, resHeight);
+    this.resWidth = resWidth;
+    this.resHeight = resHeight;
+    this.cameraMatrix = prop.getIntrinsics();
+    this.distCoeffs = prop.getDistCoeffs();
   }
 
   public static CameraParameters loadFromName(String cameraName, int resWidth, int resHeight) {

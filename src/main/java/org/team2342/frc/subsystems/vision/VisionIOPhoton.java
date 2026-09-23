@@ -19,7 +19,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.CameraParameters;
 import org.team2342.lib.util.Timestamped;
-import org.wpilib.driverstation.RobotState;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform3d;
 
@@ -60,27 +59,19 @@ public class VisionIOPhoton implements VisionIO {
       }
 
       // TODO: test fixed rotation ConstrainedPNP
-      Optional<EstimatedRobotPose> optional = Optional.empty();
-      if (!hasEnabled) {
-        if (RobotState.isEnabled()) {
-          optional = poseEstimator.estimateCoprocMultiTagPose(result);
-          hasEnabled = true;
-        }
-      } else {
-        Optional<EstimatedRobotPose> coproc = poseEstimator.estimateCoprocMultiTagPose(result);
-        if (optional.isEmpty()) {
-          continue;
-        }
-        optional =
-            poseEstimator.estimateConstrainedSolvepnpPose(
-                result,
-                parameters.getCameraMatrix(),
-                parameters.getDistCoeffs(),
-                coproc.get().estimatedPose,
-                true,
-                0.5);
+      Optional<EstimatedRobotPose> coproc = poseEstimator.estimateCoprocMultiTagPose(result);
+      if (coproc.isEmpty()) {
+        continue;
       }
 
+      Optional<EstimatedRobotPose> optional =
+          poseEstimator.estimateConstrainedSolvepnpPose(
+              result,
+              parameters.getCameraMatrix(),
+              parameters.getDistCoeffs(),
+              coproc.get().estimatedPose,
+              true,
+              0.5);
       if (optional.isEmpty()) {
         continue;
       }

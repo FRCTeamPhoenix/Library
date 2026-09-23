@@ -104,6 +104,10 @@ public final class Constants {
 
     public static final boolean IS_CANFD = false;
     public static final double ODOMETRY_FREQUENCY = IS_CANFD ? 250.0 : 100.0;
+
+    public static boolean isCANFD() {
+      return IS_CANFD;
+    }
   }
 
   public static final class CANConstants {

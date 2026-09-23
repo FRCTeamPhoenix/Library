@@ -93,6 +93,9 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:1.18.44"
     testAnnotationProcessor "org.projectlombok:lombok:1.18.44"
 
+    annotationProcessor "io.avaje:avaje-jsonb-generator:1.11"
+    testAnnotationProcessor "io.avaje:avaje-jsonb-generator:1.11"
+
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 }

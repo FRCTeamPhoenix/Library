@@ -45,7 +45,7 @@ public class VisionIOSim extends VisionIOPhoton {
         parameters.getResHeight(),
         parameters.getCameraMatrix(),
         parameters.getDistCoeffs());
-    properties.setCalibError(parameters.getAvgErrorPx(), parameters.getErrorStdDevPx());
+    properties.setCalibError(0.02, 0.05);
     properties.setFPS(60.0);
     properties.setAvgLatencyMs(35);
     properties.setLatencyStdDevMs(7);

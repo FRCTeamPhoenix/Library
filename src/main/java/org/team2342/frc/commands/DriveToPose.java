@@ -24,6 +24,7 @@ import org.wpilib.math.trajectory.TrapezoidProfile.State;
 import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
 
+/* DriveToPose based on 6328's */
 public class DriveToPose extends Command {
   public static final double MAX_VELOCITY = 4.0;
   public static final double MAX_ACCELERATION = 4.0;
@@ -42,14 +43,17 @@ public class DriveToPose extends Command {
 
   private final Drive drive;
   private final Supplier<Pose2d> target;
-  private final Supplier<Optional<Double>> omegaOverride;
+  private final Supplier<Optional<Double>> rotationOverride;
 
   private TrapezoidProfile driveProfile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
   private final PIDController driveController = new PIDController(1.8, 0.0, 0.0);
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          5.0, 0.0, 0.5, new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION));
+          5.0,
+          0.0,
+          0.5,
+          new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION));
 
   private Translation2d lastSetpointTranslation = Translation2d.ZERO;
   private Translation2d lastSetpointVelocity = Translation2d.ZERO;
@@ -60,10 +64,10 @@ public class DriveToPose extends Command {
   @Getter private boolean running = false;
 
   public DriveToPose(
-      Drive drive, Supplier<Pose2d> target, Supplier<Optional<Double>> omegaOverride) {
+      Drive drive, Supplier<Pose2d> target, Supplier<Optional<Double>> rotationOverride) {
     this.drive = drive;
     this.target = target;
-    this.omegaOverride = omegaOverride;
+    this.rotationOverride = rotationOverride;
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -155,14 +159,12 @@ public class DriveToPose extends Command {
     lastGoalRotation = targetPose.getRotation();
     lastTime = Timer.getTimestamp();
 
-    if (drive != null) {
-      drive.runVelocity(
-          new ChassisVelocities(
-                  driveVelocity.getX(),
-                  driveVelocity.getY(),
-                  omegaOverride.get().isPresent() ? omegaOverride.get().get() : thetaVelocity)
-              .toRobotRelative(currentPose.getRotation()));
-    }
+    drive.runVelocity(
+        new ChassisVelocities(
+                driveVelocity.getX(),
+                driveVelocity.getY(),
+                rotationOverride.get().isPresent() ? rotationOverride.get().get() : thetaVelocity)
+            .toRobotRelative(currentPose.getRotation()));
 
     // Log data
     Logger.recordOutput("DriveToPose/DistanceMeasured", driveErrorAbs);
@@ -187,7 +189,6 @@ public class DriveToPose extends Command {
     if (drive != null) drive.stop();
     running = false;
 
-    // Clear logs
     Logger.recordOutput("DriveToPose/Setpoint", new Pose2d[] {});
     Logger.recordOutput("DriveToPose/Goal", new Pose2d[] {});
   }

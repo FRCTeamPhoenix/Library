@@ -333,7 +333,7 @@ public class Drive extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  /** Returns the current odometry pose. */
+  /** Returns the current raw odometry pose. */
   @AutoLogOutput(key = "Odometry/Raw")
   public Pose2d getRawOdometryPose() {
     return rawOdometry.getEstimatedPosition();
