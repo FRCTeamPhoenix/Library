@@ -7,22 +7,23 @@
 package org.team2342.frc.util;
 
 import org.littletonrobotics.junction.Logger;
-import org.wpilib.system.Timer;
+import org.wpilib.system.RobotController;
 
 /** Class to log code execution times */
 public class ExecutionLogger {
 
-  private static double lastMS = 0.0;
+  private static double lastNS = 0.0;
 
   /** Reset time. */
   public static void reset() {
-    lastMS = Timer.getTimestamp() * 1000.0;
+    lastNS = RobotController.getMonotonicTime();
   }
 
   /** Log execution time under the given name. */
   public static void log(String name) {
-    double currentMS = Timer.getTimestamp() * 1000.0;
-    Logger.recordOutput(String.format("ExecutionLogger/%sMS", name), currentMS - lastMS);
-    lastMS = currentMS;
+    long currentNS = RobotController.getMonotonicTime();
+    Logger.recordOutput(
+        String.format("ExecutionLogger/%sMS", name), (currentNS - lastNS) / 1_000_000.0);
+    lastNS = currentNS;
   }
 }

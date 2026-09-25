@@ -186,7 +186,7 @@ public class DriveToPose extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (drive != null) drive.stop();
+    drive.stop();
     running = false;
 
     Logger.recordOutput("DriveToPose/Setpoint", new Pose2d[] {});
