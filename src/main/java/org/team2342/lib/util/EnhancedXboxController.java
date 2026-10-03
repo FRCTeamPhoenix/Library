@@ -26,6 +26,7 @@ public class EnhancedXboxController extends CommandXboxController {
    * @param deadband The deadband that will be applied to the controller sticks.
    */
   public EnhancedXboxController(int port, double deadband) {
+    this.deadband = deadband;
     super(port);
   }
 

@@ -6,7 +6,6 @@
 
 package org.team2342.frc.commands;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
@@ -19,12 +18,14 @@ import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.linalg.Vector;
+import org.wpilib.math.numbers.N2;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 import org.wpilib.math.trajectory.TrapezoidProfile.State;
 import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
 
-/* DriveToPose based on 6328's */
+/** DriveToPose based on 6328's */
 public class DriveToPose extends Command {
   public static final double MAX_VELOCITY = 4.0;
   public static final double MAX_ACCELERATION = 4.0;
@@ -34,16 +35,11 @@ public class DriveToPose extends Command {
 
   private double driveTolerance = 0.01;
   private double thetaTolerance = Units.degreesToRadians(1.0);
-  private double linearFFMinRadius = 0.01;
-  private double linearFFMaxRadius = 0.05;
-  private double thetaFFMinError = 0.0;
-  private double thetaFFMaxError = 0.0;
   private double setpointMinVelocity = -0.5;
-  private double minDistanceVelocityCorrection = 0.01;
 
   private final Drive drive;
   private final Supplier<Pose2d> target;
-  private final Supplier<Optional<Double>> rotationOverride;
+  private final Supplier<Double> rotationOverride;
 
   private TrapezoidProfile driveProfile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
@@ -59,12 +55,11 @@ public class DriveToPose extends Command {
   private Translation2d lastSetpointVelocity = Translation2d.ZERO;
   private Rotation2d lastGoalRotation = Rotation2d.ZERO;
   private double lastTime = 0.0;
-  private double driveErrorAbs = 0.0;
-  private double thetaErrorAbs = 0.0;
+  private double driveError = 0.0;
+  private double thetaError = 0.0;
   @Getter private boolean running = false;
 
-  public DriveToPose(
-      Drive drive, Supplier<Pose2d> target, Supplier<Optional<Double>> rotationOverride) {
+  public DriveToPose(Drive drive, Supplier<Pose2d> target, Supplier<Double> rotationOverride) {
     this.drive = drive;
     this.target = target;
     this.rotationOverride = rotationOverride;
@@ -75,11 +70,11 @@ public class DriveToPose extends Command {
   }
 
   public DriveToPose(Drive drive, Supplier<Pose2d> target) {
-    this(drive, target, () -> Optional.empty());
+    this(drive, target, () -> 0.0);
   }
 
   public DriveToPose(Drive drive, Pose2d target) {
-    this(drive, () -> target, () -> Optional.empty());
+    this(drive, () -> target, () -> 0.0);
   }
 
   @Override
@@ -107,38 +102,28 @@ public class DriveToPose extends Command {
     Pose2d currentPose = drive.getPose();
     Pose2d targetPose = target.get();
 
-    Pose2d poseError = currentPose.relativeTo(targetPose);
-    driveErrorAbs = poseError.getTranslation().getNorm();
-    thetaErrorAbs = Math.abs(poseError.getRotation().getRadians());
-    double linearFFScaler =
-        Math.clamp(
-            (driveErrorAbs - linearFFMinRadius) / (linearFFMaxRadius - linearFFMinRadius),
-            0.0,
-            1.0);
-    double thetaFFScaler =
-        Math.clamp(
-            (Units.radiansToDegrees(thetaErrorAbs) - thetaFFMinError)
-                / (thetaFFMaxError - thetaFFMinError),
-            0.0,
-            1.0);
+    Pose2d error = currentPose.relativeTo(targetPose);
+    driveError = error.getTranslation().getNorm();
+    thetaError = Math.abs(error.getRotation().getRadians());
+    double ffScaler = Math.clamp((driveError - 0.01) / (0.05 - 0.01), 0.0, 1.0);
 
-    var direction = targetPose.getTranslation().minus(lastSetpointTranslation).toVector();
+    Vector<N2> direction = targetPose.getTranslation().minus(lastSetpointTranslation).toVector();
     double setpointVelocity =
-        direction.norm() <= minDistanceVelocityCorrection
+        direction.norm() <= 0.01
             ? lastSetpointVelocity.getNorm()
             : lastSetpointVelocity.toVector().dot(direction) / direction.norm();
     setpointVelocity = Math.max(setpointVelocity, setpointMinVelocity);
     State driveSetpoint =
         driveProfile.calculate(
             0.02, new State(direction.norm(), -setpointVelocity), new State(0.0, 0.0));
-    double driveVelocityScalar =
-        driveController.calculate(driveErrorAbs, driveSetpoint.position)
-            + driveSetpoint.velocity * linearFFScaler;
-    if (driveErrorAbs < driveController.getErrorTolerance()) driveVelocityScalar = 0.0;
+    double driveScalar =
+        driveController.calculate(driveError, driveSetpoint.position)
+            + driveSetpoint.velocity * ffScaler;
+    if (driveError < driveController.getErrorTolerance()) driveScalar = 0.0;
     Rotation2d targetToCurrentAngle =
         currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle().get();
 
-    Translation2d driveVelocity = new Translation2d(driveVelocityScalar, targetToCurrentAngle);
+    Translation2d driveVelocity = new Translation2d(driveScalar, targetToCurrentAngle);
     lastSetpointTranslation =
         new Pose2d(targetPose.getTranslation(), targetToCurrentAngle)
             .transformBy(new Transform2d(driveSetpoint.position, 0.0, Rotation2d.ZERO))
@@ -152,10 +137,9 @@ public class DriveToPose extends Command {
             : thetaController.getSetpoint().velocity;
     double thetaVelocity =
         thetaController.calculate(
-                currentPose.getRotation().getRadians(),
-                new State(targetPose.getRotation().getRadians(), thetaSetpointVelocity))
-            + thetaController.getSetpoint().velocity * thetaFFScaler;
-    if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
+            currentPose.getRotation().getRadians(),
+            new State(targetPose.getRotation().getRadians(), thetaSetpointVelocity));
+    if (thetaError < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
     lastGoalRotation = targetPose.getRotation();
     lastTime = Timer.getTimestamp();
 
@@ -163,11 +147,11 @@ public class DriveToPose extends Command {
         new ChassisVelocities(
                 driveVelocity.getX(),
                 driveVelocity.getY(),
-                rotationOverride.get().isPresent() ? rotationOverride.get().get() : thetaVelocity)
+                rotationOverride.get() != 0.0 ? rotationOverride.get() : thetaVelocity)
             .toRobotRelative(currentPose.getRotation()));
 
     // Log data
-    Logger.recordOutput("DriveToPose/DistanceMeasured", driveErrorAbs);
+    Logger.recordOutput("DriveToPose/DistanceMeasured", driveError);
     Logger.recordOutput("DriveToPose/DistanceSetpoint", driveSetpoint.position);
     Logger.recordOutput("DriveToPose/DistanceSetpointVelocity", driveSetpoint.velocity);
     Logger.recordOutput("DriveToPose/ThetaMeasured", currentPose.getRotation().getRadians());
@@ -195,7 +179,7 @@ public class DriveToPose extends Command {
 
   public boolean withinTolerance() {
     return running
-        && Math.abs(driveErrorAbs) < driveTolerance
-        && Math.abs(thetaErrorAbs) < thetaTolerance;
+        && Math.abs(driveError) < driveTolerance
+        && Math.abs(thetaError) < thetaTolerance;
   }
 }
