@@ -20,7 +20,7 @@ public class SmartMotorConfig extends MotorConfig {
   public ControlType controlType = null;
   public FeedbackConfig feedbackConfig = FeedbackConfig.internal(null);
 
-  public Constraints profileConstraintsRad = new Constraints(0, 0);
+  public Constraints profileConstraintsRad = new Constraints(1, 1);
 
   /**
    * This is meant for when you use WPILib Sim Classes that don't report directly in radians, such
