@@ -6,6 +6,7 @@
 
 package org.team2342.frc;
 
+import com.limelightvision.Limelight;
 import org.team2342.lib.util.CANDevice;
 import org.team2342.lib.util.CameraParameters;
 import org.wpilib.hardware.bus.CANPort;
@@ -15,7 +16,7 @@ import org.wpilib.math.geometry.Translation3d;
 import org.wpilib.math.util.Units;
 
 public final class Constants {
-  public static final Mode CURRENT_MODE = Mode.SIM;
+  public static final Mode CURRENT_MODE = Mode.REAL;
   public static final boolean TUNING = true;
 
   public static enum Mode {
@@ -30,18 +31,29 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String CAMERA_NAME = "left_arducam";
-
-    public static final Transform3d CAMERA_TRANSFORM =
+    public static final Transform3d RIGHT_CAMERA =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(7.883 + 0.5),
-                Units.inchesToMeters(-10.895 - 0.5),
-                Units.inchesToMeters(8)),
-            new Rotation3d(0, Units.degreesToRadians(-22.0), Units.degreesToRadians(90 - 61.475)));
+                Units.inchesToMeters(-12.376),
+                Units.inchesToMeters(3.929),
+                Units.inchesToMeters(7.618)),
+            new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(190)));
+
+    public static final Transform3d LEFT_CAMERA =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(-12.376),
+                Units.inchesToMeters(-3.929),
+                Units.inchesToMeters(7.618)),
+            new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(-190)));
 
     public static final CameraParameters LEFT_PARAMETERS =
-        CameraParameters.loadFromName(CAMERA_NAME, 800, 600).withTransform(CAMERA_TRANSFORM);
+        CameraParameters.loadFromName(Limelight.SYSTEMCORE_USB0, 800, 600)
+            .withTransform(LEFT_CAMERA);
+
+    public static final CameraParameters RIGHT_PARAMETERS =
+        CameraParameters.loadFromName(Limelight.SYSTEMCORE_USB1, 800, 600)
+            .withTransform(RIGHT_CAMERA);
 
     // Basic filtering thresholds
     public static final double MAX_AMBIGUITY = 0.1;
@@ -96,7 +108,7 @@ public final class Constants {
     public static final double MAX_MODULE_VELOCITY_RAD = Units.degreesToRadians(1080.0);
 
     public static final double[] ENCODER_OFFSETS = {
-      0.229 + 0.5, 0.2834 + 0.5, 0.2009 + 0.5, 0.1563 + 0.5
+      0.12109375 + 0.5, -0.142333984375 + 0.5, -0.3896484375 + 0.5, -0.150146484375 + 0.5,
     };
 
     // Pitch, Roll, Yaw
@@ -111,7 +123,7 @@ public final class Constants {
   }
 
   public static final class CANConstants {
-    public static final CANPort DRIVE_BUS = CANPort.CAN_S0;
+    public static final CANPort DRIVE_BUS = CANPort.CAN_S1;
 
     public static final CANDevice PDH = new CANDevice(14, DRIVE_BUS);
 

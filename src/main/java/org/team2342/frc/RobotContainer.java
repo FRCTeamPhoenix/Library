@@ -24,7 +24,7 @@ import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
-import org.team2342.frc.subsystems.vision.VisionIOPhoton;
+import org.team2342.frc.subsystems.vision.VisionIOLimelight;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.util.AllianceUtils;
 import org.team2342.lib.util.EnhancedXboxController;
@@ -67,7 +67,8 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 drive::getTimestampedHeading,
-                new VisionIOPhoton(VisionConstants.LEFT_PARAMETERS));
+                new VisionIOLimelight(VisionConstants.LEFT_PARAMETERS, true),
+                new VisionIOLimelight(VisionConstants.RIGHT_PARAMETERS, true));
 
         LoggedPowerDistribution.getInstance(
             CANConstants.PDH.getPort().value, CANConstants.PDH.getDeviceNumber(), ModuleType.REV);
