@@ -1,0 +1,67 @@
+// Copyright (c) 2026 Team 2342
+// https://github.com/FRCTeamPhoenix
+//
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
+
+package org.team2342.lib.motors.dumb;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import org.team2342.lib.motors.MotorConfig;
+import org.team2342.lib.util.CANDevice;
+import org.wpilib.math.filter.Debouncer;
+
+public class DumbMotorIOSparkMax implements DumbMotorIO {
+
+  private final SparkMax motor;
+  private final SparkMaxConfig motorConfig = new SparkMaxConfig();
+  private final Debouncer connectedDebouncer = new Debouncer(0.5);
+
+  /**
+   * Constructor to configure the TalonFX motor controller
+   *
+   * @param canID The CAN ID of the TalonFX motor controller
+   * @param config The configuration settings for the motor
+   * @param type The type of motor being controlled
+   */
+  public DumbMotorIOSparkMax(CANDevice motor, MotorConfig config, MotorType type) {
+    this.motor = new SparkMax(motor.getPort(), motor.getDeviceNumber(), type);
+    motorConfig.inverted(config.motorInverted);
+    motorConfig.idleMode(
+        config.idleMode == MotorConfig.IdleMode.BRAKE
+            ? SparkBaseConfig.IdleMode.kBrake
+            : SparkBaseConfig.IdleMode.kCoast);
+    motorConfig.smartCurrentLimit((int) config.supplyLimit);
+
+    this.motor.configure(
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  /**
+   * Updates the inputs for the motor controller
+   *
+   * @param inputs The inputs object to update with current values
+   */
+  @Override
+  public void updateInputs(DumbMotorIOInputs inputs) {
+    inputs.connected = connectedDebouncer.calculate(motor.getLastError() == REVLibError.kOk);
+    inputs.appliedVolts = motor.getAppliedOutput().get() * motor.getBusVoltage().get();
+    inputs.currentAmps = motor.getOutputCurrent().get();
+  }
+
+  /**
+   * Sets the motor to run at the specified voltage
+   *
+   * @param voltage The desired voltage to apply to the motor
+   */
+  @Override
+  public void runVoltage(double volts) {
+    motor.setVoltage(volts);
+  }
+}
