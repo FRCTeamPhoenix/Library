@@ -130,10 +130,11 @@ public class DriveToPose extends Command {
             .getTranslation();
     lastSetpointVelocity = new Translation2d(driveSetpoint.velocity, targetToCurrentAngle);
 
+    double dt = Timer.getTimestamp() - lastTime;
+    Rotation2d goalDelta = targetPose.getRotation().minus(lastGoalRotation);
     double thetaSetpointVelocity =
-        Math.abs((targetPose.getRotation().minus(lastGoalRotation)).getDegrees()) < 10.0
-            ? (targetPose.getRotation().minus(lastGoalRotation)).getRadians()
-                / (Timer.getTimestamp() - lastTime)
+        (dt > 1e-3 && Math.abs(goalDelta.getDegrees()) < 10.0)
+            ? goalDelta.getRadians() / dt
             : thetaController.getSetpoint().velocity;
     double thetaVelocity =
         thetaController.calculate(

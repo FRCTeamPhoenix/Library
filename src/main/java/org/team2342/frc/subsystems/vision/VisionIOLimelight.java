@@ -51,10 +51,7 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs, Timestamped<Rotation2d> heading) {
     inputs.connected = camera.isConnected();
 
-    table
-        .getEntry("robot_orientation_set")
-        .setDoubleArray(new double[] {heading.get().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0});
-    NetworkTableInstance.getDefault().flush();
+    camera.setRobotOrientation(heading.get().getDegrees(), true);
 
     // Read new camera observations
     Set<Short> tagIds = new HashSet<>();
