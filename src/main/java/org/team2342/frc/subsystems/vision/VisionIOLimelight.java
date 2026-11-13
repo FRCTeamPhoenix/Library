@@ -19,16 +19,12 @@ import org.team2342.lib.util.Timestamped;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.networktables.NetworkTable;
-import org.wpilib.networktables.NetworkTableInstance;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOLimelight implements VisionIO {
   protected final Limelight camera;
   protected final CameraParameters parameters;
   protected final Transform3d robotToCamera;
-
-  private final NetworkTable table;
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -42,7 +38,6 @@ public class VisionIOLimelight implements VisionIO {
             parameters.getCameraName(), GeometryUtils.toPose3d(parameters.getTransform()));
     this.robotToCamera = parameters.getTransform();
     this.parameters = parameters;
-    this.table = NetworkTableInstance.getDefault().getTable(parameters.getCameraName());
 
     camera.setUseSharedOrientation(false);
   }
